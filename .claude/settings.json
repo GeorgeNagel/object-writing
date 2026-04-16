@@ -1,8 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mv tasks/*)",
-      "Edit(tasks/*)"
+      "Bash(mv tasks/*/*)",
+      "Edit(tasks/*/*)"
     ]
   }
 }
