@@ -1,7 +1,7 @@
 {
   "id": "INFRA-003",
   "title": "Configure ESLint and Prettier",
-  "status": "todo",
+  "status": "done",
   "story": "As a developer, I want consistent linting and formatting enforced so that code style is uniform across the project.",
   "acceptance_criteria": [
     "ESLint configured with TypeScript and React rules",
@@ -11,6 +11,6 @@
     "Editor config (`.editorconfig`) present and consistent with Prettier settings"
   ],
   "dependencies": ["INFRA-001"],
-  "claimed_at": null,
-  "completed_at": null
+  "claimed_at": "2026-04-16T00:00:00Z",
+  "completed_at": "2026-04-16T00:00:00Z"
 }
