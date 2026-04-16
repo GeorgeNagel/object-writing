@@ -1,0 +1,15 @@
+{
+  "id": "INFRA-001",
+  "title": "Initialize React + Vite + TypeScript project",
+  "status": "done",
+  "story": "As a developer, I want a working React + Vite + TypeScript scaffold so that I have a foundation to build features on.",
+  "acceptance_criteria": [
+    "Project bootstrapped with Vite using the React + TypeScript template",
+    "`npm run dev` starts the dev server without errors",
+    "Default boilerplate cleaned up — blank slate ready for feature development",
+    "services/ directory created at src/services/"
+  ],
+  "dependencies": [],
+  "claimed_at": "2026-04-16T00:00:00Z",
+  "completed_at": "2026-04-16T00:00:00Z"
+}
