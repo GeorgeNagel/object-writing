@@ -1,0 +1,17 @@
+{
+  "id": "EX-003",
+  "title": "Wire exercise flow together",
+  "status": "todo",
+  "story": "As a user, I want to start an exercise, write for 10 minutes, and have my writing automatically submitted for analysis when the timer expires — all in one seamless flow.",
+  "acceptance_criteria": [
+    "A start screen shows a Start button but does NOT reveal the object word",
+    "Clicking Start reveals the object word, shows the editor, and begins the countdown timer",
+    "The object word is displayed prominently during the exercise",
+    "When the timer expires, the editor is locked and analysis is triggered",
+    "A loading state is shown while analysis is in progress",
+    "Unit tests cover the start action and timer expiry transition"
+  ],
+  "dependencies": ["EX-001", "EX-002", "WORD-002", "KEY-001"],
+  "claimed_at": null,
+  "completed_at": null
+}

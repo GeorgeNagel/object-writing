@@ -1,0 +1,17 @@
+{
+  "id": "SA-001",
+  "title": "Build LLM sense scanning service",
+  "status": "todo",
+  "story": "As a user, I want my writing analyzed for sensory language so that I can see which senses I engaged during the exercise.",
+  "acceptance_criteria": [
+    "A service at src/services/analysisService.ts exports an analyzeText(text: string, apiKey: string) function",
+    "The function calls the Anthropic API with a structured prompt to identify sensory phrases",
+    "The response maps each identified phrase to one of: sight, sound, smell, taste, touch, organic, kinesthetic",
+    "The function returns a typed result: an array of { phrase: string, sense: string, startIndex: number, endIndex: number }",
+    "Prompt is defined as a named constant, not an inline string",
+    "Unit tests cover the response parsing logic with mocked API responses"
+  ],
+  "dependencies": ["INFRA-001", "INFRA-002"],
+  "claimed_at": null,
+  "completed_at": null
+}

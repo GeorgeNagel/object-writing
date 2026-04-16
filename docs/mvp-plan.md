@@ -26,38 +26,6 @@ Built with React + Vite, LLM-powered sense analysis, portfolio-ready architectur
 
 ---
 
-## Features
-
-### API Key
-- User enters their Anthropic API key at the start of each session
-- Key is never stored or persisted — entered fresh each session
-
-### Word List
-- Static JSON file of object words bundled with the app
-- Generated once via a one-off LLM batch script
-
-### Exercise Flow
-1. User lands on the app and enters their API key
-2. User clicks **Start** to begin an exercise
-3. A random object word is displayed
-4. A 10-minute countdown timer begins
-5. A free-text editor is shown for writing
-6. When the timer expires, writing is locked and sent to Claude for analysis
-
-### Sense Analysis
-- Full text sent to Claude with a structured prompt
-- Claude identifies and categorizes sensory language by sense
-- Senses: **sight**, **sound**, **smell**, **taste**, **touch/kinaesthetic**
-- Response drives text highlighting (one color per sense)
-
-### Results View
-- Highlighted text with color-coded sensory phrases
-- Score displayed:
-  - Number of distinct senses used
-  - Frequency per sense
-  - Total word count
----
-
 ## Out of Scope for MVP
 
 - User accounts / authentication

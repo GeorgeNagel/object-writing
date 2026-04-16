@@ -1,0 +1,15 @@
+{
+  "id": "RES-003",
+  "title": "Wire results view together",
+  "status": "todo",
+  "story": "As a user, I want to see my highlighted writing and score on a single results screen after the exercise so that I get a complete picture of my performance.",
+  "acceptance_criteria": [
+    "A Results view composes HighlightedText and Score components",
+    "Shown automatically when analysis completes after the timer expires",
+    "A 'Start New Exercise' button is present and resets the app to the start screen",
+    "Unit tests cover rendering with analysis results and the reset action"
+  ],
+  "dependencies": ["RES-001", "RES-002", "EX-003"],
+  "claimed_at": null,
+  "completed_at": null
+}

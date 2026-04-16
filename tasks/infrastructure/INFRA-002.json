@@ -1,0 +1,16 @@
+{
+  "id": "INFRA-002",
+  "title": "Configure Vitest + React Testing Library",
+  "status": "todo",
+  "story": "As a developer, I want a working test setup so that all features can be tested as they are built.",
+  "acceptance_criteria": [
+    "Vitest installed and configured",
+    "React Testing Library installed",
+    "`npm run test` runs without errors",
+    "A smoke test exists that renders the root App component and asserts it renders without crashing",
+    "The smoke test asserts the page has the correct document title"
+  ],
+  "dependencies": ["INFRA-001"],
+  "claimed_at": null,
+  "completed_at": null
+}

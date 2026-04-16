@@ -1,0 +1,16 @@
+{
+  "id": "WORD-001",
+  "title": "Generate object word list via LLM batch script",
+  "status": "todo",
+  "story": "As a developer, I want a curated list of concrete, sensory-rich object words bundled with the app so that users always get a suitable writing prompt.",
+  "acceptance_criteria": [
+    "A one-off Node or Python script exists that calls the Anthropic API to generate a list of object words",
+    "Output is saved as src/data/words.json — an array of strings",
+    "Words are concrete nouns suitable for object writing (e.g. 'campfire', 'leather glove', 'rain gutter')",
+    "List contains at least 200 words",
+    "The script and instructions for re-running it are documented in the project README"
+  ],
+  "dependencies": ["INFRA-001"],
+  "claimed_at": null,
+  "completed_at": null
+}

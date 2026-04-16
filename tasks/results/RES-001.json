@@ -1,0 +1,16 @@
+{
+  "id": "RES-001",
+  "title": "Build highlighted text component",
+  "status": "todo",
+  "story": "As a user, I want to see my writing with sensory phrases highlighted in different colors so that I can immediately see where I engaged each sense.",
+  "acceptance_criteria": [
+    "A HighlightedText component accepts the original text and an array of { phrase, sense, startIndex, endIndex } annotations",
+    "Each sense is rendered with a distinct highlight color: sight, sound, smell, taste, touch, organic, kinesthetic",
+    "Overlapping annotations are handled gracefully (no crashes)",
+    "A color legend is displayed showing which color maps to which sense",
+    "Unit tests cover rendering with annotations and the no-annotation case"
+  ],
+  "dependencies": ["SA-001", "INFRA-002"],
+  "claimed_at": null,
+  "completed_at": null
+}

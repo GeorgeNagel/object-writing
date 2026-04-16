@@ -1,3 +1,5 @@
+Use the EnterPlanMode tool before doing anything else.
+
 Ask the user one question at a time to build a shared understanding of what they want to achieve and how. Work through the following topics in order, adapting based on their answers:
 
 1. What is the goal? What does success look like concretely?
