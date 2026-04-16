@@ -16,4 +16,6 @@ nvm use node
 npm run dev       # start dev server
 npm run test      # run tests (Vitest)
 npm run build     # typecheck + production build
+npm run lint      # run ESLint
+npm run format    # run Prettier
 ```
