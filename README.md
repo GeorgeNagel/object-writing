@@ -1,14 +1,5 @@
 # ai-object-writing
 
-## Setup
-
-### Node.js (via nvm)
-
-```bash
-brew install nvm
-nvm install node   # installs latest version
-nvm use node
-```
 
 ## Slash Commands
 
