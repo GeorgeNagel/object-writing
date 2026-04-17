@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Editor } from './Editor'
 import { Timer } from './Timer'
+import { HighlightedText } from './HighlightedText'
 import { analyzeText } from '../services/analysisService'
 import type { SensoryAnnotation } from '../services/analysisService'
 import { getRandomWord } from '../services/wordService'
@@ -43,7 +44,9 @@ export function Exercise({ apiKey }: ExerciseProps) {
       {phase === 'running' && <Timer onExpire={handleExpire} />}
       <Editor value={text} onChange={setText} disabled={phase !== 'running'} />
       {phase === 'analyzing' && <p>Analyzing...</p>}
-      {phase === 'done' && annotations !== null && <p>Analysis complete ({annotations.length} annotations)</p>}
+      {phase === 'done' && annotations !== null && (
+        <HighlightedText text={text} annotations={annotations} />
+      )}
     </div>
   )
 }
