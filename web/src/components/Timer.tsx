@@ -5,7 +5,7 @@ interface TimerProps {
   onExpire: () => void
 }
 
-export function Timer({ durationSeconds = 600, onExpire }: TimerProps) {
+export function Timer({ durationSeconds = 6, onExpire }: TimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(durationSeconds)
 
   useEffect(() => {

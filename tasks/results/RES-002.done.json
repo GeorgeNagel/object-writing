@@ -1,7 +1,7 @@
 {
   "id": "RES-002",
   "title": "Build score display component",
-  "status": "todo",
+  "status": "done",
   "story": "As a user, I want to see a score after my exercise so that I can track how broadly and deeply I engaged my senses.",
   "acceptance_criteria": [
     "A Score component accepts the analysis result and total word count",
@@ -11,6 +11,6 @@
     "Unit tests cover rendering with full results and partial results (some senses unused)"
   ],
   "dependencies": ["SA-001", "INFRA-002"],
-  "claimed_at": null,
-  "completed_at": null
+  "claimed_at": "2026-04-17T00:00:00Z",
+  "completed_at": "2026-04-17T00:00:00Z"
 }
