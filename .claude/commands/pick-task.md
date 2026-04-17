@@ -22,7 +22,7 @@ All arguments are optional:
 A task is eligible if:
 - The file exists as `{task-id}.json` (not `{task-id}.lock` — that means another agent has claimed it)
 - `status` is `"todo"`
-- Every task ID listed in `dependencies` has `status: "done"` in its own `.json` or `.lock` file
+- Every task ID listed in `dependencies` has `status: "done"` in its own `.json` or `.done.json` file
 
 ## Step 3: Select task (when not specified)
 
@@ -36,19 +36,20 @@ Atomically claim the task by renaming the file from `{task-id}.json` to `{task-i
 
 If the rename fails because `{task-id}.json` no longer exists, another agent has already claimed it. In that case, return to Step 2 and select the next eligible task.
 
-Then update the following fields inside the `.lock` file:
+## Step 5: Ask clarifying questions
 
-```json
-"status": "in_progress",
-"claimed_at": "<ISO 8601 timestamp>"
-```
+Read the task's `story` and `acceptance_criteria` carefully. Identify any ambiguities — unclear requirements, missing context, or architectural choices not addressed by the task.
 
-## Step 5: Execute the work
+Ask each question **one at a time** and wait for the user's answer before asking the next. Do not proceed to Step 6 until all ambiguities are resolved.
 
-- Use the task's `story` and `acceptance_criteria` as the sole source of truth
+If there are no ambiguities, skip this step.
+
+## Step 6: Execute the work
+
+- Use the task's `story` and `acceptance_criteria` as the sole source of truth, updated with any answers from Step 5
 - Follow all repo conventions: TypeScript, tests required, `services/` layer for LLM calls
 
-## Step 6: Mark done
+## Step 7: Mark done
 
 Once the work is complete, update the `.lock` file with:
 
@@ -59,6 +60,6 @@ Once the work is complete, update the `.lock` file with:
 
 Then rename the file from `{task-id}.lock` to `{task-id}.done.json`.
 
-## Step 7: No eligible tasks
+## Step 8: No eligible tasks
 
 If no eligible task is found, report each task and why it is ineligible: claimed by another agent (`.lock`), already done (`.done.json`), or blocked by unmet dependencies.
