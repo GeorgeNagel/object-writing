@@ -1,0 +1,13 @@
+{
+  "id": "WORD-001",
+  "title": "Generate object word list via LLM batch script",
+  "status": "done",
+  "story": "As a developer, I want a curated list of concrete, sensory-rich object words bundled with the app so that users always get a suitable writing prompt.",
+  "acceptance_criteria": [
+    "web/src/data/words.json exists and contains at least 250 concrete, sensory-rich nouns suitable for object writing",
+    "Instructions for regenerating the list are documented in the project README"
+  ],
+  "dependencies": ["INFRA-001"],
+  "claimed_at": "2026-04-16T00:00:00Z",
+  "completed_at": "2026-04-16T00:00:00Z"
+}
