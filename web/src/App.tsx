@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ApiKeyForm from './components/ApiKeyForm'
+import { Exercise } from './components/Exercise'
 
 function App() {
   const [apiKey, setApiKey] = useState<string | null>(null)
@@ -8,7 +9,7 @@ function App() {
     return <ApiKeyForm onSubmit={setApiKey} />
   }
 
-  return <h1>Object Writing</h1>
+  return <Exercise apiKey={apiKey} />
 }
 
 export default App

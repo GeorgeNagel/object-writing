@@ -6,11 +6,11 @@ test('shows API key form on load', () => {
   expect(screen.getByLabelText('Anthropic API Key')).toBeInTheDocument()
 })
 
-test('shows main app after API key is submitted', () => {
+test('shows exercise start screen after API key is submitted', () => {
   render(<App />)
   fireEvent.change(screen.getByLabelText('Anthropic API Key'), {
     target: { value: 'sk-ant-test-key' },
   })
   fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
-  expect(screen.getByRole('heading', { name: 'Object Writing' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
 })

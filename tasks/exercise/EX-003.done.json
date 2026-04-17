@@ -1,7 +1,7 @@
 {
   "id": "EX-003",
   "title": "Wire exercise flow together",
-  "status": "todo",
+  "status": "done",
   "story": "As a user, I want to start an exercise, write for 10 minutes, and have my writing automatically submitted for analysis when the timer expires — all in one seamless flow.",
   "acceptance_criteria": [
     "A start screen shows a Start button but does NOT reveal the object word",
@@ -12,6 +12,6 @@
     "Unit tests cover the start action and timer expiry transition"
   ],
   "dependencies": ["EX-001", "EX-002", "WORD-002", "KEY-001"],
-  "claimed_at": null,
-  "completed_at": null
+  "claimed_at": "2026-04-17T00:00:00Z",
+  "completed_at": "2026-04-17T00:00:00Z"
 }
