@@ -49,7 +49,16 @@ export async function analyzeText(text: string, apiKey: string): Promise<Sensory
 }
 
 export function parseAnnotations(raw: string): SensoryAnnotation[] {
-  const parsed: unknown = JSON.parse('[' + raw)
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(raw)
+  } catch {
+    try {
+      parsed = JSON.parse('[' + raw)
+    } catch {
+      return []
+    }
+  }
   if (!Array.isArray(parsed)) return []
 
   return parsed.filter(isValidAnnotation)
