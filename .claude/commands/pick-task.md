@@ -49,17 +49,29 @@ If there are no ambiguities, skip this step.
 - Use the task's `story` and `acceptance_criteria` as the sole source of truth, updated with any answers from Step 5
 - Follow all repo conventions: TypeScript, tests required, `services/` layer for LLM calls
 
-## Step 7: Mark done
+## Step 7: Retrospective
 
-Once the work is complete, update the `.lock` file with:
+Before marking done, populate the retro fields in the `.lock` file.
+
+**Agent retro** (`agent_retro`): Reflect honestly on the task. Only write something if you feel strongly that it would be useful — do not fill this field just because it exists. If you write anything, focus only on problems: things that were confusing, took longer than expected, caused mistakes, or required backtracking. Do not include suggestions or recommendations — only observations of what caused friction.
+
+If nothing stands out, set the field to `null`.
+
+**User retro** (`user_retro`): Ask the user: "Anything to add to the retro for this task?" Wait for their response. If they decline or have nothing to add, set the field to `null`.
+
+## Step 8: Mark done
+
+Once both retro fields are populated, update the `.lock` file with:
 
 ```json
+"agent_retro": "<string or null>",
+"user_retro": "<string or null>",
 "status": "done",
 "completed_at": "<ISO 8601 timestamp>"
 ```
 
 Then rename the file from `{task-id}.lock` to `{task-id}.done.json`.
 
-## Step 8: No eligible tasks
+## Step 9: No eligible tasks
 
 If no eligible task is found, report each task and why it is ineligible: claimed by another agent (`.lock`), already done (`.done.json`), or blocked by unmet dependencies.
