@@ -2,6 +2,7 @@
   "permissions": {
     "allow": [
       "Bash(mv tasks/)",
+      "Bash(mv /Users/george/code/ai-object-writing/tasks/)",
       "Edit(tasks/*/*)"
     ]
   },
