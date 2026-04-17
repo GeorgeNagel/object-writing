@@ -1,7 +1,7 @@
 {
   "id": "KEY-001",
   "title": "Build API key input component",
-  "status": "todo",
+  "status": "done",
   "story": "As a user, I want to enter my Anthropic API key when I open the app so that my key is never stored in the codebase and I control when it is used.",
   "acceptance_criteria": [
     "A form is shown on app load prompting the user to enter their Anthropic API key",
@@ -12,6 +12,6 @@
     "Unit tests cover empty submission validation and successful submission"
   ],
   "dependencies": ["INFRA-001", "INFRA-002"],
-  "claimed_at": null,
-  "completed_at": null
+  "claimed_at": "2026-04-17T00:00:00Z",
+  "completed_at": "2026-04-17T00:00:00Z"
 }
