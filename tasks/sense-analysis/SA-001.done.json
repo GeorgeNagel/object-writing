@@ -1,7 +1,7 @@
 {
   "id": "SA-001",
   "title": "Build LLM sense scanning service",
-  "status": "todo",
+  "status": "done",
   "story": "As a user, I want my writing analyzed for sensory language so that I can see which senses I engaged during the exercise.",
   "acceptance_criteria": [
     "A service at src/services/analysisService.ts exports an analyzeText(text: string, apiKey: string) function",
@@ -12,6 +12,6 @@
     "Unit tests cover the response parsing logic with mocked API responses"
   ],
   "dependencies": ["INFRA-001", "INFRA-002"],
-  "claimed_at": null,
-  "completed_at": null
+  "claimed_at": "2026-04-17T00:00:00Z",
+  "completed_at": "2026-04-17T00:00:00Z"
 }
