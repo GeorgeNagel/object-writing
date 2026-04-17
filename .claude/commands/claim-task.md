@@ -29,6 +29,6 @@ A task is eligible if:
 
 ## Step 4: Claim the task
 
-Atomically claim the task by renaming the file from `{task-id}.json` to `{task-id}.lock` before doing any other work.
+Atomically claim the task by renaming the file from `{task-id}.json` to `{task-id}.lock`. Do not do any other work.
 
 If the rename fails because `{task-id}.json` no longer exists, another agent has already claimed it. In that case, return to Step 2 and select the next eligible task.
