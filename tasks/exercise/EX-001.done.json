@@ -1,7 +1,7 @@
 {
   "id": "EX-001",
   "title": "Build countdown timer component",
-  "status": "todo",
+  "status": "done",
   "story": "As a user, I want to see a countdown timer during my exercise so that I know how much time I have left.",
   "acceptance_criteria": [
     "A Timer component counts down from 10 minutes (600 seconds)",
@@ -11,6 +11,6 @@
     "Unit tests cover initial render, countdown progression, and expiry callback"
   ],
   "dependencies": ["INFRA-001", "INFRA-002"],
-  "claimed_at": null,
-  "completed_at": null
+  "claimed_at": "2026-04-17T00:00:00Z",
+  "completed_at": "2026-04-17T00:00:00Z"
 }
