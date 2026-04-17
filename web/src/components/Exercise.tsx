@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Editor } from './Editor'
 import { Timer } from './Timer'
-import { HighlightedText } from './HighlightedText'
+import { Results } from './Results'
 import { analyzeText } from '../services/analysisService'
 import type { SensoryAnnotation } from '../services/analysisService'
 import { getRandomWord } from '../services/wordService'
@@ -30,11 +30,30 @@ export function Exercise({ apiKey }: ExerciseProps) {
     setPhase('done')
   }
 
+  function handleReset() {
+    setPhase('idle')
+    setWord('')
+    setText('')
+    setAnnotations(null)
+  }
+
   if (phase === 'idle') {
     return (
       <div>
         <button onClick={handleStart}>Start</button>
       </div>
+    )
+  }
+
+  if (phase === 'done' && annotations !== null) {
+    const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length
+    return (
+      <Results
+        text={text}
+        annotations={annotations}
+        wordCount={wordCount}
+        onStartNew={handleReset}
+      />
     )
   }
 
@@ -44,9 +63,6 @@ export function Exercise({ apiKey }: ExerciseProps) {
       {phase === 'running' && <Timer onExpire={handleExpire} />}
       <Editor value={text} onChange={setText} disabled={phase !== 'running'} />
       {phase === 'analyzing' && <p>Analyzing...</p>}
-      {phase === 'done' && annotations !== null && (
-        <HighlightedText text={text} annotations={annotations} />
-      )}
     </div>
   )
 }
