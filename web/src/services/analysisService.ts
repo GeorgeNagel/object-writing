@@ -33,6 +33,10 @@ export async function analyzeText(text: string, apiKey: string): Promise<Sensory
         role: 'user',
         content: `${ANALYSIS_PROMPT}\n\nText to analyze:\n${text}`,
       },
+      {
+        role: 'assistant',
+        content: '[',
+      },
     ],
   })
 
@@ -45,7 +49,7 @@ export async function analyzeText(text: string, apiKey: string): Promise<Sensory
 }
 
 export function parseAnnotations(raw: string): SensoryAnnotation[] {
-  const parsed: unknown = JSON.parse(raw)
+  const parsed: unknown = JSON.parse('[' + raw)
   if (!Array.isArray(parsed)) return []
 
   return parsed.filter(isValidAnnotation)
