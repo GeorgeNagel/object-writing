@@ -1,0 +1,15 @@
+{
+  "id": "EX-005",
+  "title": "Duration selection before exercise",
+  "status": "todo",
+  "story": "As a user, I want to select a duration before starting an exercise so that I can control how long my writing session lasts.",
+  "acceptance_criteria": [
+    "A start screen is shown before the exercise begins, displaying duration options: 1s, 10s, 30s, 10m",
+    "The 10m option is selected by default when the start screen loads",
+    "The user can select a different duration before starting",
+    "The exercise runs for exactly the selected duration",
+    "On the results page, clicking 'Start new session' (or equivalent) returns the user to the duration selection start screen",
+    "Selected duration does not persist across page refreshes"
+  ],
+  "dependencies": []
+}
