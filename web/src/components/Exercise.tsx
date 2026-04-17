@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Editor } from './Editor'
 import { Timer } from './Timer'
-import { analyzeText, SensoryAnnotation } from '../services/analysisService'
+import { analyzeText } from '../services/analysisService'
+import type { SensoryAnnotation } from '../services/analysisService'
 import { getRandomWord } from '../services/wordService'
 
 type Phase = 'idle' | 'running' | 'analyzing' | 'done'
