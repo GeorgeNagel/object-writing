@@ -1,0 +1,289 @@
+[
+  {
+    "id": "INFRA-001",
+    "title": "Initialize React + Vite + TypeScript project",
+    "status": "done",
+    "story": "As a developer, I want a working React + Vite + TypeScript scaffold so that I have a foundation to build features on.",
+    "acceptance_criteria": [
+      "Project bootstrapped with Vite using the React + TypeScript template",
+      "`npm run dev` starts the dev server without errors",
+      "Default boilerplate cleaned up — blank slate ready for feature development",
+      "services/ directory created at src/services/"
+    ],
+    "dependencies": [],
+    "claimed_at": "2026-04-16T00:00:00Z",
+    "completed_at": "2026-04-16T00:00:00Z"
+  },
+  {
+    "id": "INFRA-002",
+    "title": "Configure Vitest + React Testing Library",
+    "status": "done",
+    "story": "As a developer, I want a working test setup so that all features can be tested as they are built.",
+    "acceptance_criteria": [
+      "Vitest installed and configured",
+      "React Testing Library installed",
+      "`npm run test` runs without errors",
+      "A smoke test exists that renders the root App component and asserts it renders without crashing",
+      "The smoke test asserts the page renders a 'Object Writing' h1 tag"
+    ],
+    "dependencies": ["INFRA-001"],
+    "claimed_at": "2026-04-16T14:11:00Z",
+    "completed_at": "2026-04-16T14:12:00Z"
+  },
+  {
+    "id": "INFRA-003",
+    "title": "Configure ESLint and Prettier",
+    "status": "done",
+    "story": "As a developer, I want consistent linting and formatting enforced so that code style is uniform across the project.",
+    "acceptance_criteria": [
+      "ESLint configured with TypeScript and React rules",
+      "Prettier configured and integrated with ESLint (no conflicting rules)",
+      "`npm run lint` runs ESLint across the project without errors",
+      "`npm run format` runs Prettier across the project",
+      "Editor config (`.editorconfig`) present and consistent with Prettier settings"
+    ],
+    "dependencies": ["INFRA-001"],
+    "claimed_at": "2026-04-16T00:00:00Z",
+    "completed_at": "2026-04-16T00:00:00Z"
+  },
+  {
+    "id": "WORD-001",
+    "title": "Generate object word list via LLM batch script",
+    "status": "done",
+    "story": "As a developer, I want a curated list of concrete, sensory-rich object words bundled with the app so that users always get a suitable writing prompt.",
+    "acceptance_criteria": [
+      "web/src/data/words.json exists and contains at least 250 concrete, sensory-rich nouns suitable for object writing",
+      "Instructions for regenerating the list are documented in the project README"
+    ],
+    "dependencies": ["INFRA-001"],
+    "claimed_at": "2026-04-16T00:00:00Z",
+    "completed_at": "2026-04-16T00:00:00Z"
+  },
+  {
+    "id": "WORD-002",
+    "title": "Build word selection service",
+    "status": "done",
+    "story": "As a user, I want a random object word selected for me each time I start an exercise so that I have a fresh prompt without choosing one myself.",
+    "acceptance_criteria": [
+      "A service at src/services/wordService.ts exports a getRandomWord() function",
+      "getRandomWord() returns a random word from src/data/words.json",
+      "Unit tests cover random selection"
+    ],
+    "dependencies": ["WORD-001"],
+    "claimed_at": "2026-04-17T00:00:00Z",
+    "completed_at": "2026-04-17T00:00:00Z"
+  },
+  {
+    "id": "EX-001",
+    "title": "Build countdown timer component",
+    "status": "done",
+    "story": "As a user, I want to see a countdown timer during my exercise so that I know how much time I have left.",
+    "acceptance_criteria": [
+      "A Timer component counts down from 10 minutes (600 seconds)",
+      "Time is displayed in MM:SS format",
+      "Timer starts when the exercise begins and cannot be paused",
+      "When the timer reaches zero, an onExpire callback is fired",
+      "Unit tests cover initial render, countdown progression, and expiry callback"
+    ],
+    "dependencies": ["INFRA-001", "INFRA-002"],
+    "claimed_at": "2026-04-17T00:00:00Z",
+    "completed_at": "2026-04-17T00:00:00Z"
+  },
+  {
+    "id": "EX-002",
+    "title": "Build writing editor component",
+    "status": "done",
+    "story": "As a user, I want a distraction-free text area to write in during my exercise so that I can focus on the prompt.",
+    "acceptance_criteria": [
+      "A Editor component renders a textarea for free-text input",
+      "The editor is focused automatically when the exercise starts",
+      "The editor accepts a disabled prop — when true, input is locked (used when timer expires)",
+      "The current text value is lifted to parent state via an onChange callback",
+      "Unit tests cover rendering, input changes, and disabled state"
+    ],
+    "dependencies": ["INFRA-001", "INFRA-002"],
+    "claimed_at": "2026-04-17T00:00:00Z",
+    "completed_at": "2026-04-17T00:00:00Z"
+  },
+  {
+    "id": "SA-001",
+    "title": "Build LLM sense scanning service",
+    "status": "done",
+    "story": "As a user, I want my writing analyzed for sensory language so that I can see which senses I engaged during the exercise.",
+    "acceptance_criteria": [
+      "A service at src/services/analysisService.ts exports an analyzeText(text: string, apiKey: string) function",
+      "The function calls the Anthropic API with a structured prompt to identify sensory phrases",
+      "The response maps each identified phrase to one of: sight, sound, smell, taste, touch, organic, kinesthetic",
+      "The function returns a typed result: an array of { phrase: string, sense: string, startIndex: number, endIndex: number }",
+      "Prompt is defined as a named constant, not an inline string",
+      "Unit tests cover the response parsing logic with mocked API responses"
+    ],
+    "dependencies": ["INFRA-001", "INFRA-002"],
+    "claimed_at": "2026-04-17T00:00:00Z",
+    "completed_at": "2026-04-17T00:00:00Z"
+  },
+  {
+    "id": "KEY-001",
+    "title": "Build API key input component",
+    "status": "done",
+    "story": "As a user, I want to enter my Anthropic API key when I open the app so that my key is never stored in the codebase and I control when it is used.",
+    "acceptance_criteria": [
+      "A form is shown on app load prompting the user to enter their Anthropic API key",
+      "The key is held in React state for the session only — never written to localStorage or any persistent store",
+      "The input is of type password so the key is not visible by default",
+      "Submitting the form with an empty field shows a validation error",
+      "On valid submission, the key is passed to the rest of the app and the form is dismissed",
+      "Unit tests cover empty submission validation and successful submission"
+    ],
+    "dependencies": ["INFRA-001", "INFRA-002"],
+    "claimed_at": "2026-04-17T00:00:00Z",
+    "completed_at": "2026-04-17T00:00:00Z"
+  },
+  {
+    "id": "EX-003",
+    "title": "Wire exercise flow together",
+    "status": "done",
+    "story": "As a user, I want to start an exercise, write for 10 minutes, and have my writing automatically submitted for analysis when the timer expires — all in one seamless flow.",
+    "acceptance_criteria": [
+      "A start screen shows a Start button but does NOT reveal the object word",
+      "Clicking Start reveals the object word, shows the editor, and begins the countdown timer",
+      "The object word is displayed prominently during the exercise",
+      "When the timer expires, the editor is locked and analysis is triggered",
+      "A loading state is shown while analysis is in progress",
+      "Unit tests cover the start action and timer expiry transition"
+    ],
+    "dependencies": ["EX-001", "EX-002", "WORD-002", "KEY-001"],
+    "claimed_at": "2026-04-17T00:00:00Z",
+    "completed_at": "2026-04-17T00:00:00Z"
+  },
+  {
+    "id": "RES-001",
+    "title": "Build highlighted text component",
+    "status": "done",
+    "story": "As a user, I want to see my writing with sensory phrases highlighted in different colors so that I can immediately see where I engaged each sense.",
+    "acceptance_criteria": [
+      "A HighlightedText component accepts the original text and an array of { phrase, sense, startIndex, endIndex } annotations",
+      "Each sense is rendered with a distinct highlight color: sight, sound, smell, taste, touch, organic, kinesthetic",
+      "Overlapping annotations are handled gracefully (no crashes)",
+      "A color legend is displayed showing which color maps to which sense",
+      "Unit tests cover rendering with annotations and the no-annotation case"
+    ],
+    "dependencies": ["SA-001", "INFRA-002"],
+    "claimed_at": "2026-04-17T00:00:00Z",
+    "completed_at": "2026-04-17T00:05:00Z"
+  },
+  {
+    "id": "RES-002",
+    "title": "Build score display component",
+    "status": "done",
+    "story": "As a user, I want to see a score after my exercise so that I can track how broadly and deeply I engaged my senses.",
+    "acceptance_criteria": [
+      "A Score component accepts the analysis result and total word count",
+      "Displays total word count",
+      "Displays number of distinct senses used",
+      "Displays frequency (hit count) for each sense used",
+      "Unit tests cover rendering with full results and partial results (some senses unused)"
+    ],
+    "dependencies": ["SA-001", "INFRA-002"],
+    "claimed_at": "2026-04-17T00:00:00Z",
+    "completed_at": "2026-04-17T00:00:00Z"
+  },
+  {
+    "id": "RES-003",
+    "title": "Wire results view together",
+    "status": "done",
+    "story": "As a user, I want to see my highlighted writing and score on a single results screen after the exercise so that I get a complete picture of my performance.",
+    "acceptance_criteria": [
+      "A Results view composes HighlightedText and Score components",
+      "Shown automatically when analysis completes after the timer expires",
+      "A 'Start New Exercise' button is present and resets the app to the start screen",
+      "Unit tests cover rendering with analysis results and the reset action"
+    ],
+    "dependencies": ["RES-001", "RES-002", "EX-003"],
+    "claimed_at": "2026-04-17T00:00:00Z",
+    "completed_at": "2026-04-17T00:00:00Z"
+  },
+  {
+    "id": "EX-004",
+    "title": "Fix timer not progressing while typing",
+    "status": "done",
+    "story": "As a user writing in the exercise editor, I want the countdown timer to tick steadily so that I know how much time I have left regardless of how fast I type.",
+    "acceptance_criteria": [
+      "Timer counts down at a steady 1-second interval while the user types in the editor",
+      "Typing quickly (multiple keystrokes per second) does not reset or pause the timer",
+      "Timer still fires onExpire when it reaches zero",
+      "Existing Timer unit tests continue to pass"
+    ],
+    "dependencies": ["EX-001", "EX-002"],
+    "agent_retro": "Skipped TDD (no failing test before the fix) and closed the task without waiting for the user retro response.",
+    "user_retro": "1) agent didn't ask me for anything to retro. 2) there should be new tests that initially fail to show the bug exists, followed by the test passing after the fix has been implemented. 3) i'm tired of having to grant permission every time agent want to update a task as claimed/in progress/done",
+    "completed_at": "2026-04-17T16:27:00Z"
+  },
+  {
+    "id": "EX-005",
+    "title": "Duration selection before exercise",
+    "status": "done",
+    "story": "As a user, I want to select a duration before starting an exercise so that I can control how long my writing session lasts.",
+    "acceptance_criteria": [
+      "A start screen is shown before the exercise begins, displaying duration options: 1s, 10s, 30s, 10m",
+      "The 10m option is selected by default when the start screen loads",
+      "The user can select a different duration before starting",
+      "The exercise runs for exactly the selected duration",
+      "On the results page, clicking 'Start new session' (or equivalent) returns the user to the duration selection start screen",
+      "Selected duration does not persist across page refreshes"
+    ],
+    "dependencies": [],
+    "agent_retro": "The existing button label 'Start New Exercise' didn't match the AC's 'Start new session' wording. I wrote the test using the AC's wording first, causing a spurious failure. Should check existing UI text against AC wording before writing tests.",
+    "user_retro": "At the end of the do-task command, the agent renamed the lockfile. This meant that the close-task command didn't execute as expected. Also, it's renaming to `.done.json` which is not needed at this point."
+  },
+  {
+    "id": "TEST-001",
+    "title": "Add Storybook with happy-path stories for all components",
+    "status": "done",
+    "story": "As a developer, I want Storybook set up with a story for each component so that I can verify components look and work as expected without going through the full app flow",
+    "acceptance_criteria": [
+      "Storybook is installed and configured for the project",
+      "README documents the command for running Storybook",
+      "One happy-path story exists for each component: Timer, Editor, HighlightedText, Results, Score, ApiKeyForm, Exercise",
+      "Each story renders its component without errors"
+    ],
+    "out_of_scope": [
+      "Error states or multiple stories per component",
+      "Visual regression testing",
+      "Chromatic integration",
+      "Dark mode stories"
+    ],
+    "dependencies": [],
+    "agent_retro": null,
+    "user_retro": "Acceptance criteria should have included automated tests that verify each story renders without error.",
+    "completed_at": "2026-04-17"
+  },
+  {
+    "id": "TEST-002",
+    "title": "CI validation script",
+    "status": "done",
+    "story": "As a developer, I want a single script I can run from the web folder that verifies all unit tests pass, all Storybook stories render without error, and linting passes, so that I don't have to remember to run multiple commands to validate project state.",
+    "acceptance_criteria": [
+      "A script exists that can be run from within the web/ folder",
+      "The script runs `vitest run` (covering both unit tests and Storybook story rendering)",
+      "The script runs `eslint .`",
+      "The script exits with a non-zero code if any check fails",
+      "Checks run sequentially"
+    ],
+    "dependencies": [],
+    "agent_retro": "Pre-existing lint errors (storybook-static not ignored, wrong renderer imports, Timer ref-during-render, vite triple-slash reference) meant the script couldn't pass until those were fixed — scope expanded beyond adding the script itself.",
+    "user_retro": "I'm getting tired of the fact that my tasks are all over the place. I also don't like that the .done.json duplicates the story status. It might be best if we had separate folders for todo in progress and done."
+  },
+  {
+    "id": "TEST-003",
+    "title": "HighlightedText story covers all seven senses",
+    "status": "done",
+    "story": "As a developer, I want the HighlightedText Storybook story to include an example with all seven senses highlighted so that I can validate the color choices visually.",
+    "acceptance_criteria": [
+      "The HighlightedText Storybook story contains an example where each of the seven senses (sight, sound, smell, taste, touch, organic, kinesthetic) has at least one highlighted span."
+    ],
+    "dependencies": [],
+    "agent_retro": "Annotation indices were wrong on the first attempt because I guessed them rather than computing them. Node script to verify/compute them caught all the errors immediately.",
+    "user_retro": "While writing the story, I specified that it should update the existing story, but that didn't cross over to the story that was written down."
+  }
+]
