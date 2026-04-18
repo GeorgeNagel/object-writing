@@ -10,6 +10,7 @@
     "format": "prettier --write .",
     "preview": "vite preview",
     "test": "vitest run",
+    "validate": "vitest run && eslint .",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

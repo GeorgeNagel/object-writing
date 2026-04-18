@@ -8,7 +8,9 @@ interface TimerProps {
 export function Timer({ durationSeconds = 600, onExpire }: TimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(durationSeconds)
   const onExpireRef = useRef(onExpire)
-  onExpireRef.current = onExpire
+  useEffect(() => {
+    onExpireRef.current = onExpire
+  })
 
   useEffect(() => {
     const id = setInterval(() => {

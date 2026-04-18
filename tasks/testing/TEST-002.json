@@ -1,0 +1,16 @@
+{
+  "id": "TEST-002",
+  "title": "CI validation script",
+  "status": "done",
+  "story": "As a developer, I want a single script I can run from the web folder that verifies all unit tests pass, all Storybook stories render without error, and linting passes, so that I don't have to remember to run multiple commands to validate project state.",
+  "acceptance_criteria": [
+    "A script exists that can be run from within the web/ folder",
+    "The script runs `vitest run` (covering both unit tests and Storybook story rendering)",
+    "The script runs `eslint .`",
+    "The script exits with a non-zero code if any check fails",
+    "Checks run sequentially"
+  ],
+  "dependencies": [],
+  "agent_retro": "Pre-existing lint errors (storybook-static not ignored, wrong renderer imports, Timer ref-during-render, vite triple-slash reference) meant the script couldn't pass until those were fixed — scope expanded beyond adding the script itself.",
+  "user_retro": null
+}
