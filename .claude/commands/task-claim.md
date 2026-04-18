@@ -1,7 +1,7 @@
 ## Arguments
 
 ```
-/claim-task [topic-area] [task-id]
+/task-claim [topic-area] [task-id]
 ```
 
 All arguments are optional:

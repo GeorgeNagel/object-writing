@@ -1,7 +1,7 @@
 ## Arguments
 
 ```
-/close-task
+/task-close
 ```
 
 ## Step 1: Mark done

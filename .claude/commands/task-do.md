@@ -1,9 +1,9 @@
-Find, claim, and execute one task from the on-disk task system, then mark it done.
+Execute the currently claimed task
 
 ## Arguments
 
 ```
-/do-task
+/task-do
 ```
 
 ## Step 1: Ask clarifying questions
