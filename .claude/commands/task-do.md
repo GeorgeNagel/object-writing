@@ -37,4 +37,4 @@ Update the retro fields in the task markdown file.
 
 If nothing stands out, set the field to `null`.
 
-**User retro** (`user_retro`): Ask the user: "Anything to add to the retro for this task?" Wait for their response. If they decline or have nothing to add, set the field to `null`.
+**User retro** (`user_retro`): Ask the user: "Anything to add to the retro for this task?" Wait for their response. If they decline or have nothing to add, set the field to `null`. Add their response verbatim here and don't implement their suggested changes from this question.

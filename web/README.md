@@ -18,4 +18,5 @@ npm run test      # run tests (Vitest)
 npm run build     # typecheck + production build
 npm run lint      # run ESLint
 npm run format    # run Prettier
+npm run storybook # start Storybook component explorer
 ```

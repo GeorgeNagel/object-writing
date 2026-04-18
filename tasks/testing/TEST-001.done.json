@@ -1,7 +1,7 @@
 {
   "id": "TEST-001",
   "title": "Add Storybook with happy-path stories for all components",
-  "status": "todo",
+  "status": "done",
   "story": "As a developer, I want Storybook set up with a story for each component so that I can verify components look and work as expected without going through the full app flow",
   "acceptance_criteria": [
     "Storybook is installed and configured for the project",
@@ -15,5 +15,8 @@
     "Chromatic integration",
     "Dark mode stories"
   ],
-  "dependencies": []
+  "dependencies": [],
+  "agent_retro": null,
+  "user_retro": "Acceptance criteria should have included automated tests that verify each story renders without error.",
+  "completed_at": "2026-04-17"
 }
