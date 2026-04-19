@@ -15,6 +15,6 @@ Avoid duplicate knowledge across markdown files. Each fact should have one autho
 - LLM calls live in `src/services/` — never inline in components
 - API key is entered at runtime, never stored or committed
 
-## Task management
+## Ticket management
 
-Use `/pick-task` to claim and execute a task.
+Use `/pick-ticket` to claim and execute a ticket.

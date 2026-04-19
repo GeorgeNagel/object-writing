@@ -30,4 +30,4 @@ Write the 250 concrete nouns to `web/src/data/words.json`
 | Command | Description |
 |---------|-------------|
 | `/grill [topic]` | Interactive requirements session — clarifies goals, constraints, and approach before implementation |
-| `/pick-task [topic-area] [task-id]` | Find, claim, and execute an available task from `tasks/`, then mark it done |
+| `/pick-ticket [topic-area] [ticket-id]` | Find, claim, and execute an available ticket from `tickets/`, then mark it done |

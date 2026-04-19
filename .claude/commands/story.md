@@ -1,4 +1,4 @@
-Create a new task by grooming a user story through a structured Q&A process.
+Create a new ticket by grooming a user story through a structured Q&A process.
 
 ## Arguments
 
@@ -14,7 +14,7 @@ If a description argument was provided, use it as the starting point. If not, as
 
 ## Step 2: Determine next ID
 
-Read `tasks/backlog.json`, `tasks/current-sprint.json`, and all files in `tasks/archive/`. Find the highest existing numeric task ID across all files and increment by 1. IDs are zero-padded to three digits (e.g. `001`, `002`).
+Read `tickets/backlog.json`, `tickets/current-sprint.json`, and all files in `tickets/archive/`. Find the highest existing numeric ticket ID across all files and increment by 1. IDs are zero-padded to three digits (e.g. `001`, `002`).
 
 ## Step 3: Discovery Q&A loop
 
@@ -36,7 +36,7 @@ Repeat the loop — revisiting earlier answers if needed — until the story is 
 
 ## Step 4: Preview
 
-Synthesize the answers into a task object draft:
+Synthesize the answers into a ticket object draft:
 
 ```json
 {
@@ -56,4 +56,4 @@ Display the full JSON and ask the user to confirm before writing. If the user re
 
 ## Step 5: Write
 
-On confirmation, append the new task object to the array in `tasks/backlog.json` and write the file.
+On confirmation, append the new ticket object to the array in `tickets/backlog.json` and write the file.
