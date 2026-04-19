@@ -102,7 +102,7 @@ describe('Exercise', () => {
     }
 
     expect(screen.getByRole('textbox')).toBeDisabled()
-    expect(screen.getByText('Analyzing...')).toBeInTheDocument()
+    expect(screen.getByText('Analyzing\u2026')).toBeInTheDocument()
   })
 
   it('clears loading state after analysis completes', async () => {
@@ -118,8 +118,8 @@ describe('Exercise', () => {
       await Promise.resolve()
     })
 
-    expect(screen.queryByText('Analyzing...')).not.toBeInTheDocument()
-    expect(document.querySelector('p[style]')).toBeTruthy()
+    expect(screen.queryByText('Analyzing\u2026')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Start New Exercise' })).toBeInTheDocument()
   })
 
   it('returns to duration selection screen after clicking Start new session', async () => {

@@ -1,4 +1,5 @@
 import type { SensoryAnnotation, Sense } from '../services/analysisService'
+import styles from './HighlightedText.module.css'
 
 const SENSE_COLORS: Record<Sense, string> = {
   sight: '#FFF176',
@@ -54,12 +55,13 @@ export function HighlightedText({ text, annotations }: HighlightedTextProps) {
 
   return (
     <div>
-      <p style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+      <p className={styles.text}>
         {segments.map((seg, i) =>
           seg.sense ? (
             <mark
               key={i}
-              style={{ backgroundColor: SENSE_COLORS[seg.sense], padding: '0 2px', borderRadius: 2 }}
+              className={styles.highlight}
+              style={{ backgroundColor: SENSE_COLORS[seg.sense] }}
               data-sense={seg.sense}
             >
               {seg.text}
@@ -70,17 +72,12 @@ export function HighlightedText({ text, annotations }: HighlightedTextProps) {
         )}
       </p>
       {usedSenses.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }} aria-label="color legend">
+        <div className={styles.legend} aria-label="color legend">
           {usedSenses.map((sense) => (
-            <span key={sense} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13 }}>
+            <span key={sense} className={styles.legendItem}>
               <span
-                style={{
-                  display: 'inline-block',
-                  width: 14,
-                  height: 14,
-                  backgroundColor: SENSE_COLORS[sense],
-                  borderRadius: 2,
-                }}
+                className={styles.legendSwatch}
+                style={{ backgroundColor: SENSE_COLORS[sense] }}
               />
               {sense}
             </span>

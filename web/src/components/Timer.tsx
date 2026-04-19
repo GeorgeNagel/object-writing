@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import styles from './Timer.module.css'
 
 interface TimerProps {
   durationSeconds?: number
@@ -29,5 +30,5 @@ export function Timer({ durationSeconds = 600, onExpire }: TimerProps) {
   const mm = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
   const ss = String(secondsLeft % 60).padStart(2, '0')
 
-  return <div>{mm}:{ss}</div>
+  return <div className={styles.timer}>{mm}:{ss}</div>
 }

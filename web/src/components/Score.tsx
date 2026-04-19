@@ -1,4 +1,5 @@
 import type { SensoryAnnotation, Sense } from '../services/analysisService'
+import styles from './Score.module.css'
 
 interface ScoreProps {
   annotations: SensoryAnnotation[]
@@ -14,15 +15,13 @@ export function Score({ annotations, wordCount }: ScoreProps) {
   const usedSenses = Object.keys(senseCounts) as Sense[]
 
   return (
-    <div>
-      <p>Words written: {wordCount}</p>
-      <p>Senses used: {usedSenses.length}</p>
+    <div className={styles.score}>
+      <p className={styles.stat}>Words written: {wordCount}</p>
+      <p className={styles.stat}>Senses used: {usedSenses.length}</p>
       {usedSenses.length > 0 && (
-        <ul>
+        <ul className={styles.senseList}>
           {usedSenses.map((sense) => (
-            <li key={sense}>
-              {sense}: {senseCounts[sense]}
-            </li>
+            <li key={sense} className={styles.senseItem}>{sense}: {senseCounts[sense]}</li>
           ))}
         </ul>
       )}

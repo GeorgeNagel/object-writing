@@ -1,6 +1,7 @@
 import { HighlightedText } from './HighlightedText'
 import { Score } from './Score'
 import type { SensoryAnnotation } from '../services/analysisService'
+import styles from './Results.module.css'
 
 interface ResultsProps {
   text: string
@@ -11,10 +12,10 @@ interface ResultsProps {
 
 export function Results({ text, annotations, wordCount, onStartNew }: ResultsProps) {
   return (
-    <div>
+    <div className={styles.results}>
       <Score annotations={annotations} wordCount={wordCount} />
       <HighlightedText text={text} annotations={annotations} />
-      <button onClick={onStartNew}>Start New Exercise</button>
+      <button className={styles.startNewButton} onClick={onStartNew}>Start New Exercise</button>
     </div>
   )
 }

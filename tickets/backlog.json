@@ -10,5 +10,18 @@
       "All existing tests continue to pass"
     ],
     "dependencies": []
+  },
+  {
+    "id": "024",
+    "title": "Replace hardcoded colors with named constants",
+    "status": "todo",
+    "story": "As a developer, I want all colors in the codebase to be defined as named constants so that the codebase is more readable and maintainable.",
+    "acceptance_criteria": [
+      "All hardcoded hex and RGB color values in production code are replaced with named constants",
+      "All inline style color values in production code are replaced with named constants",
+      "Named constants use a semantic naming scheme (e.g. TEXT_WARNING, BACKGROUND_PRIMARY)",
+      "No hardcoded hex or RGB color values remain in any non-test file"
+    ],
+    "dependencies": []
   }
 ]

@@ -5,6 +5,7 @@ import { Results } from './Results'
 import { analyzeText } from '../services/analysisService'
 import type { SensoryAnnotation } from '../services/analysisService'
 import { getRandomWord } from '../services/wordService'
+import styles from './Exercise.module.css'
 
 type Phase = 'idle' | 'running' | 'analyzing' | 'done'
 
@@ -22,12 +23,26 @@ const DURATION_OPTIONS: DurationOption[] = [
 
 const DEFAULT_DURATION = 600
 
-export function Exercise() {
-  const [apiKey, setApiKey] = useState('')
-  const [phase, setPhase] = useState<Phase>('idle')
-  const [word, setWord] = useState('')
-  const [text, setText] = useState('')
-  const [annotations, setAnnotations] = useState<SensoryAnnotation[] | null>(null)
+interface ExerciseProps {
+  initialPhase?: Phase
+  initialWord?: string
+  initialText?: string
+  initialAnnotations?: SensoryAnnotation[] | null
+  initialApiKey?: string
+}
+
+export function Exercise({
+  initialPhase = 'idle',
+  initialWord = '',
+  initialText = '',
+  initialAnnotations = null,
+  initialApiKey = '',
+}: ExerciseProps) {
+  const [apiKey, setApiKey] = useState(initialApiKey)
+  const [phase, setPhase] = useState<Phase>(initialPhase)
+  const [word, setWord] = useState(initialWord)
+  const [text, setText] = useState(initialText)
+  const [annotations, setAnnotations] = useState<SensoryAnnotation[] | null>(initialAnnotations)
   const [durationSeconds, setDurationSeconds] = useState(DEFAULT_DURATION)
 
   function handleStart() {
@@ -52,28 +67,44 @@ export function Exercise() {
 
   if (phase === 'idle') {
     return (
-      <div>
-        <input
-          type="password"
-          aria-label="Anthropic API Key"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-        />
-        <div>
-          {DURATION_OPTIONS.map(({ label, seconds }) => (
-            <label key={label}>
-              <input
-                type="radio"
-                name="duration"
-                value={seconds}
-                checked={durationSeconds === seconds}
-                onChange={() => setDurationSeconds(seconds)}
-              />
-              {label}
-            </label>
-          ))}
+      <div className={styles.container}>
+        <div className={styles.idleScreen}>
+          <div>
+            <label className={styles.fieldLabel} htmlFor="api-key">Anthropic API Key</label>
+            <input
+              id="api-key"
+              className={styles.apiKeyInput}
+              type="password"
+              aria-label="Anthropic API Key"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+            />
+          </div>
+          <div>
+            <span className={styles.fieldLabel}>Duration</span>
+            <div className={styles.durationOptions}>
+              {DURATION_OPTIONS.map(({ label, seconds }) => (
+                <label key={label} className={styles.durationOption}>
+                  <input
+                    type="radio"
+                    name="duration"
+                    value={seconds}
+                    checked={durationSeconds === seconds}
+                    onChange={() => setDurationSeconds(seconds)}
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          </div>
+          <button
+            className={styles.startButton}
+            onClick={handleStart}
+            disabled={apiKey.trim() === ''}
+          >
+            Start
+          </button>
         </div>
-        <button onClick={handleStart} disabled={apiKey.trim() === ''}>Start</button>
       </div>
     )
   }
@@ -81,21 +112,27 @@ export function Exercise() {
   if (phase === 'done' && annotations !== null) {
     const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length
     return (
-      <Results
-        text={text}
-        annotations={annotations}
-        wordCount={wordCount}
-        onStartNew={handleReset}
-      />
+      <div className={styles.container}>
+        <Results
+          text={text}
+          annotations={annotations}
+          wordCount={wordCount}
+          onStartNew={handleReset}
+        />
+      </div>
     )
   }
 
   return (
-    <div>
-      <h2>{word}</h2>
-      {phase === 'running' && <Timer durationSeconds={durationSeconds} onExpire={handleExpire} />}
-      <Editor value={text} onChange={setText} disabled={phase !== 'running'} />
-      {phase === 'analyzing' && <p>Analyzing...</p>}
+    <div className={styles.container}>
+      <div className={styles.writingScreen}>
+        <h2 className={styles.wordPrompt}>{word}</h2>
+        {phase === 'running' && (
+          <Timer durationSeconds={durationSeconds} onExpire={handleExpire} />
+        )}
+        <Editor value={text} onChange={setText} disabled={phase !== 'running'} />
+        {phase === 'analyzing' && <p className={styles.analyzingText}>Analyzing…</p>}
+      </div>
     </div>
   )
 }

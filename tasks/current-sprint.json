@@ -22,10 +22,7 @@
   {
     "id": "020",
     "title": "Auto-growing editor with no resize handle",
-    "status": "done",
-    "completed_at": "2026-04-18T21:00:00Z",
-    "agent_retro": null,
-    "user_retro": "I want the ability to close tickets and give them a 'closed' status to keep track of the fact that programming work was not done.",
+    "status": "todo",
     "story": "As a user, I want the editor to grow and shrink vertically as I type so that I can focus on my writing without a visible resize handle.",
     "acceptance_criteria": [
       "The resize handle is not visible on the editor",
@@ -41,10 +38,7 @@
   {
     "id": "021",
     "title": "Consistent premium styling across all screens",
-    "status": "done",
-    "completed_at": "2026-04-18T21:10:00Z",
-    "agent_retro": "The getByText/strong split was a non-obvious breakage — testing-library's getNodeText only includes direct text nodes, not child element text, so wrapping values in <strong> silently broke existing tests. This required understanding an underdocumented testing-library behavior.",
-    "user_retro": "the agent left testing instructions in the story file. test instructions should be given directly to me, not left in comment blocks. ew. also, the agent didn't give me an opportunity to test before closing the ticket.",
+    "status": "todo",
     "story": "As a user, I want the app to have a consistent, minimal look and feel inspired by iA Writer so that it feels like a premium writing tool rather than an unstyled form.",
     "acceptance_criteria": [
       "No browser-default button or form element styles are visible on any screen",
@@ -66,7 +60,7 @@
     "status": "done",
     "completed_at": "2026-04-18T20:24:00Z",
     "agent_retro": "After the plan changed mid-execution (user corrected the root cause analysis), I proceeded directly into implementation without re-confirming the updated plan with the user.",
-    "user_retro": "Agent went directly into executing before getting confirmation that the plan was acceptable. Also, marking tasks as in-progress has no value when only one agent is running at a time. Agent should not read the codebase while writing stories."
+    "user_retro": "Agent went directly into executing before getting confirmation that the plan was acceptable. Also, marking tasks as in-progress has no value when only one agent is running at a time. Agent should not read the codebase while writing stories. When writing stories, the agent too often wants to include or ask questions about implementation details",
     "story": "As a user, I want sensory highlights to cover only complete words so that partial-word highlights don't appear in the results.",
     "acceptance_criteria": [
       "Highlights always start at the first character of a word — leading punctuation or partial characters before the first word are excluded",

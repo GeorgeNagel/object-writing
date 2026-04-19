@@ -1,0 +1,26 @@
+.score {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.stat {
+  margin: 0;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.senseList {
+  list-style: none;
+  margin: 0.25rem 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+}
+
+.senseItem {
+  font-size: 0.85rem;
+  color: #888;
+  text-transform: capitalize;
+}

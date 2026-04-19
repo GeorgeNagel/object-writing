@@ -1,0 +1,96 @@
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+/* Idle screen */
+.idleScreen {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.apiKeyInput {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #d4d0c8;
+  padding: 0.4rem 0;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.apiKeyInput:focus {
+  border-bottom-color: #1a1a1a;
+}
+
+.durationOptions {
+  display: flex;
+  gap: 2rem;
+}
+
+.durationOption {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  color: #aaa;
+  accent-color: #1a1a1a;
+  transition: color 0.15s;
+}
+
+.durationOption:has(input:checked) {
+  color: #1a1a1a;
+}
+
+.startButton {
+  align-self: flex-start;
+  padding: 0.55rem 1.75rem;
+  border: 1px solid #1a1a1a;
+  color: #1a1a1a;
+  font-family: inherit;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  transition: background 0.15s, color 0.15s;
+}
+
+.startButton:hover:not(:disabled) {
+  background: #1a1a1a;
+  color: #fafaf8;
+}
+
+.startButton:disabled {
+  border-color: #ccc;
+  color: #ccc;
+  cursor: default;
+}
+
+/* Writing / analyzing screen */
+.writingScreen {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.wordPrompt {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.analyzingText {
+  color: #888;
+  font-style: italic;
+  margin: 0;
+}
