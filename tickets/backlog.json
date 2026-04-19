@@ -23,5 +23,19 @@
       "No hardcoded hex or RGB color values remain in any non-test file"
     ],
     "dependencies": []
+  },
+  {
+    "id": "025",
+    "title": "Storybook stories for Button, RadioGroup, and TextArea components",
+    "status": "todo",
+    "story": "As a developer, I want reusable Button, RadioGroup, and TextArea components with Storybook stories for all used states so that styling is centralized and visually reviewable.",
+    "acceptance_criteria": [
+      "A reusable Button component exists with default and disabled states",
+      "A reusable RadioGroup component exists supporting multiple options with one selectable, with default, selected, and disabled states",
+      "A reusable TextArea component exists with default, with-text, and disabled states",
+      "Each component state has a dedicated Storybook story",
+      "Stories are visual-only — no interaction tests"
+    ],
+    "dependencies": []
   }
 ]
