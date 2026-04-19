@@ -12,6 +12,12 @@ vi.mock('../services/analysisService', () => ({
 
 import { analyzeText } from '../services/analysisService'
 
+function fillApiKey(value = 'sk-ant-test-key') {
+  fireEvent.change(screen.getByLabelText('Anthropic API Key'), {
+    target: { value },
+  })
+}
+
 describe('Exercise', () => {
   beforeEach(() => {
     vi.useFakeTimers()
@@ -22,14 +28,38 @@ describe('Exercise', () => {
     vi.useRealTimers()
   })
 
+  it('Start button is disabled when API key field is empty', () => {
+    render(<Exercise />)
+    expect(screen.getByRole('button', { name: 'Start' })).toBeDisabled()
+  })
+
+  it('Start button is enabled when API key field has a value', () => {
+    render(<Exercise />)
+    fillApiKey()
+    expect(screen.getByRole('button', { name: 'Start' })).toBeEnabled()
+  })
+
+  it('passes the entered API key to analyzeText on start', async () => {
+    render(<Exercise />)
+    fillApiKey('sk-ant-my-key')
+    fireEvent.click(screen.getByRole('radio', { name: '1s' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+
+    act(() => { vi.advanceTimersByTime(1000) })
+
+    await act(async () => { await Promise.resolve() })
+
+    expect(vi.mocked(analyzeText)).toHaveBeenCalledWith(expect.any(String), 'sk-ant-my-key')
+  })
+
   it('shows Start button on idle screen without revealing object word', () => {
-    render(<Exercise apiKey="test-key" />)
+    render(<Exercise />)
     expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
     expect(screen.queryByText('campfire')).not.toBeInTheDocument()
   })
 
   it('shows duration options on idle screen with 10m selected by default', () => {
-    render(<Exercise apiKey="test-key" />)
+    render(<Exercise />)
     expect(screen.getByRole('radio', { name: '1s' })).toBeInTheDocument()
     expect(screen.getByRole('radio', { name: '10s' })).toBeInTheDocument()
     expect(screen.getByRole('radio', { name: '30s' })).toBeInTheDocument()
@@ -38,14 +68,15 @@ describe('Exercise', () => {
   })
 
   it('allows selecting a different duration', () => {
-    render(<Exercise apiKey="test-key" />)
+    render(<Exercise />)
     fireEvent.click(screen.getByRole('radio', { name: '30s' }))
     expect(screen.getByRole('radio', { name: '30s' })).toBeChecked()
     expect(screen.getByRole('radio', { name: '10m' })).not.toBeChecked()
   })
 
   it('reveals object word, editor, and timer after clicking Start', () => {
-    render(<Exercise apiKey="test-key" />)
+    render(<Exercise />)
+    fillApiKey()
     fireEvent.click(screen.getByRole('button', { name: 'Start' }))
     expect(screen.getByText('campfire')).toBeInTheDocument()
     expect(screen.getByRole('textbox')).toBeInTheDocument()
@@ -54,17 +85,18 @@ describe('Exercise', () => {
   })
 
   it('timer runs for the selected duration', () => {
-    render(<Exercise apiKey="test-key" />)
+    render(<Exercise />)
+    fillApiKey()
     fireEvent.click(screen.getByRole('radio', { name: '30s' }))
     fireEvent.click(screen.getByRole('button', { name: 'Start' }))
     expect(screen.getByText('00:30')).toBeInTheDocument()
   })
 
   it('locks editor and shows loading when timer expires', async () => {
-    render(<Exercise apiKey="test-key" />)
+    render(<Exercise />)
+    fillApiKey()
     fireEvent.click(screen.getByRole('button', { name: 'Start' }))
 
-    // Expire the timer (600 seconds)
     for (let i = 0; i < 600; i++) {
       act(() => { vi.advanceTimersByTime(1000) })
     }
@@ -74,7 +106,8 @@ describe('Exercise', () => {
   })
 
   it('clears loading state after analysis completes', async () => {
-    render(<Exercise apiKey="test-key" />)
+    render(<Exercise />)
+    fillApiKey()
     fireEvent.click(screen.getByRole('button', { name: 'Start' }))
 
     for (let i = 0; i < 600; i++) {
@@ -90,7 +123,8 @@ describe('Exercise', () => {
   })
 
   it('returns to duration selection screen after clicking Start new session', async () => {
-    render(<Exercise apiKey="test-key" />)
+    render(<Exercise />)
+    fillApiKey()
     fireEvent.click(screen.getByRole('radio', { name: '1s' }))
     fireEvent.click(screen.getByRole('button', { name: 'Start' }))
 

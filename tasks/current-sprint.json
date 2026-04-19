@@ -2,7 +2,10 @@
   {
     "id": "019",
     "title": "Merge API key input into start screen",
-    "status": "todo",
+    "status": "done",
+    "completed_at": "2026-04-18T20:38:00Z",
+    "agent_retro": null,
+    "user_retro": null,
     "story": "As a user, I want to enter my API key on the same screen where I start the exercise so that there are fewer steps to get started.",
     "acceptance_criteria": [
       "The separate API key screen is removed — the app no longer shows ApiKeyForm as a standalone step",
@@ -57,7 +60,7 @@
     "status": "done",
     "completed_at": "2026-04-18T20:24:00Z",
     "agent_retro": "After the plan changed mid-execution (user corrected the root cause analysis), I proceeded directly into implementation without re-confirming the updated plan with the user.",
-    "user_retro": "Agent went directly into executing before getting confirmation that the plan was acceptable. Also, marking tasks as in-progress has no value when only one agent is running at a time.",
+    "user_retro": "Agent went directly into executing before getting confirmation that the plan was acceptable. Also, marking tasks as in-progress has no value when only one agent is running at a time. Agent should not read the codebase while writing stories."
     "story": "As a user, I want sensory highlights to cover only complete words so that partial-word highlights don't appear in the results.",
     "acceptance_criteria": [
       "Highlights always start at the first character of a word — leading punctuation or partial characters before the first word are excluded",

@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "023",
+    "title": "Single source of truth for sense names in analysisService",
+    "status": "todo",
+    "story": "As a developer, I want only one list of sense names in analysisService.ts so that adding or removing a sense only requires one change.",
+    "acceptance_criteria": [
+      "The seven sense names appear in exactly one place in analysisService.ts",
+      "The validator and the Sense type remain consistent with each other",
+      "All existing tests continue to pass"
+    ],
+    "dependencies": []
+  }
+]

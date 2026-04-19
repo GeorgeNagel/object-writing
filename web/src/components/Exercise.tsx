@@ -22,11 +22,8 @@ const DURATION_OPTIONS: DurationOption[] = [
 
 const DEFAULT_DURATION = 600
 
-interface ExerciseProps {
-  apiKey: string
-}
-
-export function Exercise({ apiKey }: ExerciseProps) {
+export function Exercise() {
+  const [apiKey, setApiKey] = useState('')
   const [phase, setPhase] = useState<Phase>('idle')
   const [word, setWord] = useState('')
   const [text, setText] = useState('')
@@ -56,6 +53,12 @@ export function Exercise({ apiKey }: ExerciseProps) {
   if (phase === 'idle') {
     return (
       <div>
+        <input
+          type="password"
+          aria-label="Anthropic API Key"
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+        />
         <div>
           {DURATION_OPTIONS.map(({ label, seconds }) => (
             <label key={label}>
@@ -70,7 +73,7 @@ export function Exercise({ apiKey }: ExerciseProps) {
             </label>
           ))}
         </div>
-        <button onClick={handleStart}>Start</button>
+        <button onClick={handleStart} disabled={apiKey.trim() === ''}>Start</button>
       </div>
     )
   }
