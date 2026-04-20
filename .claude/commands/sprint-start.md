@@ -26,12 +26,22 @@ If the user provided task IDs, use those. If the user provided criteria, select 
 
 All selected tickets must exist in `backlog.json` with `status: "todo"`. If any selected task is not found, report the missing IDs and stop.
 
-## Step 4: Confirm
+## Step 4: Groom each ticket
 
-List the selected tickets (id + title) and the sprint number. Ask the user to confirm before making any changes.
+For each selected ticket, one at a time:
+
+1. Display the ticket's `story` and `acceptance_criteria`
+2. Analyze and present findings: gaps between story and AC, ambiguous wording, missing implementation context, scope questions
+3. Ask the user: **accept / edit / defer**
+   - **Accept** — ticket is queued for the sprint as-is
+   - **Edit** — user dictates changes in chat; agent applies them to the ticket fields; ticket is queued with edits applied
+   - **Defer** — ticket is skipped and remains in `backlog.json` untouched
+4. Move to the next ticket
+
+After all tickets are groomed, summarize which were accepted, edited, or deferred. If no tickets were accepted, stop.
 
 ## Step 5: Execute
 
-1. Add a `sprint` field set to the sprint number (integer) to each selected task
-2. Remove the selected tickets from `backlog.json` and write it
-3. Write the selected tickets to `current-sprint.json`
+1. Add a `sprint` field set to the sprint number (integer) to each accepted task
+2. Remove only the accepted tickets from `backlog.json` and write it
+3. Write the accepted tickets to `current-sprint.json`

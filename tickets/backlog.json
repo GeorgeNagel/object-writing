@@ -96,5 +96,29 @@
     "story": "As a developer, I want portions of custom commands that can be extracted into Python/Bash/Node scripts to be moved there, so that logic is reusable and not dependent on LLM execution.",
     "acceptance_criteria": [],
     "dependencies": []
+  },
+  {
+    "id": "036",
+    "title": "Add documentation philosophy guide for agents",
+    "status": "todo",
+    "story": "As a developer, I want agent-facing guidelines on documentation philosophy so that agents produce documentation that stays accurate and close to the code it describes.",
+    "acceptance_criteria": [
+      "A documentation philosophy guide exists and is visible to the agent during task execution",
+      "The guide specifies that documentation should live close to the code it documents, not in a centralized docs/ folder",
+      "The guide specifies that documentation should avoid exact file paths and variable names"
+    ],
+    "dependencies": []
+  },
+  {
+    "id": "037",
+    "title": "Script to record user retro feedback verbatim",
+    "status": "todo",
+    "story": "As a developer, I want a script to record my retro feedback directly into the ticket JSON so that the LLM cannot interpret or act on it.",
+    "acceptance_criteria": [
+      "A script exists that accepts a ticket ID and prompts for user_retro text via stdin",
+      "The script writes the input verbatim to the user_retro field of the matching ticket in current-sprint.json",
+      "The retro command instructs the agent to invoke this script for collecting user_retro rather than asking in chat"
+    ],
+    "dependencies": []
   }
 ]
