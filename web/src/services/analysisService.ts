@@ -1,6 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk'
 
-export type Sense = 'sight' | 'sound' | 'smell' | 'taste' | 'touch' | 'organic' | 'kinesthetic'
+const SENSES = ['sight', 'sound', 'smell', 'taste', 'touch', 'organic', 'kinesthetic'] as const
+
+export type Sense = (typeof SENSES)[number]
 
 export interface SensoryAnnotation {
   phrase: string
@@ -75,9 +77,7 @@ export function deriveAnnotations(text: string, raws: RawAnnotation[]): SensoryA
   })
 }
 
-const VALID_SENSES = new Set<string>([
-  'sight', 'sound', 'smell', 'taste', 'touch', 'organic', 'kinesthetic',
-])
+const VALID_SENSES = new Set<string>(SENSES)
 
 function isValidRawAnnotation(item: unknown): item is RawAnnotation {
   if (typeof item !== 'object' || item === null) return false

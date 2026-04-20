@@ -2,7 +2,8 @@
   {
     "id": "023",
     "title": "Single source of truth for sense names in analysisService",
-    "status": "todo",
+    "status": "done",
+    "completed_at": "2026-04-20",
     "story": "As a developer, I want only one list of sense names in analysisService.ts so that adding or removing a sense only requires one change.",
     "acceptance_criteria": [
       "The seven sense names appear in exactly one place in analysisService.ts",
@@ -10,7 +11,9 @@
       "All existing tests continue to pass"
     ],
     "dependencies": [],
-    "sprint": 3
+    "sprint": 3,
+    "agent_retro": "The ANALYSIS_PROMPT contains the sense names as natural language with extra descriptions — initially tried to unify it with the code list, but that removed useful LLM context. The ticket's acceptance criteria don't distinguish prompt strings from programmatic lists, which caused a misstep.",
+    "user_retro": null
   },
   {
     "id": "024",
