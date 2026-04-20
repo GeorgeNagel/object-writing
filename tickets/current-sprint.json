@@ -15,7 +15,8 @@
   {
     "id": "024",
     "title": "Replace hardcoded colors with named constants",
-    "status": "todo",
+    "status": "done",
+    "completed_at": "2026-04-20",
     "story": "As a developer, I want all colors in the codebase to be defined as named constants so that the codebase is more readable and maintainable.",
     "acceptance_criteria": [
       "All hardcoded hex and RGB color values in production code are replaced with named constants",
@@ -24,7 +25,9 @@
       "No hardcoded hex or RGB color values remain in any non-test file"
     ],
     "dependencies": [],
-    "sprint": 3
+    "sprint": 3,
+    "agent_retro": "The ticket did not specify where to put the naming standard doc or the naming convention itself — both required clarifying questions before work could begin. The inline-style vs CSS distinction also needed resolution upfront.",
+    "user_retro": "Documentation should avoid pointing to exactly where things are defined or exact variable names, as this has a tendency to go stale. Agent has a tendency to act on retro feedback without asking for confirmation."
   },
   {
     "id": "025",

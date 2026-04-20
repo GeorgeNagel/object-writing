@@ -2,10 +2,40 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* Palette */
+  --color-slate-900: #1a1a1a;
+  --color-slate-300: #aaa;
+  --color-slate-200: #ccc;
+  --color-slate-400: #888;
+  --color-stone-300: #d4d0c8;
+  --color-cream-50: #fafaf8;
+
+  /* Semantic tokens */
+  --bg-page: var(--color-cream-50);
+  --text-primary: var(--color-slate-900);
+  --text-secondary: var(--color-slate-400);
+  --text-muted: var(--color-slate-300);
+
+  --button-border: var(--color-slate-900);
+  --button-text: var(--color-slate-900);
+  --button-bg-hover: var(--color-slate-900);
+  --button-text-hover: var(--color-cream-50);
+  --button-border-disabled: var(--color-slate-200);
+  --button-text-disabled: var(--color-slate-200);
+
+  --input-border: var(--color-stone-300);
+  --input-border-focus: var(--color-slate-900);
+
+  --radio-text: var(--color-slate-300);
+  --radio-text-checked: var(--color-slate-900);
+  --radio-accent: var(--color-slate-900);
+}
+
 body {
   margin: 0;
-  background: #fafaf8;
-  color: #1a1a1a;
+  background: var(--bg-page);
+  color: var(--text-primary);
   font-family: 'Lora', Georgia, serif;
   font-size: 1rem;
   line-height: 1.6;

@@ -13,5 +13,5 @@
 }
 
 .textarea:disabled {
-  color: #888;
+  color: var(--text-secondary);
 }

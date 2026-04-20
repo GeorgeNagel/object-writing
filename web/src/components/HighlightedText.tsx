@@ -1,15 +1,6 @@
 import type { SensoryAnnotation, Sense } from '../services/analysisService'
 import styles from './HighlightedText.module.css'
-
-const SENSE_COLORS: Record<Sense, string> = {
-  sight: '#FFF176',
-  sound: '#80DEEA',
-  smell: '#A5D6A7',
-  taste: '#EF9A9A',
-  touch: '#CE93D8',
-  organic: '#FFCC80',
-  kinesthetic: '#90CAF9',
-}
+import { SENSE_COLORS } from '../constants/colors'
 
 interface HighlightedTextProps {
   text: string

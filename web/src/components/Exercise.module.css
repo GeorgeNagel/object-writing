@@ -16,7 +16,7 @@
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #888;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
@@ -24,14 +24,14 @@
   width: 100%;
   background: transparent;
   border: none;
-  border-bottom: 1px solid #d4d0c8;
+  border-bottom: 1px solid var(--input-border);
   padding: 0.4rem 0;
   outline: none;
   transition: border-color 0.2s;
 }
 
 .apiKeyInput:focus {
-  border-bottom-color: #1a1a1a;
+  border-bottom-color: var(--input-border-focus);
 }
 
 /* Writing / analyzing screen */
@@ -49,7 +49,7 @@
 }
 
 .analyzingText {
-  color: #888;
+  color: var(--text-secondary);
   font-style: italic;
   margin: 0;
 }

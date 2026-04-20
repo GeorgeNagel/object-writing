@@ -8,13 +8,13 @@
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
-  color: #aaa;
-  accent-color: #1a1a1a;
+  color: var(--radio-text);
+  accent-color: var(--radio-accent);
   transition: color 0.15s;
 }
 
 .option:has(input:checked) {
-  color: #1a1a1a;
+  color: var(--radio-text-checked);
 }
 
 .option:has(input:disabled) {
