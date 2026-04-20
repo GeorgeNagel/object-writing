@@ -36,15 +36,3 @@ Dark mode tokens use a `dark-` prefix on the semantic name:
 ```
 --dark-{element}-{property}[-{state}]
 ```
-
-Dark mode tokens are not yet in use. Add them when dark mode is implemented.
-
-## TypeScript color constants
-
-Colors used in inline styles follow the same palette naming scheme in SCREAMING_SNAKE_CASE:
-
-```
-COLOR_{NAME}_{SCALE}
-```
-
-Semantic maps (e.g. sense highlight colors) reference palette constants, not raw hex values.
