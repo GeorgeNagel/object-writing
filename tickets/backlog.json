@@ -72,5 +72,21 @@
       "Developers can regenerate snapshots using an existing command when rendering changes are intentional"
     ],
     "dependencies": []
+  },
+  {
+    "id": "033",
+    "title": "Validate API key on exercise start",
+    "status": "todo",
+    "story": "As a user, I want my API key validated when I press Start Exercise so that I don't waste time completing an exercise only to discover the key is invalid.",
+    "acceptance_criteria": [],
+    "dependencies": []
+  },
+  {
+    "id": "034",
+    "title": "Local script to retrieve next ticket number",
+    "status": "todo",
+    "story": "As a developer, I want a local script that retrieves the next ticket number so that I don't contribute towards LLM API usage limits.",
+    "acceptance_criteria": [],
+    "dependencies": []
   }
 ]
