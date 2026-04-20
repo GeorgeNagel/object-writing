@@ -1,9 +1,5 @@
 # Object Writing App
 
-## Project docs
-
-- **MVP plan** — `docs/mvp-plan.md`: tech stack, architecture principles, scope constraints, future backend
-
 ## Documentation
 
 Avoid duplicate knowledge across markdown files. Each fact should have one authoritative location. Pointer references (e.g. "see X for details") are preferred over restating content.
