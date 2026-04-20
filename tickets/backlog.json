@@ -88,5 +88,13 @@
     "story": "As a developer, I want a local script that retrieves the next ticket number so that I don't contribute towards LLM API usage limits.",
     "acceptance_criteria": [],
     "dependencies": []
+  },
+  {
+    "id": "035",
+    "title": "Move custom command logic into standalone scripts",
+    "status": "todo",
+    "story": "As a developer, I want portions of custom commands that can be extracted into Python/Bash/Node scripts to be moved there, so that logic is reusable and not dependent on LLM execution.",
+    "acceptance_criteria": [],
+    "dependencies": []
   }
 ]
