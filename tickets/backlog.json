@@ -37,5 +37,78 @@
       "Stories are visual-only — no interaction tests"
     ],
     "dependencies": []
+  },
+  {
+    "id": "026",
+    "title": "Add human verification gate to ticket-do command",
+    "status": "todo",
+    "story": "As a developer, I want the ticket-do command to pause and ask me to verify before closing a ticket when automated tests are insufficient, so that tickets are never closed without appropriate sign-off.",
+    "acceptance_criteria": [
+      "ticket-do explicitly distinguishes between tickets that can be closed on passing tests alone and those requiring human verification",
+      "When human verification is required, the agent presents testing instructions directly in chat and waits for user confirmation before closing",
+      "The agent never leaves testing instructions in code, story files, or comments"
+    ],
+    "dependencies": []
+  },
+  {
+    "id": "027",
+    "title": "Add plan re-confirmation step on plan changes in ticket-do",
+    "status": "todo",
+    "story": "As a developer, I want the agent to re-confirm the updated plan with me whenever the plan changes mid-execution, so that I always have visibility and approval before implementation continues.",
+    "acceptance_criteria": [
+      "ticket-do instructs the agent to re-present the full updated plan whenever a change is made mid-execution",
+      "The agent waits for explicit user confirmation before continuing after a plan change",
+      "The re-confirmation step is identical in form to the initial plan confirmation step"
+    ],
+    "dependencies": []
+  },
+  {
+    "id": "028",
+    "title": "Groom tickets interactively during sprint-start",
+    "status": "todo",
+    "story": "As a developer, I want each ticket to be groomed interactively as it is pulled into the sprint, so that all sprint tickets are well-scoped and clearly defined before work begins.",
+    "acceptance_criteria": [
+      "sprint-start walks through each candidate ticket one at a time before adding it to the sprint",
+      "For each ticket, the agent reviews the story and acceptance criteria, flags any inconsistencies, ambiguities, or scope questions, and presents findings to the user",
+      "The user can accept the ticket as-is, edit it based on agent findings, or defer it back to the backlog",
+      "Groomed tickets have a clear problem statement understandable to both human and agent without reading the codebase"
+    ],
+    "dependencies": []
+  },
+  {
+    "id": "029",
+    "title": "Make story command implementation-agnostic",
+    "status": "todo",
+    "story": "As a developer, I want the story command to focus purely on user-facing problems and acceptance criteria, so that stories are not polluted with implementation details.",
+    "acceptance_criteria": [
+      "The story command explicitly instructs the agent not to read the codebase",
+      "The story command explicitly instructs the agent not to include implementation details in the story or acceptance criteria",
+      "Acceptance criteria are written from a user or product perspective, not a technical one"
+    ],
+    "dependencies": []
+  },
+  {
+    "id": "030",
+    "title": "Add closed ticket status and close-ticket command",
+    "status": "todo",
+    "story": "As a developer, I want to close a ticket without completing programming work, so that I can track intentional decisions to skip or abandon a ticket.",
+    "acceptance_criteria": [
+      "A 'closed' status is a valid terminal status alongside 'done'",
+      "A close-ticket command exists that sets a ticket's status to 'closed' and prompts the user for an optional reason",
+      "Closed tickets are treated as terminal — they are not pulled into future sprints",
+      "sprint-close and retro commands handle closed tickets appropriately"
+    ],
+    "dependencies": []
+  },
+  {
+    "id": "031",
+    "title": "Replace LLM-driven verbatim field entry in ticket-do with explicit instruction",
+    "status": "todo",
+    "story": "As a developer, I want verbatim text I provide to be placed into ticket fields exactly as given, without the agent interpreting or acting on it, so that data entry is reliable.",
+    "acceptance_criteria": [
+      "ticket-do explicitly instructs the agent to treat user-provided verbatim text as inert data to be transcribed, not as instructions to act on",
+      "The agent asks for confirmation before taking any action when the user is in the middle of providing field values"
+    ],
+    "dependencies": []
   }
 ]

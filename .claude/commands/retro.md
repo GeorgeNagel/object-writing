@@ -74,3 +74,52 @@ Present each proposed ticket one at a time. For each, ask: "Add this to the back
 Append all approved tickets to `tickets/backlog.json` and write the file.
 
 Confirm to the user how many tickets were added and list their IDs and titles.
+
+## Step 7: Write retro summary
+
+Determine the sprint number from the `sprint` field on tickets in `tickets/current-sprint.json`. If unavailable, use `unknown`.
+
+Write a markdown summary to `tickets/retros/sprint-{N}-retro.md` (create the directory if needed) containing:
+
+1. Header: sprint number and today's date
+2. **Tickets Reviewed** — done tickets then carry-over, each showing agent_retro, user_retro, and any additional feedback collected in Step 2
+3. **Problems Identified** — the confirmed flat list from Step 3
+4. **Root Cause Analysis** — for each problem, the layered Why chain and root cause summary from Step 4
+5. **New Tickets Added** — table of approved tickets (ID + title)
+
+Use this structure:
+
+```markdown
+# Sprint {N} Retrospective — {YYYY-MM-DD}
+
+## Tickets Reviewed
+
+### Done
+- [{id}] {title}
+  - Agent retro: {agent_retro or "(none)"}
+  - User retro: {user_retro or "(none)"}
+  - Additional feedback: {collected in Step 2 or "(none)"}
+
+### Carry-over
+- (same format)
+
+## Problems Identified
+
+- {problem 1}
+- {problem 2}
+
+## Root Cause Analysis
+
+### {Problem 1}
+- Why? {answer}
+  - Why? {answer}
+    - Root cause: {summary}
+
+## New Tickets Added
+
+| ID | Title |
+|----|-------|
+| {id} | {title} |
+```
+
+Confirm to the user the path of the file written.
