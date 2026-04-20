@@ -1,0 +1,17 @@
+.textarea {
+  width: 100%;
+  min-height: 12rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  padding: 0;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.textarea:disabled {
+  color: #888;
+}

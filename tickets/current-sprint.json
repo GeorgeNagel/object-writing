@@ -1,1 +1,61 @@
-[]
+[
+  {
+    "id": "023",
+    "title": "Single source of truth for sense names in analysisService",
+    "status": "todo",
+    "story": "As a developer, I want only one list of sense names in analysisService.ts so that adding or removing a sense only requires one change.",
+    "acceptance_criteria": [
+      "The seven sense names appear in exactly one place in analysisService.ts",
+      "The validator and the Sense type remain consistent with each other",
+      "All existing tests continue to pass"
+    ],
+    "dependencies": [],
+    "sprint": 3
+  },
+  {
+    "id": "024",
+    "title": "Replace hardcoded colors with named constants",
+    "status": "todo",
+    "story": "As a developer, I want all colors in the codebase to be defined as named constants so that the codebase is more readable and maintainable.",
+    "acceptance_criteria": [
+      "All hardcoded hex and RGB color values in production code are replaced with named constants",
+      "All inline style color values in production code are replaced with named constants",
+      "Named constants use a semantic naming scheme (e.g. TEXT_WARNING, BACKGROUND_PRIMARY)",
+      "No hardcoded hex or RGB color values remain in any non-test file"
+    ],
+    "dependencies": [],
+    "sprint": 3
+  },
+  {
+    "id": "025",
+    "title": "Storybook stories for Button, RadioGroup, and TextArea components",
+    "status": "done",
+    "completed_at": "2026-04-20",
+    "story": "As a developer, I want reusable Button, RadioGroup, and TextArea components with Storybook stories for all used states so that styling is centralized and visually reviewable.",
+    "acceptance_criteria": [
+      "A reusable Button component exists with default and disabled states",
+      "A reusable RadioGroup component exists supporting multiple options with one selectable, with default, selected, and disabled states",
+      "A reusable TextArea component exists with default, with-text, and disabled states",
+      "Each component state has a dedicated Storybook story",
+      "Stories are visual-only — no interaction tests"
+    ],
+    "dependencies": [],
+    "sprint": 3,
+    "agent_retro": null,
+    "user_retro": null
+  },
+  {
+    "id": "028",
+    "title": "Groom tickets interactively during sprint-start",
+    "status": "todo",
+    "story": "As a developer, I want each ticket to be groomed interactively as it is pulled into the sprint, so that all sprint tickets are well-scoped and clearly defined before work begins.",
+    "acceptance_criteria": [
+      "sprint-start walks through each candidate ticket one at a time before adding it to the sprint",
+      "For each ticket, the agent reviews the story and acceptance criteria, flags any inconsistencies, ambiguities, or scope questions, and presents findings to the user",
+      "The user can accept the ticket as-is, edit it based on agent findings, or defer it back to the backlog",
+      "Groomed tickets have a clear problem statement understandable to both human and agent without reading the codebase"
+    ],
+    "dependencies": [],
+    "sprint": 3
+  }
+]

@@ -1,0 +1,22 @@
+.group {
+  display: flex;
+  gap: 2rem;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  color: #aaa;
+  accent-color: #1a1a1a;
+  transition: color 0.15s;
+}
+
+.option:has(input:checked) {
+  color: #1a1a1a;
+}
+
+.option:has(input:disabled) {
+  cursor: default;
+}

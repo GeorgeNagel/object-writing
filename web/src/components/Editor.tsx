@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import styles from './Editor.module.css'
+import { TextArea } from './TextArea'
 
 interface EditorProps {
   value: string
@@ -21,13 +21,5 @@ export function Editor({ value, onChange, disabled = false }: EditorProps) {
     el.style.height = `${el.scrollHeight}px`
   }, [value])
 
-  return (
-    <textarea
-      ref={ref}
-      className={styles.editor}
-      value={value}
-      onChange={e => onChange(e.target.value)}
-      disabled={disabled}
-    />
-  )
+  return <TextArea ref={ref} value={value} onChange={onChange} disabled={disabled} />
 }

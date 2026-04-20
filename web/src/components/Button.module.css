@@ -1,0 +1,23 @@
+.button {
+  align-self: flex-start;
+  padding: 0.55rem 1.75rem;
+  border: 1px solid #1a1a1a;
+  color: #1a1a1a;
+  font-family: inherit;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  transition: background 0.15s, color 0.15s;
+  background: transparent;
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  background: #1a1a1a;
+  color: #fafaf8;
+}
+
+.button:disabled {
+  border-color: #ccc;
+  color: #ccc;
+  cursor: default;
+}

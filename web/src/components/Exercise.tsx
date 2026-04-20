@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Editor } from './Editor'
 import { Timer } from './Timer'
 import { Results } from './Results'
+import { Button } from './Button'
+import { RadioGroup } from './RadioGroup'
 import { analyzeText } from '../services/analysisService'
 import type { SensoryAnnotation } from '../services/analysisService'
 import { getRandomWord } from '../services/wordService'
@@ -82,28 +84,16 @@ export function Exercise({
           </div>
           <div>
             <span className={styles.fieldLabel}>Duration</span>
-            <div className={styles.durationOptions}>
-              {DURATION_OPTIONS.map(({ label, seconds }) => (
-                <label key={label} className={styles.durationOption}>
-                  <input
-                    type="radio"
-                    name="duration"
-                    value={seconds}
-                    checked={durationSeconds === seconds}
-                    onChange={() => setDurationSeconds(seconds)}
-                  />
-                  {label}
-                </label>
-              ))}
-            </div>
+            <RadioGroup
+              name="duration"
+              options={DURATION_OPTIONS.map(({ label, seconds }) => ({ label, value: seconds }))}
+              value={durationSeconds}
+              onChange={setDurationSeconds}
+            />
           </div>
-          <button
-            className={styles.startButton}
-            onClick={handleStart}
-            disabled={apiKey.trim() === ''}
-          >
+          <Button onClick={handleStart} disabled={apiKey.trim() === ''}>
             Start
-          </button>
+          </Button>
         </div>
       </div>
     )
