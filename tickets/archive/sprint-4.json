@@ -1,0 +1,67 @@
+[
+  {
+    "id": "038",
+    "title": "Results step: show object word at top, move score below highlighted text",
+    "status": "done",
+    "story": "As a designer, I want the object word shown at the top of the results step (like on the analyzing step), and the score moved below the highlighted text.",
+    "acceptance_criteria": [
+      "The object word is displayed at the top of the results step with the same visual treatment as the word prompt on the analyzing step",
+      "The score is positioned below the entire highlighted text component (including the color legend)",
+      "The order of elements in the results step is: object word, highlighted text, score, start new exercise button"
+    ],
+    "dependencies": [],
+    "sprint": 4,
+    "completed_at": "2026-04-21",
+    "agent_retro": null,
+    "user_retro": null
+  },
+  {
+    "id": "036",
+    "title": "Add documentation philosophy guide for agents",
+    "status": "done",
+    "completed_at": "2026-04-21",
+    "agent_retro": "The user interrupted two edits mid-execution \u2014 once to redirect the src/services/ line wording, and once to also remove the /pick-ticket section. Both corrections were reasonable and came from applying the new philosophy to existing content, but I had already started executing before fully auditing all existing docs against it.",
+    "user_retro": null,
+    "story": "As a developer, I want agent-facing guidelines on documentation philosophy so that agents produce documentation that stays accurate and close to the code it describes.",
+    "acceptance_criteria": [
+      "A documentation philosophy guide exists and is visible to the agent during task execution",
+      "The guide specifies that documentation should live close to the code it documents, not in a centralized docs/ folder",
+      "The guide specifies that documentation should avoid exact file paths and variable names",
+      "Existing documentation and markdown files are updated to remove exact file paths and folder names"
+    ],
+    "dependencies": [],
+    "sprint": 4
+  },
+  {
+    "id": "035",
+    "title": "Move custom command logic into standalone scripts",
+    "status": "done",
+    "completed_at": "2026-04-21",
+    "agent_retro": "A claim-ticket.py ID matching bug (operator precedence on `or`) was caught before running but introduced in the first pass. Mid-execution a new script (set-user-retro) was identified as needed, written, then removed when the user decided to defer it \u2014 the scope expansion should have been surfaced before implementing.",
+    "user_retro": "i missed that we should also extract a close-ticket script, which expands scope",
+    "story": "As a developer, I want portions of custom commands that can be extracted into Python/Bash/Node scripts to be moved there, so that logic is reusable and not dependent on LLM execution.",
+    "acceptance_criteria": [
+      "All custom commands and ticket/sprint workflow are audited for LLM interactions that could be replaced by scripts",
+      "Reasonable replacement candidates are surfaced to the developer for approval before implementation",
+      "Approved replacements are implemented as Python/Bash/Node scripts"
+    ],
+    "dependencies": [],
+    "sprint": 4
+  },
+  {
+    "id": "029",
+    "title": "Make story command implementation-agnostic",
+    "status": "done",
+    "completed_at": "2026-04-21",
+    "agent_retro": null,
+    "user_retro": null,
+    "story": "As a developer, I want the story command to focus purely on user-facing problems and acceptance criteria, so that stories are not polluted with implementation details.",
+    "acceptance_criteria": [
+      "The story command explicitly instructs the agent not to read the codebase",
+      "The story command explicitly instructs the agent not to include implementation details in the story or acceptance criteria",
+      "Acceptance criteria are written from a user or product perspective, not a technical one"
+    ],
+    "dependencies": [],
+    "sprint": 4
+  }
+]
