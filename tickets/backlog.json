@@ -24,18 +24,6 @@
     "dependencies": []
   },
   {
-    "id": "029",
-    "title": "Make story command implementation-agnostic",
-    "status": "todo",
-    "story": "As a developer, I want the story command to focus purely on user-facing problems and acceptance criteria, so that stories are not polluted with implementation details.",
-    "acceptance_criteria": [
-      "The story command explicitly instructs the agent not to read the codebase",
-      "The story command explicitly instructs the agent not to include implementation details in the story or acceptance criteria",
-      "Acceptance criteria are written from a user or product perspective, not a technical one"
-    ],
-    "dependencies": []
-  },
-  {
     "id": "030",
     "title": "Add closed ticket status and close-ticket command",
     "status": "todo",
@@ -87,26 +75,6 @@
     "status": "todo",
     "story": "As a developer, I want a local script that retrieves the next ticket number so that I don't contribute towards LLM API usage limits.",
     "acceptance_criteria": [],
-    "dependencies": []
-  },
-  {
-    "id": "035",
-    "title": "Move custom command logic into standalone scripts",
-    "status": "todo",
-    "story": "As a developer, I want portions of custom commands that can be extracted into Python/Bash/Node scripts to be moved there, so that logic is reusable and not dependent on LLM execution.",
-    "acceptance_criteria": [],
-    "dependencies": []
-  },
-  {
-    "id": "036",
-    "title": "Add documentation philosophy guide for agents",
-    "status": "todo",
-    "story": "As a developer, I want agent-facing guidelines on documentation philosophy so that agents produce documentation that stays accurate and close to the code it describes.",
-    "acceptance_criteria": [
-      "A documentation philosophy guide exists and is visible to the agent during task execution",
-      "The guide specifies that documentation should live close to the code it documents, not in a centralized docs/ folder",
-      "The guide specifies that documentation should avoid exact file paths and variable names"
-    ],
     "dependencies": []
   },
   {
