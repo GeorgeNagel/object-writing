@@ -2,7 +2,7 @@
   {
     "id": "038",
     "title": "Results step: show object word at top, move score below highlighted text",
-    "status": "in_progress",
+    "status": "done",
     "story": "As a designer, I want the object word shown at the top of the results step (like on the analyzing step), and the score moved below the highlighted text.",
     "acceptance_criteria": [
       "The object word is displayed at the top of the results step with the same visual treatment as the word prompt on the analyzing step",
@@ -10,7 +10,10 @@
       "The order of elements in the results step is: object word, highlighted text, score, start new exercise button"
     ],
     "dependencies": [],
-    "sprint": 4
+    "sprint": 4,
+    "completed_at": "2026-04-21",
+    "agent_retro": null,
+    "user_retro": null
   },
   {
     "id": "036",

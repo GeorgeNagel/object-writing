@@ -122,6 +122,19 @@ describe('Exercise', () => {
     expect(screen.getByRole('button', { name: 'Start New Exercise' })).toBeInTheDocument()
   })
 
+  it('shows object word on results screen', async () => {
+    render(<Exercise />)
+    fillApiKey()
+    fireEvent.click(screen.getByRole('radio', { name: '1s' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+
+    act(() => { vi.advanceTimersByTime(1000) })
+
+    await act(async () => { await Promise.resolve() })
+
+    expect(screen.getByRole('heading', { name: 'campfire' })).toBeInTheDocument()
+  })
+
   it('returns to duration selection screen after clicking Start new session', async () => {
     render(<Exercise />)
     fillApiKey()

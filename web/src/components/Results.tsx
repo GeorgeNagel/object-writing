@@ -14,8 +14,8 @@ interface ResultsProps {
 export function Results({ text, annotations, wordCount, onStartNew }: ResultsProps) {
   return (
     <div className={styles.results}>
-      <Score annotations={annotations} wordCount={wordCount} />
       <HighlightedText text={text} annotations={annotations} />
+      <Score annotations={annotations} wordCount={wordCount} />
       <Button onClick={onStartNew}>Start New Exercise</Button>
     </div>
   )

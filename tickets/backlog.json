@@ -88,5 +88,18 @@
       "The retro command instructs the agent to invoke this script for collecting user_retro rather than asking in chat"
     ],
     "dependencies": []
+  },
+  {
+    "id": "039",
+    "title": "New story stub script",
+    "status": "todo",
+    "story": "As a developer, I want a script that creates a stub story ticket so that I can quickly capture an idea without going through the full grooming process.",
+    "acceptance_criteria": [
+      "Script accepts a title/one-liner as a command-line argument",
+      "Script appends a new ticket to the backlog with the provided title and empty fields matching the existing ticket JSON format",
+      "Script uses next-ticket-id.py to determine and increment the ticket ID",
+      "Script exits with code 0 on success and nonzero on error"
+    ],
+    "dependencies": []
   }
 ]

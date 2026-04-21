@@ -40,6 +40,7 @@ export const Analyzing: Story = {
 export const Done: Story = {
   args: {
     initialPhase: 'done',
+    initialWord: 'Harbor',
     initialText: sampleText,
     initialAnnotations: sampleAnnotations,
   },

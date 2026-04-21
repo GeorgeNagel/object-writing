@@ -4,6 +4,7 @@ import { Timer } from './Timer'
 import { Results } from './Results'
 import { Button } from './Button'
 import { RadioGroup } from './RadioGroup'
+import { WordPrompt } from './WordPrompt'
 import { analyzeText } from '../services/analysisService'
 import type { SensoryAnnotation } from '../services/analysisService'
 import { getRandomWord } from '../services/wordService'
@@ -103,6 +104,7 @@ export function Exercise({
     const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length
     return (
       <div className={styles.container}>
+        <WordPrompt word={word} />
         <Results
           text={text}
           annotations={annotations}
@@ -116,7 +118,7 @@ export function Exercise({
   return (
     <div className={styles.container}>
       <div className={styles.writingScreen}>
-        <h2 className={styles.wordPrompt}>{word}</h2>
+        <WordPrompt word={word} />
         {phase === 'running' && (
           <Timer durationSeconds={durationSeconds} onExpire={handleExpire} />
         )}
