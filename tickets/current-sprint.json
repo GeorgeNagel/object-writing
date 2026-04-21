@@ -15,7 +15,10 @@
   {
     "id": "036",
     "title": "Add documentation philosophy guide for agents",
-    "status": "todo",
+    "status": "done",
+    "completed_at": "2026-04-21",
+    "agent_retro": "The user interrupted two edits mid-execution — once to redirect the src/services/ line wording, and once to also remove the /pick-ticket section. Both corrections were reasonable and came from applying the new philosophy to existing content, but I had already started executing before fully auditing all existing docs against it.",
+    "user_retro": null,
     "story": "As a developer, I want agent-facing guidelines on documentation philosophy so that agents produce documentation that stays accurate and close to the code it describes.",
     "acceptance_criteria": [
       "A documentation philosophy guide exists and is visible to the agent during task execution",
@@ -42,7 +45,10 @@
   {
     "id": "029",
     "title": "Make story command implementation-agnostic",
-    "status": "todo",
+    "status": "done",
+    "completed_at": "2026-04-21",
+    "agent_retro": null,
+    "user_retro": null,
     "story": "As a developer, I want the story command to focus purely on user-facing problems and acceptance criteria, so that stories are not polluted with implementation details.",
     "acceptance_criteria": [
       "The story command explicitly instructs the agent not to read the codebase",

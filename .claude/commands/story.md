@@ -18,6 +18,8 @@ Read `tickets/backlog.json`, `tickets/current-sprint.json`, and all files in `ti
 
 ## Step 3: Discovery Q&A loop
 
+**Do not read the codebase during this step.** Stories are written from a user or product perspective — implementation details are discovered during execution, not grooming.
+
 Ask one question at a time and wait for the user's answer. Cover these topics, in whatever order makes sense given the description:
 
 - **Goal**: What does success look like? Why does the user want this?
@@ -33,6 +35,8 @@ After each answer, critically examine it before asking the next question:
 - Ask follow-up questions to resolve any ambiguity before moving on
 
 Repeat the loop — revisiting earlier answers if needed — until the story is unambiguous and all acceptance criteria are concrete and testable. Only exit the loop when you and the user agree the story is well-defined.
+
+**Never include implementation details** in the story or acceptance criteria. File names, component names, function names, and technical constraints do not belong here — only what the user or product needs.
 
 ## Step 4: Preview
 
