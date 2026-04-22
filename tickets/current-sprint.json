@@ -32,7 +32,7 @@
     ],
     "dependencies": [],
     "agent_retro": "The initial approach (direct render via RTL) differed from the Storybook-recommended portable stories pattern. User redirected to the storyshots migration guide mid-implementation, which required switching to composeStories + story.run() + setProjectAnnotations. Could have discovered this upfront by reading the docs before proposing.",
-    "user_retro": null,
+    "user_retro": "Though tests pass, the new storyshot tests surfaced an error message related to typing.",
     "completed_at": "2026-04-21"
   },
   {

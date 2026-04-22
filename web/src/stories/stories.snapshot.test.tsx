@@ -1,12 +1,13 @@
 import { beforeAll, describe, expect, test } from 'vitest'
 import { composeStories, setProjectAnnotations } from '@storybook/react-vite'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import * as previewAnnotations from '../../.storybook/preview'
 import path from 'path'
 
 const annotations = setProjectAnnotations([previewAnnotations])
 beforeAll(annotations.beforeAll)
 
-type StoryModule = { default: any; [name: string]: any }
+type StoryModule = { default: Meta; [name: string]: StoryObj | Meta }
 
 function getAllStoryFiles() {
   const modules = import.meta.glob<StoryModule>('./*.stories.tsx', { eager: true })
