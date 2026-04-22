@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Set a ticket's status to closed with an optional reason in current-sprint.json."""
+"""Set a ticket's status to done with today's date in current-sprint.json."""
 
 import json
 import sys
@@ -7,8 +7,6 @@ from datetime import date
 from pathlib import Path
 
 CURRENT = Path(__file__).parent.parent / "tickets" / "current-sprint.json"
-
-TERMINAL = {"done", "closed"}
 
 
 def main():
@@ -24,18 +22,12 @@ def main():
         print(f"error: ticket {sys.argv[1]} not found in current sprint", file=sys.stderr)
         sys.exit(1)
 
-    if match["status"] in TERMINAL:
-        print(f"error: ticket {sys.argv[1]} is already {match['status']}", file=sys.stderr)
+    if match["status"] == "done":
+        print(f"error: ticket {sys.argv[1]} is already done", file=sys.stderr)
         sys.exit(1)
 
-    print("Reason (optional, press Enter to skip): ", end="", flush=True)
-    reason = sys.stdin.readline().strip()
-
-    match["status"] = "closed"
-    match["closed_at"] = date.today().isoformat()
-    if reason:
-        match["closed_reason"] = reason
-
+    match["status"] = "done"
+    match["completed_at"] = date.today().isoformat()
     CURRENT.write_text(json.dumps(tickets, indent=2) + "\n")
     print(f"Ticket {sys.argv[1]} closed.")
 

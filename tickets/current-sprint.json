@@ -1,1 +1,70 @@
-[]
+[
+  {
+    "id": "030",
+    "title": "Add closed ticket status and close-ticket command",
+    "status": "done",
+    "sprint": 5,
+    "story": "As a developer, I want to close a ticket without completing programming work, so that I can track intentional decisions to skip or abandon a ticket.",
+    "acceptance_criteria": [
+      "A 'closed' status is a valid terminal status alongside 'done'",
+      "A close-ticket.py script exists in scripts/ that sets a ticket's status to 'closed' and prompts for an optional reason via stdin",
+      "The optional reason is stored in the ticket JSON",
+      "Closed tickets are treated as terminal \u2014 they are not pulled into future sprints",
+      "sprint-close and retro do not break when closed tickets are present"
+    ],
+    "dependencies": [],
+    "agent_retro": "The ticket named the new script close-ticket.py but that name was already taken by the done-setting script \u2014 required a clarifying question before starting. The ticket story should have made the rename explicit.",
+    "user_retro": null,
+    "completed_at": "2026-04-21"
+  },
+  {
+    "id": "032",
+    "title": "Snapshot tests for all Storybook stories",
+    "status": "done",
+    "sprint": 5,
+    "story": "As a developer, I want automatic snapshot tests for every Storybook story so that I can refactor code without worrying that I've changed what actually gets rendered.",
+    "acceptance_criteria": [
+      "Every existing Storybook story has a corresponding snapshot test",
+      "Every new Storybook story must have a corresponding snapshot test",
+      "Snapshot tests capture the rendered DOM tree",
+      "Failing snapshot tests block the build",
+      "Developers can regenerate snapshots using an existing command when rendering changes are intentional"
+    ],
+    "dependencies": [],
+    "agent_retro": "The initial approach (direct render via RTL) differed from the Storybook-recommended portable stories pattern. User redirected to the storyshots migration guide mid-implementation, which required switching to composeStories + story.run() + setProjectAnnotations. Could have discovered this upfront by reading the docs before proposing.",
+    "user_retro": null,
+    "completed_at": "2026-04-21"
+  },
+  {
+    "id": "033",
+    "title": "Validate API key on exercise start",
+    "status": "todo",
+    "sprint": 5,
+    "story": "As a user, I want my API key validated when I press Start Exercise so that I don't waste time completing an exercise only to discover the key is invalid.",
+    "acceptance_criteria": [
+      "When Start is pressed, the API key is validated before the exercise begins",
+      "While validation is in flight, the Start button is disabled and shows a loading indicator",
+      "If validation succeeds, the exercise starts normally",
+      "If validation fails, an inline error message is shown near the API key field and the exercise does not start",
+      "The error message is specific to the failure type (invalid/revoked key, network error, etc.)"
+    ],
+    "dependencies": []
+  },
+  {
+    "id": "039",
+    "title": "New story stub script",
+    "status": "done",
+    "sprint": 5,
+    "story": "As a developer, I want a script that creates a stub story ticket so that I can quickly capture an idea without going through the full grooming process.",
+    "acceptance_criteria": [
+      "Script accepts a title/one-liner as a command-line argument",
+      "Script appends a new ticket to the backlog with the provided title and empty fields matching the existing ticket JSON format",
+      "Script uses next-ticket-id.py to determine and increment the ticket ID",
+      "Script exits with code 0 on success and nonzero on error"
+    ],
+    "dependencies": [],
+    "agent_retro": null,
+    "user_retro": null,
+    "completed_at": "2026-04-21"
+  }
+]

@@ -24,19 +24,6 @@
     "dependencies": []
   },
   {
-    "id": "030",
-    "title": "Add closed ticket status and close-ticket command",
-    "status": "todo",
-    "story": "As a developer, I want to close a ticket without completing programming work, so that I can track intentional decisions to skip or abandon a ticket.",
-    "acceptance_criteria": [
-      "A 'closed' status is a valid terminal status alongside 'done'",
-      "A close-ticket command exists that sets a ticket's status to 'closed' and prompts the user for an optional reason",
-      "Closed tickets are treated as terminal — they are not pulled into future sprints",
-      "sprint-close and retro commands handle closed tickets appropriately"
-    ],
-    "dependencies": []
-  },
-  {
     "id": "031",
     "title": "Replace LLM-driven verbatim field entry in ticket-do with explicit instruction",
     "status": "todo",
@@ -45,28 +32,6 @@
       "ticket-do explicitly instructs the agent to treat user-provided verbatim text as inert data to be transcribed, not as instructions to act on",
       "The agent asks for confirmation before taking any action when the user is in the middle of providing field values"
     ],
-    "dependencies": []
-  },
-  {
-    "id": "032",
-    "title": "Snapshot tests for all Storybook stories",
-    "status": "todo",
-    "story": "As a developer, I want automatic snapshot tests for every Storybook story so that I can refactor code without worrying that I've changed what actually gets rendered.",
-    "acceptance_criteria": [
-      "Every existing Storybook story has a corresponding snapshot test",
-      "Every new Storybook story must have a corresponding snapshot test",
-      "Snapshot tests capture the rendered DOM tree",
-      "Failing snapshot tests block the build",
-      "Developers can regenerate snapshots using an existing command when rendering changes are intentional"
-    ],
-    "dependencies": []
-  },
-  {
-    "id": "033",
-    "title": "Validate API key on exercise start",
-    "status": "todo",
-    "story": "As a user, I want my API key validated when I press Start Exercise so that I don't waste time completing an exercise only to discover the key is invalid.",
-    "acceptance_criteria": [],
     "dependencies": []
   },
   {
@@ -90,15 +55,14 @@
     "dependencies": []
   },
   {
-    "id": "039",
-    "title": "New story stub script",
+    "id": "040",
+    "title": "as a developer, i want to ensure that as stories are groomed according to my conventions",
     "status": "todo",
-    "story": "As a developer, I want a script that creates a stub story ticket so that I can quickly capture an idea without going through the full grooming process.",
+    "story": "",
     "acceptance_criteria": [
-      "Script accepts a title/one-liner as a command-line argument",
-      "Script appends a new ticket to the backlog with the provided title and empty fields matching the existing ticket JSON format",
-      "Script uses next-ticket-id.py to determine and increment the ticket ID",
-      "Script exits with code 0 on success and nonzero on error"
+      "when stories are groomed, implementation details are left out of acceptance criteria",
+      "when stories are groomed, the agent looks for gaps or conflicts or vague direction and collaborates with the user to improve acceptance criteria.",
+      "grooming is extracted into its own skill"
     ],
     "dependencies": []
   }

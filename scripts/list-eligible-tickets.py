@@ -24,7 +24,7 @@ def normalize_id(ticket_id):
 
 def main():
     all_tickets = load_all_tickets()
-    done_ids = {normalize_id(t["id"]) for t in all_tickets if t.get("status") == "done"}
+    done_ids = {normalize_id(t["id"]) for t in all_tickets if t.get("status") in {"done", "closed"}}
 
     current = json.loads(CURRENT.read_text())
     eligible = []

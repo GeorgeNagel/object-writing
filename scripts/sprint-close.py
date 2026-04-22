@@ -17,7 +17,7 @@ def main():
         print("error: current-sprint.json is empty", file=sys.stderr)
         sys.exit(1)
 
-    incomplete = [t for t in tickets if t.get("status") != "done"]
+    incomplete = [t for t in tickets if t.get("status") not in {"done", "closed"}]
     if incomplete:
         ids = ", ".join(t["id"] for t in incomplete)
         print(f"error: incomplete tickets: {ids}", file=sys.stderr)
