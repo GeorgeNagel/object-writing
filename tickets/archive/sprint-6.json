@@ -1,0 +1,20 @@
+[
+  {
+    "id": "046",
+    "title": "Add groom skill with AC validation checklist",
+    "status": "done",
+    "story": "As a developer, I want a groom skill that runs an interactive checklist against a ticket's story and AC before it enters a sprint, so that known gaps are caught and resolved before execution rather than discovered mid-implementation.",
+    "acceptance_criteria": [
+      "A groom skill exists that accepts a ticket ID",
+      "The skill defines and runs a checklist against the ticket's story and AC interactively with the user",
+      "When a checklist item fails, the agent flags it, offers suggestions, and gives the user the option to edit the ticket before continuing",
+      "sprint-start invokes the groom skill for each ticket during the grooming step instead of doing ad-hoc analysis"
+    ],
+    "dependencies": [],
+    "sprint": 6,
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null,
+    "completed_at": "2026-04-23"
+  }
+]

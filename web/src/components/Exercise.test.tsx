@@ -8,9 +8,10 @@ vi.mock('../services/wordService', () => ({
 
 vi.mock('../services/analysisService', () => ({
   analyzeText: vi.fn(),
+  validateApiKey: vi.fn(),
 }))
 
-import { analyzeText } from '../services/analysisService'
+import { analyzeText, validateApiKey } from '../services/analysisService'
 
 function fillApiKey(value = 'sk-ant-test-key') {
   fireEvent.change(screen.getByLabelText('Anthropic API Key'), {
@@ -22,6 +23,7 @@ describe('Exercise', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     vi.mocked(analyzeText).mockResolvedValue([])
+    vi.mocked(validateApiKey).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
@@ -43,7 +45,7 @@ describe('Exercise', () => {
     render(<Exercise />)
     fillApiKey('sk-ant-my-key')
     fireEvent.click(screen.getByRole('radio', { name: '1s' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Start' })) })
 
     act(() => { vi.advanceTimersByTime(1000) })
 
@@ -74,41 +76,41 @@ describe('Exercise', () => {
     expect(screen.getByRole('radio', { name: '10m' })).not.toBeChecked()
   })
 
-  it('reveals object word, editor, and timer after clicking Start', () => {
+  it('reveals object word, editor, and timer after clicking Start', async () => {
     render(<Exercise />)
     fillApiKey()
-    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Start' })) })
     expect(screen.getByText('campfire')).toBeInTheDocument()
     expect(screen.getByRole('textbox')).toBeInTheDocument()
     expect(screen.getByText('10:00')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Start' })).not.toBeInTheDocument()
   })
 
-  it('timer runs for the selected duration', () => {
+  it('timer runs for the selected duration', async () => {
     render(<Exercise />)
     fillApiKey()
     fireEvent.click(screen.getByRole('radio', { name: '30s' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Start' })) })
     expect(screen.getByText('00:30')).toBeInTheDocument()
   })
 
   it('locks editor and shows loading when timer expires', async () => {
     render(<Exercise />)
     fillApiKey()
-    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Start' })) })
 
     for (let i = 0; i < 600; i++) {
       act(() => { vi.advanceTimersByTime(1000) })
     }
 
     expect(screen.getByRole('textbox')).toBeDisabled()
-    expect(screen.getByText('Analyzing\u2026')).toBeInTheDocument()
+    expect(screen.getByText('Analyzing…')).toBeInTheDocument()
   })
 
   it('clears loading state after analysis completes', async () => {
     render(<Exercise />)
     fillApiKey()
-    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Start' })) })
 
     for (let i = 0; i < 600; i++) {
       act(() => { vi.advanceTimersByTime(1000) })
@@ -118,7 +120,7 @@ describe('Exercise', () => {
       await Promise.resolve()
     })
 
-    expect(screen.queryByText('Analyzing\u2026')).not.toBeInTheDocument()
+    expect(screen.queryByText('Analyzing…')).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Start New Exercise' })).toBeInTheDocument()
   })
 
@@ -126,7 +128,7 @@ describe('Exercise', () => {
     render(<Exercise />)
     fillApiKey()
     fireEvent.click(screen.getByRole('radio', { name: '1s' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Start' })) })
 
     act(() => { vi.advanceTimersByTime(1000) })
 
@@ -139,7 +141,7 @@ describe('Exercise', () => {
     render(<Exercise />)
     fillApiKey()
     fireEvent.click(screen.getByRole('radio', { name: '1s' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Start' })) })
 
     act(() => { vi.advanceTimersByTime(1000) })
 
@@ -149,5 +151,55 @@ describe('Exercise', () => {
 
     expect(screen.getByRole('radio', { name: '10m' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
+  })
+
+  it('Start button shows Validating… and is disabled while validation is in flight', async () => {
+    let resolveValidation!: () => void
+    vi.mocked(validateApiKey).mockImplementation(
+      () => new Promise<void>(resolve => { resolveValidation = resolve })
+    )
+
+    render(<Exercise />)
+    fillApiKey()
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+
+    expect(screen.getByRole('button', { name: 'Validating…' })).toBeDisabled()
+
+    await act(async () => { resolveValidation() })
+    expect(screen.queryByRole('button', { name: 'Validating…' })).not.toBeInTheDocument()
+  })
+
+  it('shows inline error near API key field when validation fails', async () => {
+    vi.mocked(validateApiKey).mockRejectedValue(new Error('Invalid or revoked API key.'))
+
+    render(<Exercise />)
+    fillApiKey()
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Start' })) })
+
+    expect(screen.getByText('Invalid or revoked API key.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
+  })
+
+  it('does not start exercise when validation fails', async () => {
+    vi.mocked(validateApiKey).mockRejectedValue(new Error('Network error — check your connection and try again.'))
+
+    render(<Exercise />)
+    fillApiKey()
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Start' })) })
+
+    expect(screen.queryByText('campfire')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
+  })
+
+  it('clears API key error when the key field is changed', async () => {
+    vi.mocked(validateApiKey).mockRejectedValue(new Error('Invalid or revoked API key.'))
+
+    render(<Exercise />)
+    fillApiKey()
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Start' })) })
+    expect(screen.getByText('Invalid or revoked API key.')).toBeInTheDocument()
+
+    fillApiKey('sk-ant-new-key')
+    expect(screen.queryByText('Invalid or revoked API key.')).not.toBeInTheDocument()
   })
 })

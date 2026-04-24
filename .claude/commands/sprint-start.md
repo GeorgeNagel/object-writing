@@ -30,15 +30,14 @@ All selected tickets must exist in `backlog.json` with `status: "todo"`. If any 
 
 For each selected ticket, one at a time:
 
-1. Display the ticket's `story` and `acceptance_criteria`
-2. Analyze and present findings: gaps between story and AC, ambiguous wording, missing implementation context, scope questions
-3. Ask the user: **accept / edit / defer**
-   - **Accept** — ticket is queued for the sprint as-is
-   - **Edit** — user dictates changes in chat; agent applies them to the ticket fields; ticket is queued with edits applied
-   - **Defer** — ticket is skipped and remains in `backlog.json` untouched
-4. Move to the next ticket
+1. Run the groom skill on the ticket (follow the steps in `.claude/commands/groom.md`).
+2. After grooming completes, re-read the ticket from its source file to get the current state.
+3. Check the ticket's `groomed_at` field:
+   - **Non-null**: ticket is queued for the sprint.
+   - **Null**: ticket is deferred; it remains in `backlog.json` untouched. Tell the user.
+4. Move to the next ticket.
 
-After all tickets are groomed, summarize which were accepted, edited, or deferred. If no tickets were accepted, stop.
+After all tickets are processed, summarize which were queued and which were deferred. If no tickets were queued, stop.
 
 ## Step 5: Execute
 

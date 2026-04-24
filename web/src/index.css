@@ -27,6 +27,8 @@
   --input-border: var(--color-stone-300);
   --input-border-focus: var(--color-slate-900);
 
+  --error: #b91c1c;
+
   --radio-text: var(--color-slate-300);
   --radio-text-checked: var(--color-slate-900);
   --radio-accent: var(--color-slate-900);

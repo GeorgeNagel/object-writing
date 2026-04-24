@@ -1,16 +1,33 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { parseAnnotations, deriveAnnotations, analyzeText } from './analysisService'
+import { parseAnnotations, deriveAnnotations, analyzeText, validateApiKey } from './analysisService'
 
 const mockCreate = vi.hoisted(() => vi.fn())
+const mockModelsList = vi.hoisted(() => vi.fn())
 
-vi.mock('@anthropic-ai/sdk', () => ({
-  default: class {
+vi.mock('@anthropic-ai/sdk', () => {
+  class AuthenticationError extends Error {}
+  class PermissionDeniedError extends Error {}
+  class APIConnectionError extends Error {}
+
+  class MockAnthropic {
     messages = { create: mockCreate }
-  },
-}))
+    models = { list: mockModelsList }
+    static AuthenticationError = AuthenticationError
+    static PermissionDeniedError = PermissionDeniedError
+    static APIConnectionError = APIConnectionError
+  }
+
+  return {
+    default: MockAnthropic,
+    AuthenticationError,
+    PermissionDeniedError,
+    APIConnectionError,
+  }
+})
 
 beforeEach(() => {
   mockCreate.mockReset()
+  mockModelsList.mockReset()
 })
 
 describe('parseAnnotations', () => {
@@ -107,5 +124,34 @@ describe('analyzeText', () => {
 
     const result = await analyzeText('some text', 'test-key')
     expect(result).toEqual([])
+  })
+})
+
+import Anthropic from '@anthropic-ai/sdk'
+
+describe('validateApiKey', () => {
+  it('resolves when models.list succeeds', async () => {
+    mockModelsList.mockResolvedValue({})
+    await expect(validateApiKey('valid-key')).resolves.toBeUndefined()
+  })
+
+  it('throws auth message on AuthenticationError', async () => {
+    mockModelsList.mockRejectedValue(new Anthropic.AuthenticationError(401, undefined, '', new Headers()))
+    await expect(validateApiKey('bad-key')).rejects.toThrow('Invalid or revoked API key.')
+  })
+
+  it('throws permission message on PermissionDeniedError', async () => {
+    mockModelsList.mockRejectedValue(new Anthropic.PermissionDeniedError(403, undefined, '', new Headers()))
+    await expect(validateApiKey('no-perm-key')).rejects.toThrow('This API key does not have permission')
+  })
+
+  it('throws network message on APIConnectionError', async () => {
+    mockModelsList.mockRejectedValue(new Anthropic.APIConnectionError({ message: 'failed to fetch' }))
+    await expect(validateApiKey('any-key')).rejects.toThrow('Network error')
+  })
+
+  it('throws generic message for unknown errors', async () => {
+    mockModelsList.mockRejectedValue(new Error('some unexpected error'))
+    await expect(validateApiKey('any-key')).rejects.toThrow('Unexpected error validating API key')
   })
 })

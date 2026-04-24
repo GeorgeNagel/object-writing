@@ -1,5 +1,23 @@
 import Anthropic from '@anthropic-ai/sdk'
 
+export async function validateApiKey(apiKey: string): Promise<void> {
+  const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true })
+  try {
+    await client.models.list()
+  } catch (err) {
+    if (err instanceof Anthropic.AuthenticationError) {
+      throw new Error('Invalid or revoked API key.')
+    }
+    if (err instanceof Anthropic.PermissionDeniedError) {
+      throw new Error('This API key does not have permission to access Anthropic models.')
+    }
+    if (err instanceof Anthropic.APIConnectionError) {
+      throw new Error('Network error — check your connection and try again.')
+    }
+    throw new Error('Unexpected error validating API key — try again.')
+  }
+}
+
 const SENSES = ['sight', 'sound', 'smell', 'taste', 'touch', 'organic', 'kinesthetic'] as const
 
 export type Sense = (typeof SENSES)[number]

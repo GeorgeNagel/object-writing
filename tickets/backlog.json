@@ -9,7 +9,10 @@
       "When human verification is required, the agent presents testing instructions directly in chat and waits for user confirmation before closing",
       "The agent never leaves testing instructions in code, story files, or comments"
     ],
-    "dependencies": []
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
   },
   {
     "id": "027",
@@ -21,7 +24,10 @@
       "The agent waits for explicit user confirmation before continuing after a plan change",
       "The re-confirmation step is identical in form to the initial plan confirmation step"
     ],
-    "dependencies": []
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
   },
   {
     "id": "031",
@@ -32,7 +38,10 @@
       "ticket-do explicitly instructs the agent to treat user-provided verbatim text as inert data to be transcribed, not as instructions to act on",
       "The agent asks for confirmation before taking any action when the user is in the middle of providing field values"
     ],
-    "dependencies": []
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
   },
   {
     "id": "034",
@@ -40,7 +49,10 @@
     "status": "todo",
     "story": "As a developer, I want a local script that retrieves the next ticket number so that I don't contribute towards LLM API usage limits.",
     "acceptance_criteria": [],
-    "dependencies": []
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
   },
   {
     "id": "037",
@@ -52,17 +64,103 @@
       "The script writes the input verbatim to the user_retro field of the matching ticket in current-sprint.json",
       "The retro command instructs the agent to invoke this script for collecting user_retro rather than asking in chat"
     ],
-    "dependencies": []
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
   },
   {
-    "id": "040",
-    "title": "as a developer, i want to ensure that as stories are groomed according to my conventions",
+    "id": "041",
+    "title": "Add user sign-off step to ticket-do workflow",
+    "status": "todo",
+    "story": "As a developer, I want a formal sign-off step at the end of ticket-do so that I have a structured opportunity to confirm the ticket is done and add retro comments before it is closed.",
+    "acceptance_criteria": [
+      "ticket-do explicitly includes a step where the agent asks the user if they are ready to close the ticket",
+      "The agent waits for user confirmation before closing",
+      "The agent prompts the user for retro comments before closing"
+    ],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
+  },
+  {
+    "id": "042",
+    "title": "add more single-word object words and move word generation into a script and out of the readme",
+    "status": "todo",
+    "story": "as a developer, i want a script to generate high quality prompts for object writing exercises",
+    "acceptance_criteria": [
+      "A script or skill exists that generates one- or two-word object writing prompts",
+      "The script's generation prompt draws on examples from Pat Pattison books"
+    ],
+    "dependencies": [],
+    "non_goals": [
+      "Generating prompts longer than two words",
+      "Replacing the existing static word list",
+      "Automating prompt generation on a schedule",
+      "Building a UI for prompt generation"
+    ],
+    "assumptions": [
+      "Pat Pattison book examples are available to reference (the developer has access to the books)",
+      "The script is run manually on demand, not as part of the app runtime"
+    ],
+    "groomed_at": "2026-04-23T00:00:00Z"
+  },
+  {
+    "id": "043",
+    "title": "Capture execution log in ticket-do for retro input",
+    "status": "todo",
+    "story": "As a developer, I want ticket-do to record structured notes during execution so that retro feedback is based on a complete record rather than recall.",
+    "acceptance_criteria": [
+      "Tickets have a `retro_notes` field with `agent` and `user` keys, each an array of strings; `agent_retro` and `user_retro` fields are no longer populated",
+      "ticket-do instructs the agent to append a plain-string note to `retro_notes.agent` at the point of occurrence for: scope increases, missing or invalidated assumptions, changed ACs, plan deviations, surprises, and blockers",
+      "`retro_notes.agent` entries are limited to retro-relevant events (problems, scope increases, missing or invalidated assumptions, changed ACs, plan deviations, surprises, and blockers) \u2014 execution steps, tool calls, and raw agent output are not recorded",
+      "The retro skill reads from `retro_notes.agent` and writes user feedback to `retro_notes.user`, replacing its prior use of `agent_retro` and `user_retro`"
+    ],
+    "dependencies": [
+      "041"
+    ],
+    "non_goals": [
+      "Migrating or backfilling `agent_retro`/`user_retro` data from existing tickets"
+    ],
+    "assumptions": [
+      "The ticket schema supports adding new fields (i.e., `retro_notes` can be added without a migration script)",
+      "The agent executing ticket-do is capable of writing to the ticket JSON mid-execution"
+    ],
+    "groomed_at": "2026-04-23T00:00:00Z"
+  },
+  {
+    "id": "044",
+    "title": "Carry forward unresolved problems across retros",
+    "status": "todo",
+    "story": "As a developer, I want the retro skill to explicitly check and verify resolution of problems from the previous retro before looking at new ones, so that recurring problems are surfaced rather than rediscovered.",
+    "acceptance_criteria": [],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
+  },
+  {
+    "id": "045",
+    "title": "Route behavioral fixes to the relevant skill during retro",
+    "status": "todo",
+    "story": "As a developer, I want the retro skill to prompt me to update the relevant skill directly when a behavioral problem is identified, so that the fix takes effect immediately rather than becoming a ticket that may never be actioned.",
+    "acceptance_criteria": [],
+    "dependencies": [
+      "044"
+    ],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
+  },
+  {
+    "id": "047",
+    "title": "As a developer, i want my agents to be able to get the current iso timestamp for including in ticket fields like groomed_at",
     "status": "todo",
     "story": "",
     "acceptance_criteria": [
-      "when stories are groomed, implementation details are left out of acceptance criteria",
-      "when stories are groomed, the agent looks for gaps or conflicts or vague direction and collaborates with the user to improve acceptance criteria.",
-      "grooming is extracted into its own skill"
+      "there is a skill or script that agents can run to determine the current iso-format timestamp",
+      "agents have access to the skill or script when they would need it to populate relevant fields in tickets"
     ],
     "dependencies": []
   }

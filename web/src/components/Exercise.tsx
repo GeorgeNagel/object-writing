@@ -5,7 +5,7 @@ import { Results } from './Results'
 import { Button } from './Button'
 import { RadioGroup } from './RadioGroup'
 import { WordPrompt } from './WordPrompt'
-import { analyzeText } from '../services/analysisService'
+import { analyzeText, validateApiKey } from '../services/analysisService'
 import type { SensoryAnnotation } from '../services/analysisService'
 import { getRandomWord } from '../services/wordService'
 import styles from './Exercise.module.css'
@@ -32,6 +32,7 @@ interface ExerciseProps {
   initialText?: string
   initialAnnotations?: SensoryAnnotation[] | null
   initialApiKey?: string
+  initialApiKeyError?: string | null
 }
 
 export function Exercise({
@@ -40,6 +41,7 @@ export function Exercise({
   initialText = '',
   initialAnnotations = null,
   initialApiKey = '',
+  initialApiKeyError = null,
 }: ExerciseProps) {
   const [apiKey, setApiKey] = useState(initialApiKey)
   const [phase, setPhase] = useState<Phase>(initialPhase)
@@ -47,8 +49,20 @@ export function Exercise({
   const [text, setText] = useState(initialText)
   const [annotations, setAnnotations] = useState<SensoryAnnotation[] | null>(initialAnnotations)
   const [durationSeconds, setDurationSeconds] = useState(DEFAULT_DURATION)
+  const [isValidating, setIsValidating] = useState(false)
+  const [apiKeyError, setApiKeyError] = useState<string | null>(initialApiKeyError)
 
-  function handleStart() {
+  async function handleStart() {
+    setIsValidating(true)
+    setApiKeyError(null)
+    try {
+      await validateApiKey(apiKey)
+    } catch (err) {
+      setIsValidating(false)
+      setApiKeyError(err instanceof Error ? err.message : 'Unexpected error — try again.')
+      return
+    }
+    setIsValidating(false)
     setWord(getRandomWord())
     setPhase('running')
   }
@@ -80,8 +94,12 @@ export function Exercise({
               type="password"
               aria-label="Anthropic API Key"
               value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
+              onChange={(e) => { setApiKey(e.target.value); setApiKeyError(null) }}
+              aria-describedby={apiKeyError ? 'api-key-error' : undefined}
             />
+            {apiKeyError && (
+              <p id="api-key-error" className={styles.apiKeyError}>{apiKeyError}</p>
+            )}
           </div>
           <div>
             <span className={styles.fieldLabel}>Duration</span>
@@ -92,8 +110,8 @@ export function Exercise({
               onChange={setDurationSeconds}
             />
           </div>
-          <Button onClick={handleStart} disabled={apiKey.trim() === ''}>
-            Start
+          <Button onClick={handleStart} disabled={apiKey.trim() === '' || isValidating}>
+            {isValidating ? 'Validating…' : 'Start'}
           </Button>
         </div>
       </div>

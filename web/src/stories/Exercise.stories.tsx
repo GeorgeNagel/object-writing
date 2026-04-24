@@ -21,6 +21,20 @@ const sampleAnnotations = deriveAnnotations(sampleText, [
 
 export const Idle: Story = {}
 
+export const IdleApiKeyError: Story = {
+  args: {
+    initialApiKey: 'sk-ant-invalid-key',
+    initialApiKeyError: 'Invalid or revoked API key.',
+  },
+}
+
+export const IdleNetworkError: Story = {
+  args: {
+    initialApiKey: 'sk-ant-test-key',
+    initialApiKeyError: 'Network error — check your connection and try again.',
+  },
+}
+
 export const Running: Story = {
   args: {
     initialPhase: 'running',
