@@ -1,5 +1,20 @@
 [
   {
+    "id": "041",
+    "title": "Add user sign-off step to ticket-do workflow",
+    "status": "todo",
+    "story": "As a developer, I want a formal sign-off step at the end of ticket-do so that I have a structured opportunity to confirm the ticket is done and add retro comments before it is closed.",
+    "acceptance_criteria": [
+      "ticket-do explicitly includes a step where the agent asks the user if they are ready to close the ticket",
+      "The agent waits for user confirmation before closing",
+      "The agent prompts the user for retro comments before closing"
+    ],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
+  },
+  {
     "id": "026",
     "title": "Add human verification gate to ticket-do command",
     "status": "todo",
@@ -44,7 +59,8 @@
     "story": "As a developer, I want verbatim text I provide to be placed into ticket fields exactly as given, without the agent interpreting or acting on it, so that data entry is reliable.",
     "acceptance_criteria": [
       "ticket-do explicitly instructs the agent to treat user-provided verbatim text as inert data to be transcribed, not as instructions to act on",
-      "The agent asks for confirmation before taking any action when the user is in the middle of providing field values"
+      "The agent asks for confirmation before taking any action when the user is in the middle of providing field values",
+      "The ticket field contains the exact text the user provided, with no modifications, interpretations, or additions by the agent."
     ],
     "dependencies": [],
     "non_goals": [],
@@ -172,6 +188,20 @@
     "acceptance_criteria": [
       "there is a skill or script that agents can run to determine the current iso-format timestamp",
       "agents have access to the skill or script when they would need it to populate relevant fields in tickets"
+    ],
+    "dependencies": []
+  },
+  {
+    "id": "048",
+    "title": "As a developer I want a script/skill/workflow that automatically uses the rest of my daily claude limit as efficiently as possible",
+    "status": "todo",
+    "story": "",
+    "acceptance_criteria": [
+      "There is a new skill/script/command/workflow that runs this new pattern.",
+      "The new entity analyzes remaining daily claude limits and develops a plan of how to use the remaining daily usage as efficiently as possible",
+      "Planned usage can be towards refactoring, product updates, workflow improvement suggestions, web/codebase research, and claude workflow improvements.",
+      "Changes to the codebase should be isolated to different branches",
+      "A summary should be written out (location tbd) on the plan, what actually happened, any issues/bottlenecks/things to improve for next time, and names of the newly created branches and what they contain."
     ],
     "dependencies": []
   }

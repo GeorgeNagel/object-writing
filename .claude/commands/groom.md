@@ -31,13 +31,22 @@ Ensure the ticket object has all three schema fields in memory. If any are absen
 
 Run the following six checklist items in order. For each item:
 
-1. Analyze the ticket and present your findings. Be specific — quote relevant text and explain the concern. If no concern is found, say so.
-2. Ask the user: **pass / fail**. The user has final say.
-3. If **fail**:
-   - Ask: "Edit now, or skip and continue?"
-   - If **edit**: user dictates the change in chat. Apply it to the ticket in memory. Confirm the updated field with the user before continuing.
-   - If **skip**: record the item as failed and continue.
-4. If **pass**: record it and continue.
+1. Analyze the ticket and present your findings. Be specific — quote relevant text and explain the concern. If no concern is found, say so. If the agent has suggestions (e.g. proposed non_goals, ACs, assumptions), present them now.
+2. Show response options based on whether suggestions were made:
+
+   **When no suggestions were made:**
+   - `keep original values` — item passes, no changes
+   - `edit (I'll dictate)` — user dictates changes; agent applies and confirms; item recorded as failed
+   - `mark as failed and continue` — item recorded as failed, no changes
+
+   **When the agent has suggestions:**
+   - `keep original values` — no changes applied; item passes
+   - `accept suggestions` — apply agent's proposals verbatim; item recorded as failed; continue
+   - `accept suggestions with edits` — apply agent's proposals, then ask user what to change; confirm; item recorded as failed; continue
+   - `edit (I'll dictate)` — user dictates from scratch; agent applies and confirms; item recorded as failed; continue
+   - `mark as failed and continue` — item recorded as failed, no changes
+
+3. The user has final say. Apply the chosen action and continue.
 
 ### Checklist items
 
@@ -97,10 +106,10 @@ Look for:
 
 ## Step 4: Evaluate pass result
 
-After all five items, evaluate based on the **initial** pass/fail verdict for each item — inline edits do not convert a failed item to a pass for this evaluation.
+After all five items, evaluate based on the **initial** response for each item — `keep original values` = passed; anything else = failed. Subsequent edits do not convert a failed item to a pass for this evaluation.
 
 - **All five initially passed**: proceed to Step 5 with `groomed_at` set to the current ISO datetime.
-- **Any item initially failed or skipped** (even if subsequently edited): list those items and ask: "Run the checklist again from the start?" If yes, return to Step 3 with the updated in-memory ticket. If no, ask the user:
+- **Any item initially failed**: list those items and ask: "Run the checklist again from the start?" If yes, return to Step 3 with the updated in-memory ticket. If no, ask the user:
   - **Defer** — proceed to Step 5 without setting `groomed_at`
   - **Mark as groomed** — user overrides the agent's judgment; set `groomed_at` to the current ISO datetime and proceed to Step 5
 
