@@ -3,16 +3,24 @@
     "id": "026",
     "title": "Add human verification gate to ticket-do command",
     "status": "todo",
-    "story": "As a developer, I want the ticket-do command to pause and ask me to verify before closing a ticket when automated tests are insufficient, so that tickets are never closed without appropriate sign-off.",
+    "story": "As a developer, I want the ticket-do command to pause and ask me to verify before closing a ticket, so that I always have a chance to review changes before a ticket is marked done.",
     "acceptance_criteria": [
-      "ticket-do explicitly distinguishes between tickets that can be closed on passing tests alone and those requiring human verification",
-      "When human verification is required, the agent presents testing instructions directly in chat and waits for user confirmation before closing",
-      "The agent never leaves testing instructions in code, story files, or comments"
+      "ticket-do always pauses and asks the user for confirmation before closing a ticket",
+      "The agent waits for explicit user confirmation before closing"
     ],
     "dependencies": [],
-    "non_goals": [],
-    "assumptions": [],
-    "groomed_at": null
+    "non_goals": [
+      "Automatically determining which tickets need more scrutiny",
+      "Presenting a structured testing checklist (vs. a simple confirmation prompt)",
+      "Blocking closure if tests are failing (separate from human sign-off)",
+      "Logging or recording the sign-off confirmation"
+    ],
+    "assumptions": [
+      "The user is present and available to respond when ticket-do reaches the sign-off step",
+      "ticket-do is always run interactively (not in a batch or unattended mode)",
+      "The user will genuinely review changes before confirming, not rubber-stamp"
+    ],
+    "groomed_at": "2026-04-24T00:00:00Z"
   },
   {
     "id": "027",
@@ -63,21 +71,6 @@
       "A script exists that accepts a ticket ID and prompts for user_retro text via stdin",
       "The script writes the input verbatim to the user_retro field of the matching ticket in current-sprint.json",
       "The retro command instructs the agent to invoke this script for collecting user_retro rather than asking in chat"
-    ],
-    "dependencies": [],
-    "non_goals": [],
-    "assumptions": [],
-    "groomed_at": null
-  },
-  {
-    "id": "041",
-    "title": "Add user sign-off step to ticket-do workflow",
-    "status": "todo",
-    "story": "As a developer, I want a formal sign-off step at the end of ticket-do so that I have a structured opportunity to confirm the ticket is done and add retro comments before it is closed.",
-    "acceptance_criteria": [
-      "ticket-do explicitly includes a step where the agent asks the user if they are ready to close the ticket",
-      "The agent waits for user confirmation before closing",
-      "The agent prompts the user for retro comments before closing"
     ],
     "dependencies": [],
     "non_goals": [],

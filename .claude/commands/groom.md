@@ -29,7 +29,7 @@ Ensure the ticket object has all three schema fields in memory. If any are absen
 
 ## Step 3: Run checklist
 
-Run the following five checklist items in order. For each item:
+Run the following six checklist items in order. For each item:
 
 1. Analyze the ticket and present your findings. Be specific — quote relevant text and explain the concern. If no concern is found, say so.
 2. Ask the user: **pass / fail**. The user has final say.
@@ -41,7 +41,17 @@ Run the following five checklist items in order. For each item:
 
 ### Checklist items
 
-**1. Story**
+**1. Duplicates**
+Does this ticket duplicate an existing ticket?
+
+Search for potential duplicates across `tickets/current-sprint.json`, `tickets/backlog.json`, and all files in `tickets/archive/`. Compare the title, story, and acceptance criteria of the ticket being groomed against all other tickets. Look for:
+- Tickets with the same or very similar title
+- Tickets whose story describes the same user goal
+- Tickets whose ACs substantially overlap with the current ticket's ACs
+
+If potential duplicates are found, list them with their IDs, titles, and statuses, and explain the overlap. If none are found, say so.
+
+**2. Story**
 Is the user-facing goal clear and implementation-agnostic?
 
 Look for:
