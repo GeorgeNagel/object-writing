@@ -126,12 +126,30 @@
     "id": "044",
     "title": "Carry forward unresolved problems across retros",
     "status": "todo",
-    "story": "As a developer, I want the retro skill to explicitly check and verify resolution of problems from the previous retro before looking at new ones, so that recurring problems are surfaced rather than rediscovered.",
-    "acceptance_criteria": [],
+    "story": "As a developer, I want retros to validate whether problems raised in previous sprints have been resolved before checking for new retro issues, so that recurring problems are surfaced and managed distinctly rather than rediscovered",
+    "acceptance_criteria": [
+      "Before reviewing current sprint tickets, the retro presents each problem identified in the previous retro and asks the developer whether it has been resolved.",
+      "Problems confirmed as unresolved are carried into the current retro's problem list and labeled as recurring.",
+      "If no previous retro exists, the validation step is skipped and the retro proceeds directly to reviewing current sprint tickets.",
+      "The retro reads previously raised problems from the most recent retro summary file (`tickets/retros/sprint-{N}-retro.md`) under the 'Problems Identified' section.",
+      "Recurring problems are distinguishable from newly identified problems throughout the retro, including in the five whys discussion and written summary.",
+      "Unresolved problems remain visible in subsequent retros until explicitly confirmed as resolved.",
+      "The retro summary written at the end lists which carried-forward problems were confirmed resolved and which remain unresolved.",
+      "Each recurring problem tracks how many consecutive sprints it has been carried forward; this count is displayed when the problem is presented during the validation step."
+    ],
     "dependencies": [],
-    "non_goals": [],
-    "assumptions": [],
-    "groomed_at": null
+    "non_goals": [
+      "Automatically detecting whether a problem was resolved (without asking the developer)",
+      "Migrating existing retro summary files to a new format to support sprint counts",
+      "Triggering automated actions (e.g., escalation, alerts) on long-running recurring problems",
+      "Resolving problems automatically based on whether related tickets were closed"
+    ],
+    "assumptions": [
+      "Previous retro summaries follow a consistent, parseable format with a 'Problems Identified' section.",
+      "Sprint numbers are sequential so the skill can reliably identify the immediately preceding retro file.",
+      "The developer is available interactively to confirm resolution of each carried-forward problem."
+    ],
+    "groomed_at": "2026-04-24T00:00:00Z"
   },
   {
     "id": "045",
