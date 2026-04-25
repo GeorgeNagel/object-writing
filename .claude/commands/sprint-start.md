@@ -26,21 +26,21 @@ If the user provided task IDs, use those. If the user provided criteria, select 
 
 All selected tickets must exist in `backlog.json` with `status: "todo"`. If any selected task is not found, report the missing IDs and stop.
 
-## Step 4: Groom each ticket
+## Step 4: Groom and move each ticket
 
 For each selected ticket, one at a time:
 
-1. Run the groom skill on the ticket (follow the steps in `.claude/commands/groom.md`).
-2. After grooming completes, re-read the ticket from its source file to get the current state.
-3. Check the ticket's `groomed_at` field:
-   - **Non-null**: ticket is queued for the sprint.
-   - **Null**: ticket is deferred; it remains in `backlog.json` untouched. Tell the user.
+1. Check the ticket's `groomed_at` field in `backlog.json`.
+   - **Already set (non-null)**: skip grooming, proceed directly to step 3.
+   - **Null**: run the groom skill on the ticket (follow `.claude/commands/groom.md`), then re-read the ticket to get current state.
+2. Check `groomed_at` after grooming:
+   - **Non-null**: proceed to step 3.
+   - **Null**: ticket is deferred; leave it in `backlog.json` untouched. Tell the user and move to the next ticket.
+3. Move the ticket into the sprint immediately:
+   - Add a `sprint` field set to the sprint number (integer).
+   - Remove the ticket from `backlog.json` and write it.
+   - Append the ticket to `current-sprint.json` and write it.
+   - Tell the user the ticket has been added to the sprint.
 4. Move to the next ticket.
 
-After all tickets are processed, summarize which were queued and which were deferred. If no tickets were queued, stop.
-
-## Step 5: Execute
-
-1. Add a `sprint` field set to the sprint number (integer) to each accepted task
-2. Remove only the accepted tickets from `backlog.json` and write it
-3. Write the accepted tickets to `current-sprint.json`
+After all tickets are processed, summarize which were added and which were deferred.

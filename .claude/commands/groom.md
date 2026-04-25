@@ -27,40 +27,45 @@ Ensure the ticket object has all three schema fields in memory. If any are absen
 - `assumptions`: `[]`
 - `groomed_at`: `null`
 
-## Step 3: Run checklist
+## Step 3: Duplicate check
 
-Run the following six checklist items in order. For each item:
-
-1. Analyze the ticket and present your findings. Be specific — quote relevant text and explain the concern. If no concern is found, say so. If the agent has suggestions (e.g. proposed non_goals, ACs, assumptions), present them now.
-2. Show response options based on whether suggestions were made:
-
-   **When no suggestions were made:**
-   - `keep original values` — item passes, no changes
-   - `edit (I'll dictate)` — user dictates changes; agent applies and confirms; item recorded as failed
-   - `mark as failed and continue` — item recorded as failed, no changes
-
-   **When the agent has suggestions:**
-   - `keep original values` — no changes applied; item passes
-   - `accept suggestions` — apply agent's proposals verbatim; item recorded as failed; continue
-   - `accept suggestions with edits` — apply agent's proposals, then ask user what to change; confirm; item recorded as failed; continue
-   - `edit (I'll dictate)` — user dictates from scratch; agent applies and confirms; item recorded as failed; continue
-   - `mark as failed and continue` — item recorded as failed, no changes
-
-3. The user has final say. Apply the chosen action and continue.
-
-### Checklist items
-
-**1. Duplicates**
-Does this ticket duplicate an existing ticket?
-
-Search for potential duplicates across `tickets/current-sprint.json`, `tickets/backlog.json`, and all files in `tickets/archive/`. Compare the title, story, and acceptance criteria of the ticket being groomed against all other tickets. Look for:
+Search for potential duplicates across `tickets/current-sprint.json` and `tickets/backlog.json`. Compare the title, story, and acceptance criteria of the ticket being groomed against all other tickets. Look for:
 - Tickets with the same or very similar title
 - Tickets whose story describes the same user goal
 - Tickets whose ACs substantially overlap with the current ticket's ACs
 
 If potential duplicates are found, list them with their IDs, titles, and statuses, and explain the overlap. If none are found, say so.
 
-**2. Story**
+Use `AskUserQuestion` to present response options:
+- `Continue` — no duplicates, or user acknowledges and wants to proceed
+- `Stop` — user decides not to continue given the duplicates found
+
+If the user stops, do not proceed to Step 4.
+
+## Step 4: Run checklist
+
+Run the following five checklist items in order. For each item:
+
+1. Analyze the ticket and present your findings. Be specific — quote relevant text and explain the concern. If no concern is found, say so. If the agent has suggestions (e.g. proposed non_goals, ACs, assumptions), present them now.
+2. Use `AskUserQuestion` to present response options based on whether suggestions were made:
+
+   **When no suggestions were made:**
+   - `Keep original values` — item passes, no changes
+   - `Edit (I'll dictate)` — user dictates changes; agent applies and confirms; item recorded as failed
+   - `Mark as failed and continue` — item recorded as failed, no changes
+
+   **When the agent has suggestions:**
+   - `Keep original values` — no changes applied; item passes
+   - `Accept suggestions` — apply agent's proposals verbatim; item recorded as failed; continue
+   - `Accept suggestions with edits` — apply agent's proposals, then ask user what to change; confirm; item recorded as failed; continue
+   - `Edit (I'll dictate)` — user dictates from scratch; agent applies and confirms; item recorded as failed; continue
+   - `Mark as failed and continue` — item recorded as failed, no changes
+
+3. The user has final say. Apply the chosen action and continue.
+
+### Checklist items
+
+**1. Story**
 Is the user-facing goal clear and implementation-agnostic?
 
 Look for:
@@ -104,16 +109,21 @@ Look for:
 - Assumptions that conflict with the ACs
 - Title that misrepresents the story
 
-## Step 4: Evaluate pass result
+This item has no editable field. Use `AskUserQuestion` to present only:
+- `Mark as passed`
+- `Mark as failed`
 
-After all five items, evaluate based on the **initial** response for each item — `keep original values` = passed; anything else = failed. Subsequent edits do not convert a failed item to a pass for this evaluation.
+## Step 5: Evaluate pass result
 
-- **All five initially passed**: proceed to Step 5 with `groomed_at` set to the current ISO datetime.
-- **Any item initially failed**: list those items and ask: "Run the checklist again from the start?" If yes, return to Step 3 with the updated in-memory ticket. If no, ask the user:
-  - **Defer** — proceed to Step 5 without setting `groomed_at`
-  - **Mark as groomed** — user overrides the agent's judgment; set `groomed_at` to the current ISO datetime and proceed to Step 5
+After all five checklist items, evaluate based on the **initial** response for each item — `keep original values` = passed; anything else = failed. Subsequent edits do not convert a failed item to a pass for this evaluation.
 
-## Step 5: Write results
+- **All five initially passed**: proceed to Step 6 with `groomed_at` set to the current ISO datetime.
+- **Any item initially failed**: list those items and use `AskUserQuestion` to ask "Run the checklist again from the start?" with options:
+  - `Run again` — return to Step 4 with the updated in-memory ticket
+  - `Defer` — proceed to Step 6 without setting `groomed_at`
+  - `Mark as groomed` — user overrides the agent's judgment; set `groomed_at` to the current ISO datetime and proceed to Step 6
+
+## Step 6: Write results
 
 If a full clean pass was achieved or the user marked the ticket as groomed, set `groomed_at` to the current ISO datetime (e.g. `2026-04-23T14:30:00Z`).
 
