@@ -204,5 +204,19 @@
       "A summary should be written out (location tbd) on the plan, what actually happened, any issues/bottlenecks/things to improve for next time, and names of the newly created branches and what they contain."
     ],
     "dependencies": []
+  },
+  {
+    "id": "049",
+    "title": "Track agent metrics per ticket",
+    "status": "todo",
+    "story": "As a developer, I want relevant agent metrics recorded on each ticket so that I can spot trends and improve my agent usage over time.",
+    "acceptance_criteria": [
+      "Each ticket has an agent_metrics field containing: input_tokens, output_tokens, cache_tokens, thinking_tokens, estimated_cost_usd, turn_count, tool_call_count",
+      "Metrics accumulate across multiple sessions on the same ticket (values are added, not replaced)",
+      "Metrics are updated at the end of any Claude Code session where a ticket is in_progress",
+      "Metrics are not updated when no ticket is in_progress",
+      "Metrics are updated when a ticket is marked done"
+    ],
+    "dependencies": []
   }
 ]
