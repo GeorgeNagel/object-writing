@@ -12,17 +12,19 @@ TERMINAL = {"done", "closed"}
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("usage: close-ticket.py <id>", file=sys.stderr)
-        sys.exit(1)
-
-    ticket_id = sys.argv[1].lstrip("0") or "0"
     tickets = json.loads(CURRENT.read_text())
 
-    match = next((t for t in tickets if (t["id"].lstrip("0") or "0") == ticket_id), None)
-    if match is None:
-        print(f"error: ticket {sys.argv[1]} not found in current sprint", file=sys.stderr)
-        sys.exit(1)
+    if len(sys.argv) == 2:
+        ticket_id = sys.argv[1].lstrip("0") or "0"
+        match = next((t for t in tickets if (t["id"].lstrip("0") or "0") == ticket_id), None)
+        if match is None:
+            print(f"error: ticket {sys.argv[1]} not found in current sprint", file=sys.stderr)
+            sys.exit(1)
+    else:
+        match = next((t for t in tickets if t.get("status") == "in_progress"), None)
+        if match is None:
+            print("error: no in_progress ticket found in current sprint", file=sys.stderr)
+            sys.exit(1)
 
     if match["status"] in TERMINAL:
         print(f"error: ticket {sys.argv[1]} is already {match['status']}", file=sys.stderr)
@@ -37,7 +39,7 @@ def main():
         match["closed_reason"] = reason
 
     CURRENT.write_text(json.dumps(tickets, indent=2) + "\n")
-    print(f"Ticket {sys.argv[1]} closed.")
+    print(f"Ticket {match['id']} closed.")
 
 
 if __name__ == "__main__":
