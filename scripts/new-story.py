@@ -1,63 +1,120 @@
 #!/usr/bin/env python3
-"""Append a stub story ticket to backlog.json."""
+"""Create a ticket and append it to backlog.json."""
 
 import json
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-SCRIPTS_DIR = Path(__file__).parent
-BACKLOG = SCRIPTS_DIR.parent / "tickets" / "backlog.json"
-COUNTER_FILE = SCRIPTS_DIR.parent / "tickets" / "next-id.txt"
+REPO = Path(__file__).parent.parent
+TICKETS = REPO / "tickets"
+BACKLOG = TICKETS / "backlog.json"
+
+TEMPLATE = {
+    "_instructions": "Fill in the fields below, save, and close this tab. Remove placeholder empty strings from lists.",
+    "story": "As a [persona], I want [goal] so that [reason]",
+    "acceptance_criteria": [],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+}
 
 
-def get_next_id():
-    if not COUNTER_FILE.exists():
-        print(f"error: {COUNTER_FILE} does not exist", file=sys.stderr)
+def next_id():
+    files = [BACKLOG, TICKETS / "current-sprint.json"] + list(
+        (TICKETS / "archive").glob("*.json")
+    )
+    max_id = 0
+    for path in files:
+        if not path.exists():
+            continue
+        for ticket in json.loads(path.read_text()):
+            try:
+                max_id = max(max_id, int(ticket["id"]))
+            except (KeyError, ValueError):
+                pass
+    return str(max_id + 1).zfill(3)
+
+
+def open_editor(template: dict) -> dict:
+    with tempfile.NamedTemporaryFile(suffix=".json", mode="w", delete=False) as f:
+        json.dump(template, f, indent=2)
+        f.write("\n")
+        path = f.name
+
+    try:
+        result = subprocess.run(["code", "--wait", path])
+        if result.returncode != 0:
+            print("error: VS Code exited with an error", file=sys.stderr)
+            sys.exit(1)
+        return json.loads(Path(path).read_text())
+    except FileNotFoundError:
+        print(
+            "error: 'code' not found on PATH — use --stub to create a shell ticket instead",
+            file=sys.stderr,
+        )
         sys.exit(1)
-    value = COUNTER_FILE.read_text().strip()
-    if not value.isdigit():
-        print(f"error: {COUNTER_FILE} contains invalid value: {value!r}", file=sys.stderr)
+    except json.JSONDecodeError as e:
+        print(f"error: could not parse edited file: {e}", file=sys.stderr)
         sys.exit(1)
-    COUNTER_FILE.write_text(str(int(value) + 1).zfill(3) + "\n")
-    return value
+    finally:
+        Path(path).unlink(missing_ok=True)
 
 
-def prompt_list(prompt):
-    items = []
-    while True:
-        value = input(prompt).strip()
-        if not value:
-            break
-        items.append(value)
-    return items
+def clean_list(items):
+    return [str(s) for s in items if s is not None and str(s).strip()]
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("usage: new-story.py <title>", file=sys.stderr)
+    stub = "--stub" in sys.argv
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+
+    if not args:
+        print("usage: new-story.py [--stub] <title>", file=sys.stderr)
         sys.exit(1)
 
-    title = sys.argv[1]
+    title = args[0]
 
-    print("Enter acceptance criteria (press Enter on empty line to finish):")
-    acceptance_criteria = prompt_list("  Criterion: ")
+    if stub:
+        ticket = {
+            "id": next_id(),
+            "title": title,
+            "status": "todo",
+            "story": "",
+            "acceptance_criteria": [],
+            "dependencies": [],
+            "non_goals": [],
+            "assumptions": [],
+            "groomed_at": None,
+        }
+    else:
+        template = dict(TEMPLATE)
+        template["title"] = title
+        data = open_editor(template)
+        data.pop("_instructions", None)
 
-    print("Enter dependencies (press Enter on empty line to finish):")
-    dependencies = prompt_list("  Dependency ticket ID: ")
+        story = data.get("story", "").strip()
+        if not story or story == TEMPLATE["story"]:
+            print("warning: story field not filled in", file=sys.stderr)
+            story = ""
 
-    ticket_id = get_next_id()
+        ticket = {
+            "id": next_id(),
+            "title": data.get("title", title).strip() or title,
+            "status": "todo",
+            "story": story,
+            "acceptance_criteria": clean_list(data.get("acceptance_criteria", [])),
+            "dependencies": clean_list(data.get("dependencies", [])),
+            "non_goals": clean_list(data.get("non_goals", [])),
+            "assumptions": clean_list(data.get("assumptions", [])),
+            "groomed_at": None,
+        }
 
     tickets = json.loads(BACKLOG.read_text())
-    tickets.append({
-        "id": ticket_id,
-        "title": title,
-        "status": "todo",
-        "story": "",
-        "acceptance_criteria": acceptance_criteria,
-        "dependencies": dependencies,
-    })
+    tickets.append(ticket)
     BACKLOG.write_text(json.dumps(tickets, indent=2) + "\n")
-    print(f"Created ticket [{ticket_id}]: {title}")
+    print(f"Created ticket [{ticket['id']}]: {ticket['title']}")
 
 
 if __name__ == "__main__":

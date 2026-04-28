@@ -17,3 +17,14 @@ cd web && npm test
 
 Run `/generate-words` in `claude` to generate 50 new prompts and append them to `web/src/data/words.json`.
 
+## Creating a new ticket
+
+From within a Claude session, run:
+
+```
+# Note, the `!` prefix runs the command in the session.
+! python3 scripts/new-story.py "Your ticket title"
+
+# Create a stub ticket (title only)
+! python3 scripts/new-story.py --stub "Your ticket title"
+```
