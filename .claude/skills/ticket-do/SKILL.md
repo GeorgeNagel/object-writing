@@ -4,6 +4,7 @@ description: Execute the currently claimed ticket
 allowed-tools:
   - Read
   - Plan
+  - ticket-done
 ---
 
 ## Step 1: Ask clarifying questions

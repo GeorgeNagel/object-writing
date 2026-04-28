@@ -108,7 +108,7 @@
   {
     "id": "044",
     "title": "Carry forward unresolved problems across retros",
-    "status": "todo",
+    "status": "done",
     "story": "As a developer, I want retros to validate whether problems raised in previous sprints have been resolved before checking for new retro issues, so that recurring problems are surfaced and managed distinctly rather than rediscovered",
     "acceptance_criteria": [
       "Before reviewing current sprint tickets, the retro presents each problem identified in the previous retro and asks the developer whether it has been resolved.",
@@ -133,6 +133,7 @@
       "The developer is available interactively to confirm resolution of each carried-forward problem."
     ],
     "groomed_at": "2026-04-24T00:00:00Z",
-    "sprint": 7
+    "sprint": 7,
+    "completed_at": "2026-04-28T13:57:47.770401"
   }
 ]

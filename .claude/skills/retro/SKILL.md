@@ -14,6 +14,27 @@ Separate tickets into two groups:
 - **Done**: `status: "done"`
 - **Open/carry-over**: any other status
 
+## Step 1b: Validate carried-forward problems
+
+Determine the current sprint number `N` from the `sprint` field on tickets. Look for `tickets/retros/sprint-{N-1}-retro.md`. If the file does not exist, skip this step entirely.
+
+If the file exists, read it and parse the **Problems Identified** section. For each line item:
+- If the line starts with `[Recurring: K sprint(s)]`, extract `K` as the existing count and strip the prefix to get the problem text.
+- Otherwise treat the count as 1.
+
+For each problem, present it to the user with its count:
+
+```
+Carried-forward problem (recurring for K sprint(s)):
+  {problem text}
+
+Has this been resolved?
+```
+
+Wait for the user's response before moving to the next problem.
+
+Collect all unresolved problems as **carried-forward**, each with an incremented count (`K + 1`). Confirmed-resolved problems are not carried into the current retro's problem list, but are recorded for the summary.
+
 ## Step 2: Ticket recap
 
 For each ticket (done tickets first, then open/carry-over), present:
@@ -31,7 +52,7 @@ Wait for the user's response before moving to the next ticket. Collect their ans
 
 ## Step 3: Cluster and confirm
 
-Synthesize all retro notes and additional feedback into a flat list of distinct problems. Do not group into themes yet — list each problem individually.
+Synthesize all retro notes and additional feedback into a flat list of distinct problems. Prepend any carried-forward problems from Step 1b (labeled `[Recurring: K sprint(s)]`). Do not group into themes yet — list each problem individually, keeping the recurring label visible.
 
 Present the list and ask: "Does this capture all the main problems? Anything missing or to remove?"
 
@@ -41,7 +62,7 @@ Iterate — adding, removing, or rewording items — until the user confirms the
 
 For each problem in the confirmed list, run a five why's discussion:
 
-1. State the problem clearly.
+1. State the problem clearly. If it is recurring, note that it has been carried forward for K sprints.
 2. Ask "Why did this happen?"
 3. After each answer, ask "Why?" again, digging deeper.
 4. Continue until a root cause is reached — typically 3–5 levels deep, but stop earlier if the user signals the root cause is found or later if more depth is needed.
@@ -76,9 +97,10 @@ Write a markdown summary to `tickets/retros/sprint-{N}-retro.md` (create the dir
 
 1. Header: sprint number and today's date
 2. **Tickets Reviewed** — done tickets then carry-over, each showing agent_retro, user_retro, and any additional feedback collected in Step 2
-3. **Problems Identified** — the confirmed flat list from Step 3
-4. **Root Cause Analysis** — for each problem, the layered Why chain and root cause summary from Step 4
-5. **New Tickets Added** — table of approved tickets (ID + title)
+3. **Carried-forward Problems** — from Step 1b, list each problem with its resolution status (resolved or unresolved). If no carried-forward problems existed, write "(none)".
+4. **Problems Identified** — the confirmed flat list from Step 3. Prefix recurring problems with `[Recurring: K sprint(s)]` so future retros can parse the count.
+5. **Root Cause Analysis** — for each problem, the layered Why chain and root cause summary from Step 4
+6. **New Tickets Added** — table of approved tickets (ID + title)
 
 Use this structure:
 
@@ -96,10 +118,15 @@ Use this structure:
 ### Carry-over
 - (same format)
 
+## Carried-forward Problems
+
+- {problem text} — **resolved**
+- {problem text} — **unresolved** (recurring for K sprint(s))
+
 ## Problems Identified
 
-- {problem 1}
-- {problem 2}
+- [Recurring: K sprint(s)] {problem text}
+- {new problem text}
 
 ## Root Cause Analysis
 
