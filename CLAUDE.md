@@ -1,5 +1,7 @@
 # Object Writing App
 
+All skills, tools, and commands are to be written within this project (don't write to or read from ~/.claude)
+
 ## Documentation
 
 Avoid duplicate knowledge across markdown files. Each fact should have one authoritative location. Pointer references (e.g. "see X for details") are preferred over restating content.

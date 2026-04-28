@@ -1,10 +1,11 @@
-Start a new sprint by pulling tickets from the backlog into the current sprint.
-
-## Arguments
-
-```
-/sprint-start [criteria or task IDs]
-```
+---
+name: sprint-start
+description: Kick off a new sprint, making sure that each ticket is groomed
+allowed-tools:
+  - Groom
+  - Read(tickets/**)
+  - Write(tickets/**)
+---
 
 - **criteria** — natural language description of what to pull in (e.g. "the next 3 unblocked tickets")
 - **task IDs** — explicit list of IDs to include (e.g. "019 020 021")

@@ -1,10 +1,10 @@
-Run a retrospective for the current sprint.
+---
+name: retro
+description: Perform a retrospective on the current sprint to elicit improvements
+allowed-tools:
+  - Read(tickets/**)
+---
 
-## Arguments
-
-```
-/retro
-```
 
 ## Step 1: Load sprint tickets
 
@@ -21,8 +21,8 @@ For each ticket (done tickets first, then open/carry-over), present:
 ```
 ## [{id}] {title}  ({status})
 
-**Agent retro:** {agent_retro or "(none)"}
-**User retro:** {user_retro or "(none)"}
+**Agent retro:** {retro_notes.agent entries or "(none)"}
+**User retro:** {retro_notes.user entries or "(none)"}
 ```
 
 After presenting each ticket, ask: "Anything to add about this ticket?"
@@ -53,7 +53,6 @@ For each root cause identified in Step 4, propose a backlog ticket:
 
 ```json
 {
-  "id": "{NNN}",
   "title": "{short title}",
   "status": "todo",
   "story": "As a [persona], I want [goal] so that [reason]",
@@ -65,17 +64,11 @@ For each root cause identified in Step 4, propose a backlog ticket:
 }
 ```
 
-Determine the next available ID by reading `tickets/backlog.json`, `tickets/current-sprint.json`, and all files in `tickets/archive/`. Use the highest existing numeric ID incremented by 1, zero-padded to three digits.
-
-Present each proposed ticket one at a time. For each, ask: "Add this to the backlog, skip it, or edit it?" Apply any edits requested before writing.
-
-## Step 6: Write approved tickets
-
-Append all approved tickets to `tickets/backlog.json` and write the file.
+Present each proposed ticket one at a time. For each, ask: "Add this to the backlog, skip it, or edit it?" Apply any edits requested before using `scripts/new-story.py` with the `--json=<Json blob>` to create the new ticket.
 
 Confirm to the user how many tickets were added and list their IDs and titles.
 
-## Step 7: Write retro summary
+## Step 6: Write retro summary
 
 Determine the sprint number from the `sprint` field on tickets in `tickets/current-sprint.json`. If unavailable, use `unknown`.
 
@@ -96,8 +89,8 @@ Use this structure:
 
 ### Done
 - [{id}] {title}
-  - Agent retro: {agent_retro or "(none)"}
-  - User retro: {user_retro or "(none)"}
+  - Agent retro: {retro_notes.agent entries or "(none)"}
+  - User retro: {retro_notes.user entries or "(none)"}
   - Additional feedback: {collected in Step 2 or "(none)"}
 
 ### Carry-over

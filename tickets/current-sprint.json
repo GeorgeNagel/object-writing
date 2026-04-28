@@ -81,7 +81,7 @@
   {
     "id": "043",
     "title": "Capture execution log in ticket-do for retro input",
-    "status": "todo",
+    "status": "done",
     "story": "As a developer, I want ticket-do to record structured notes during execution so that retro feedback is based on a complete record rather than recall.",
     "acceptance_criteria": [
       "Tickets have a `retro_notes` field with `agent` and `user` keys, each an array of strings; `agent_retro` and `user_retro` fields are no longer populated",
@@ -102,7 +102,8 @@
       "The retro skill is the sole writer of `retro_notes.user`; no other workflow writes to that field"
     ],
     "groomed_at": "2026-04-24T00:00:00Z",
-    "sprint": 7
+    "sprint": 7,
+    "closed_at": "2026-04-28"
   },
   {
     "id": "044",

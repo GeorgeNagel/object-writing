@@ -1,10 +1,11 @@
-Groom a single ticket by running a structured checklist interactively with the user.
+---
+name: groom
+description: Groom a user story ticket so that it's ready to be worked on
+allowed-tools:
+  - Read(tickets/**)
+  - Write(tickets/**)
+---
 
-## Arguments
-
-```
-/groom <ticket-id>
-```
 
 - **ticket-id** — the ID of the ticket to groom (e.g. `046`)
 

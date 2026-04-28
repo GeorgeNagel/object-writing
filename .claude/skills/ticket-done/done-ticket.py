@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Set a ticket's status to closed with an optional reason in current-sprint.json."""
+"""Set a ticket's status to done in current-sprint.json."""
 
 import json
 import sys
@@ -27,19 +27,14 @@ def main():
             sys.exit(1)
 
     if match["status"] in TERMINAL:
-        print(f"error: ticket {sys.argv[1]} is already {match['status']}", file=sys.stderr)
+        print(f"error: ticket {match['id']} is already {match['status']}", file=sys.stderr)
         sys.exit(1)
 
-    print("Reason (optional, press Enter to skip): ", end="", flush=True)
-    reason = sys.stdin.readline().strip()
-
-    match["status"] = "closed"
-    match["closed_at"] = datetime.now().isoformat()
-    if reason:
-        match["closed_reason"] = reason
+    match["status"] = "done"
+    match["completed_at"] = datetime.now().isoformat()
 
     CURRENT.write_text(json.dumps(tickets, indent=2) + "\n")
-    print(f"Ticket {match['id']} closed.")
+    print(f"Ticket {match['id']} marked done.")
 
 
 if __name__ == "__main__":
