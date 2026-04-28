@@ -22,7 +22,7 @@ Style reference — Pat Pattison object writing favors objects that are:
 - Vivid enough to trigger a strong sensory image on their own
 
 Real Pattison examples:
-earthworm
+earthworm, pebble, high wire, pollen, curtain
 
 ## Step 3: Write the updated file
 

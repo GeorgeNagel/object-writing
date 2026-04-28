@@ -28,7 +28,7 @@
   {
     "id": "026",
     "title": "Add human verification gate to ticket-do command",
-    "status": "todo",
+    "status": "done",
     "story": "As a developer, I want the ticket-do command to pause and ask me to verify before closing a ticket, so that I always have a chance to review changes before a ticket is marked done.",
     "acceptance_criteria": [
       "ticket-do always pauses and asks the user for confirmation before closing a ticket",
@@ -47,12 +47,16 @@
       "The user will genuinely review changes before confirming, not rubber-stamp"
     ],
     "groomed_at": "2026-04-24T00:00:00Z",
-    "sprint": 7
+    "sprint": 7,
+    "completed_at": "2026-04-28"
   },
   {
     "id": "042",
     "title": "Add script to generate object writing prompts using Pat Pattison examples",
-    "status": "in_progress",
+    "status": "done",
+    "completed_at": "2026-04-25",
+    "agent_retro": null,
+    "user_retro": "the agent failed to mark the ticket as done previously (or i had to close the window before it could close the ticket). either way, the current agent fails to understand that a previous session already completed the work.",
     "story": "As a developer, I want a script to generate high quality prompts for object writing exercises so that I can easily add more to the existing list.",
     "acceptance_criteria": [
       "A script or skill exists that generates one- or two-word object writing prompts",

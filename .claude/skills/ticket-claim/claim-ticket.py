@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-CURRENT = Path(__file__).parent.parent / "tickets" / "current-sprint.json"
+CURRENT = Path(__file__).parent.parent.parent.parent / "tickets" / "current-sprint.json"
 
 
 def main():

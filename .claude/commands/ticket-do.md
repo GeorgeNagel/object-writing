@@ -40,6 +40,12 @@ If nothing stands out, set the field to `null`.
 
 **User retro** (`user_retro`): Ask the user: "Anything to add to the retro for this ticket?" Wait for their response. If they decline or have nothing to add, set the field to `null`. Add their response verbatim here and don't implement their suggested changes from this question.
 
-## Step 5: Close the ticket
+## Step 5: Human sign-off
+
+Ask the user: "Ready to close this ticket?" Wait for their explicit confirmation before proceeding.
+
+If the user is not ready, do not close the ticket. Let them know the ticket remains open and they can continue when ready.
+
+## Step 6: Close the ticket
 
 Set the ticket's `status` to `"done"` and add a `completed_at` timestamp. Write the updated `tickets/current-sprint.json`.

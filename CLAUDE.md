@@ -20,9 +20,7 @@ Standalone Python scripts in `scripts/` handle mechanical ticket/sprint operatio
 
 - `next-ticket-id.py` — print next ticket ID and increment `tickets/next-id.txt`
 - `sprint-close.py` — validate all tickets terminal (done or closed), archive sprint, reset current sprint
-- `claim-ticket.py <id>` — set a ticket to `in_progress`
 - `complete-ticket.py <id>` — set a ticket to `done` with today's date
-- `close-ticket.py <id>` — set a ticket to `closed` (skipped/abandoned) with optional reason via stdin
 - `list-eligible-tickets.py` — print `todo` tickets with all dependencies met
 
 ## Key conventions
