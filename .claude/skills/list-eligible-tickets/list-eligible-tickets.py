@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-TICKETS_DIR = Path(__file__).parent.parent / "tickets"
+TICKETS_DIR = Path(__file__).parent.parent.parent.parent / "tickets"
 CURRENT = TICKETS_DIR / "current-sprint.json"
 BACKLOG = TICKETS_DIR / "backlog.json"
 

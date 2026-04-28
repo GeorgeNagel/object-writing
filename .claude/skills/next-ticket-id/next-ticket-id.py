@@ -4,7 +4,7 @@
 import sys
 from pathlib import Path
 
-COUNTER_FILE = Path(__file__).parent.parent / "tickets" / "next-id.txt"
+COUNTER_FILE = Path(__file__).parent.parent.parent.parent / "tickets" / "next-id.txt"
 
 
 def main():
