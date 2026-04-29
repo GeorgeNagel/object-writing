@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Score } from '../components/Score'
+import { Score } from '@/components/Score'
 
 const meta: Meta<typeof Score> = {
   component: Score,

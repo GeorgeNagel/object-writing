@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { getRandomWord } from './wordService'
-import words from '@data/words.json'
+import { getRandomWord } from '@/services/wordService'
+import words from '@/data/words.json'
 
 describe('getRandomWord', () => {
   it('returns a string', () => {

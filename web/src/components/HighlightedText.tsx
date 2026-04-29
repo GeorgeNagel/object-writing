@@ -1,6 +1,6 @@
-import type { SensoryAnnotation, Sense } from '../services/analysisService'
-import styles from './HighlightedText.module.css'
-import { SENSE_COLORS } from '../constants/colors'
+import type { SensoryAnnotation, Sense } from '@/services/analysisService'
+import styles from '@/components/HighlightedText.module.css'
+import { SENSE_COLORS } from '@/constants/colors'
 
 interface HighlightedTextProps {
   text: string

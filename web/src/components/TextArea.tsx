@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import styles from './TextArea.module.css'
+import styles from '@/components/TextArea.module.css'
 
 interface TextAreaProps {
   value: string

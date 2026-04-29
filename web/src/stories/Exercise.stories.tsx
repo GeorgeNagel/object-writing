@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Exercise } from '../components/Exercise'
-import { deriveAnnotations } from '../services/analysisService'
+import { Exercise } from '@/components/Exercise'
+import { deriveAnnotations } from '@/services/analysisService'
 
 const meta: Meta<typeof Exercise> = {
   component: Exercise,

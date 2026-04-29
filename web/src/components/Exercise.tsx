@@ -1,30 +1,10 @@
-import { useState } from 'react'
-import { Editor } from './Editor'
-import { Timer } from './Timer'
-import { Results } from './Results'
-import { Button } from './Button'
-import { RadioGroup } from './RadioGroup'
-import { WordPrompt } from './WordPrompt'
-import { analyzeText, validateApiKey } from '../services/analysisService'
-import type { SensoryAnnotation } from '../services/analysisService'
-import { getRandomWord } from '../services/wordService'
-import styles from './Exercise.module.css'
-
-type Phase = 'idle' | 'running' | 'analyzing' | 'done'
-
-interface DurationOption {
-  label: string
-  seconds: number
-}
-
-const DURATION_OPTIONS: DurationOption[] = [
-  { label: '1s', seconds: 1 },
-  { label: '10s', seconds: 10 },
-  { label: '30s', seconds: 30 },
-  { label: '10m', seconds: 600 },
-]
-
-const DEFAULT_DURATION = 600
+import { useExercise } from '@/hooks/useExercise'
+import type { Phase } from '@/hooks/useExercise'
+import { IdlePhase } from '@/components/IdlePhase'
+import { WritingPhase } from '@/components/WritingPhase'
+import { ResultsPhase } from '@/components/ResultsPhase'
+import type { SensoryAnnotation } from '@/services/analysisService'
+import styles from '@/components/Exercise.module.css'
 
 interface ExerciseProps {
   initialPhase?: Phase
@@ -43,106 +23,54 @@ export function Exercise({
   initialApiKey = '',
   initialApiKeyError = null,
 }: ExerciseProps) {
-  const [apiKey, setApiKey] = useState(initialApiKey)
-  const [phase, setPhase] = useState<Phase>(initialPhase)
-  const [word, setWord] = useState(initialWord)
-  const [text, setText] = useState(initialText)
-  const [annotations, setAnnotations] = useState<SensoryAnnotation[] | null>(initialAnnotations)
-  const [durationSeconds, setDurationSeconds] = useState(DEFAULT_DURATION)
-  const [isValidating, setIsValidating] = useState(false)
-  const [apiKeyError, setApiKeyError] = useState<string | null>(initialApiKeyError)
-
-  async function handleStart() {
-    setIsValidating(true)
-    setApiKeyError(null)
-    try {
-      await validateApiKey(apiKey)
-    } catch (err) {
-      setIsValidating(false)
-      setApiKeyError(err instanceof Error ? err.message : 'Unexpected error — try again.')
-      return
-    }
-    setIsValidating(false)
-    setWord(getRandomWord())
-    setPhase('running')
-  }
-
-  async function handleExpire() {
-    setPhase('analyzing')
-    const result = await analyzeText(text, apiKey)
-    setAnnotations(result)
-    setPhase('done')
-  }
-
-  function handleReset() {
-    setPhase('idle')
-    setWord('')
-    setText('')
-    setAnnotations(null)
-    setDurationSeconds(DEFAULT_DURATION)
-  }
-
-  if (phase === 'idle') {
-    return (
-      <div className={styles.container}>
-        <div className={styles.idleScreen}>
-          <div>
-            <label className={styles.fieldLabel} htmlFor="api-key">Anthropic API Key</label>
-            <input
-              id="api-key"
-              className={styles.apiKeyInput}
-              type="password"
-              aria-label="Anthropic API Key"
-              value={apiKey}
-              onChange={(e) => { setApiKey(e.target.value); setApiKeyError(null) }}
-              aria-describedby={apiKeyError ? 'api-key-error' : undefined}
-            />
-            {apiKeyError && (
-              <p id="api-key-error" className={styles.apiKeyError}>{apiKeyError}</p>
-            )}
-          </div>
-          <div>
-            <span className={styles.fieldLabel}>Duration</span>
-            <RadioGroup
-              name="duration"
-              options={DURATION_OPTIONS.map(({ label, seconds }) => ({ label, value: seconds }))}
-              value={durationSeconds}
-              onChange={setDurationSeconds}
-            />
-          </div>
-          <Button onClick={handleStart} disabled={apiKey.trim() === '' || isValidating}>
-            {isValidating ? 'Validating…' : 'Start'}
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
-  if (phase === 'done' && annotations !== null) {
-    const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length
-    return (
-      <div className={styles.container}>
-        <WordPrompt word={word} />
-        <Results
-          text={text}
-          annotations={annotations}
-          wordCount={wordCount}
-          onStartNew={handleReset}
-        />
-      </div>
-    )
-  }
+  const {
+    phase,
+    word,
+    text,
+    annotations,
+    apiKey,
+    durationSeconds,
+    isValidating,
+    apiKeyError,
+    updateApiKey,
+    setText,
+    setDurationSeconds,
+    handleStart,
+    handleExpire,
+    handleReset,
+  } = useExercise({ initialPhase, initialWord, initialText, initialAnnotations, initialApiKey, initialApiKeyError })
 
   return (
     <div className={styles.container}>
-      <div className={styles.writingScreen}>
-        <WordPrompt word={word} />
-        {phase === 'running' && (
-          <Timer durationSeconds={durationSeconds} onExpire={handleExpire} />
-        )}
-        <Editor value={text} onChange={setText} disabled={phase !== 'running'} />
-        {phase === 'analyzing' && <p className={styles.analyzingText}>Analyzing…</p>}
-      </div>
+      {phase === 'idle' && (
+        <IdlePhase
+          apiKey={apiKey}
+          onApiKeyChange={updateApiKey}
+          apiKeyError={apiKeyError}
+          durationSeconds={durationSeconds}
+          onDurationChange={setDurationSeconds}
+          isValidating={isValidating}
+          onStart={handleStart}
+        />
+      )}
+      {(phase === 'running' || phase === 'analyzing') && (
+        <WritingPhase
+          phase={phase}
+          word={word}
+          text={text}
+          onTextChange={setText}
+          durationSeconds={durationSeconds}
+          onExpire={handleExpire}
+        />
+      )}
+      {phase === 'done' && annotations !== null && (
+        <ResultsPhase
+          word={word}
+          text={text}
+          annotations={annotations}
+          onReset={handleReset}
+        />
+      )}
     </div>
   )
 }

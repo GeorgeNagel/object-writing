@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { Score } from './Score'
-import type { SensoryAnnotation } from '../services/analysisService'
+import { Score } from '@/components/Score'
+import type { SensoryAnnotation } from '@/services/analysisService'
 
 const makeAnnotation = (sense: SensoryAnnotation['sense']): SensoryAnnotation => ({
   phrase: 'test',

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import styles from './Timer.module.css'
+import styles from '@/components/Timer.module.css'
 
 interface TimerProps {
   durationSeconds?: number

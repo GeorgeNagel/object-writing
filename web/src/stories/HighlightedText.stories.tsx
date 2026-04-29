@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { HighlightedText } from '../components/HighlightedText'
+import { HighlightedText } from '@/components/HighlightedText'
 
 const meta: Meta<typeof HighlightedText> = {
   component: HighlightedText,

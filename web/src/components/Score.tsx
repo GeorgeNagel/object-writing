@@ -1,5 +1,5 @@
-import type { SensoryAnnotation, Sense } from '../services/analysisService'
-import styles from './Score.module.css'
+import type { SensoryAnnotation, Sense } from '@/services/analysisService'
+import styles from '@/components/Score.module.css'
 
 interface ScoreProps {
   annotations: SensoryAnnotation[]

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { parseAnnotations, deriveAnnotations, analyzeText, validateApiKey } from './analysisService'
+import { parseAnnotations, deriveAnnotations, analyzeText, validateApiKey } from '@/services/analysisService'
 
 const mockCreate = vi.hoisted(() => vi.fn())
 const mockModelsList = vi.hoisted(() => vi.fn())

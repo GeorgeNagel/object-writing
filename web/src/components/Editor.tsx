@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { TextArea } from './TextArea'
+import { TextArea } from '@/components/TextArea'
 
 interface EditorProps {
   value: string

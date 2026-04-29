@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Editor } from '../components/Editor'
+import { Editor } from '@/components/Editor'
 
 const meta: Meta<typeof Editor> = {
   component: Editor,

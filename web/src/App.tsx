@@ -1,4 +1,4 @@
-import { Exercise } from './components/Exercise'
+import { Exercise } from '@/components/Exercise'
 
 function App() {
   return <Exercise />

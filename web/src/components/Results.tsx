@@ -1,8 +1,8 @@
-import { HighlightedText } from './HighlightedText'
-import { Score } from './Score'
-import { Button } from './Button'
-import type { SensoryAnnotation } from '../services/analysisService'
-import styles from './Results.module.css'
+import { HighlightedText } from '@/components/HighlightedText'
+import { Score } from '@/components/Score'
+import { Button } from '@/components/Button'
+import type { SensoryAnnotation } from '@/services/analysisService'
+import styles from '@/components/Results.module.css'
 
 interface ResultsProps {
   text: string

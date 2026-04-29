@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { HighlightedText } from './HighlightedText'
-import type { SensoryAnnotation } from '../services/analysisService'
+import { HighlightedText } from '@/components/HighlightedText'
+import type { SensoryAnnotation } from '@/services/analysisService'
 
 describe('HighlightedText', () => {
   it('renders plain text when no annotations', () => {

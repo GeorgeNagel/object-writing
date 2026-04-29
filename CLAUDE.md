@@ -18,4 +18,3 @@ Documentation should live close to the code it describes. Prefer co-locating a d
 
 ## Key conventions
 - All new features and bug fixes should include new tests.
-- External API calls should be extracted into a service, never inlined in components

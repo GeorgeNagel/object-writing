@@ -1,4 +1,4 @@
-import styles from './WordPrompt.module.css'
+import styles from '@/components/WordPrompt.module.css'
 
 interface WordPromptProps {
   word: string

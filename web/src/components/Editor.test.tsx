@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { Editor } from './Editor'
+import { Editor } from '@/components/Editor'
 
 describe('Editor', () => {
   it('renders a textarea', () => {

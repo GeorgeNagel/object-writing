@@ -1,6 +1,6 @@
 import { render, screen, act } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Timer } from './Timer'
+import { Timer } from '@/components/Timer'
 
 describe('Timer', () => {
   beforeEach(() => {

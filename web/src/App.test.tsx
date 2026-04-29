@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import App from './App'
+import App from '@/App'
 
 test('shows exercise start screen on load', () => {
   render(<App />)

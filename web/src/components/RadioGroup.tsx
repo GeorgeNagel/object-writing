@@ -1,4 +1,4 @@
-import styles from './RadioGroup.module.css'
+import styles from '@/components/RadioGroup.module.css'
 
 interface Option<T> {
   label: string

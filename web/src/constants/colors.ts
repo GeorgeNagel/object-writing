@@ -1,4 +1,4 @@
-import type { Sense } from '../services/analysisService'
+import type { Sense } from '@/services/analysisService'
 
 // Palette
 export const COLOR_YELLOW_200 = '#FFF176'

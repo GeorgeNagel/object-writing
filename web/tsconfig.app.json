@@ -23,7 +23,7 @@
 
     /* Path aliases */
     "baseUrl": ".",
-    "paths": { "@data/*": ["src/data/*"] }
+    "paths": { "@/*": ["src/*"] }
   },
   "include": ["src"]
 }

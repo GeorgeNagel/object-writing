@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Results } from '../components/Results'
+import { Results } from '@/components/Results'
 
 const meta: Meta<typeof Results> = {
   component: Results,

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { Results } from './Results'
-import type { SensoryAnnotation } from '../services/analysisService'
+import { Results } from '@/components/Results'
+import type { SensoryAnnotation } from '@/services/analysisService'
 
 const annotations: SensoryAnnotation[] = [
   { phrase: 'bright flame', sense: 'sight', startIndex: 0, endIndex: 12 },
