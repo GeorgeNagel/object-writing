@@ -1,24 +1,31 @@
 #!/usr/bin/env python3
-"""Print the next ticket ID and increment the counter in tickets/next-id.txt."""
+"""Print the next ticket ID by scanning all ticket sources for the current max."""
 
+import json
+import re
 import sys
 from pathlib import Path
 
-COUNTER_FILE = Path(__file__).parent.parent.parent.parent / "tickets" / "next-id.txt"
+TICKETS_DIR = Path(__file__).parent.parent.parent.parent / "tickets"
 
 
 def main():
-    if not COUNTER_FILE.exists():
-        print(f"error: {COUNTER_FILE} does not exist", file=sys.stderr)
-        sys.exit(1)
+    sources = list(TICKETS_DIR.glob("*.json")) + list(TICKETS_DIR.glob("archive/*.json"))
 
-    value = COUNTER_FILE.read_text().strip()
-    if not value.isdigit():
-        print(f"error: {COUNTER_FILE} contains invalid value: {value!r}", file=sys.stderr)
-        sys.exit(1)
+    max_id = 0
+    for path in sources:
+        try:
+            tickets = json.loads(path.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        if not isinstance(tickets, list):
+            continue
+        for ticket in tickets:
+            ticket_id = ticket.get("id", "")
+            if re.fullmatch(r"\d+", ticket_id):
+                max_id = max(max_id, int(ticket_id))
 
-    print(value)
-    COUNTER_FILE.write_text(str(int(value) + 1).zfill(3) + "\n")
+    print(str(max_id + 1).zfill(3))
 
 
 if __name__ == "__main__":

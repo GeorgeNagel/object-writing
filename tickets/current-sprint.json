@@ -1,1 +1,96 @@
-[]
+[
+  {
+    "id": "027",
+    "title": "Add plan re-confirmation step on plan changes in ticket-do",
+    "status": "closed",
+    "story": "As a developer, I want the agent to re-confirm the updated plan with me whenever the plan changes mid-execution, so that I always have visibility and approval before implementation continues.",
+    "acceptance_criteria": [
+      "ticket-do instructs the agent to re-present the full updated plan whenever a change is made mid-execution",
+      "The agent waits for explicit user confirmation before continuing after a plan change",
+      "The re-confirmation step is identical in form to the initial plan confirmation step"
+    ],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null,
+    "sprint": 8,
+    "closed_at": "2026-04-28",
+    "closed_reason": "Already done"
+  },
+  {
+    "id": "031",
+    "title": "Replace LLM-driven verbatim field entry in ticket-do with explicit instruction",
+    "status": "closed",
+    "story": "As a developer, I want verbatim text I provide to be placed into ticket fields exactly as given, without the agent interpreting or acting on it, so that data entry is reliable.",
+    "acceptance_criteria": [
+      "ticket-do explicitly instructs the agent to treat user-provided verbatim text as inert data to be transcribed, not as instructions to act on",
+      "The agent asks for confirmation before taking any action when the user is in the middle of providing field values",
+      "The ticket field contains the exact text the user provided, with no modifications, interpretations, or additions by the agent."
+    ],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null,
+    "sprint": 8,
+    "closed_at": "2026-04-28",
+    "closed_reason": "Already done"
+  },
+  {
+    "id": "034",
+    "title": "Local script to retrieve next ticket number",
+    "status": "closed",
+    "story": "As a developer, I want a local script that retrieves the next ticket number so that I don't contribute towards LLM API usage limits.",
+    "acceptance_criteria": [],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null,
+    "sprint": 8,
+    "closed_at": "2026-04-28",
+    "closed_reason": "Already done"
+  },
+  {
+    "id": "037",
+    "title": "Script to record user retro feedback verbatim",
+    "status": "closed",
+    "story": "As a developer, I want a script to record my retro feedback directly into the ticket JSON so that the LLM cannot interpret or act on it.",
+    "acceptance_criteria": [
+      "A script exists that accepts a ticket ID and prompts for user_retro text via stdin",
+      "The script writes the input verbatim to the user_retro field of the matching ticket in current-sprint.json",
+      "The retro command instructs the agent to invoke this script for collecting user_retro rather than asking in chat"
+    ],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null,
+    "sprint": 8,
+    "closed_at": "2026-04-28",
+    "closed_reason": "Already done"
+  },
+  {
+    "id": "058",
+    "title": "Refactor Exercise component: extract state hook and phase subcomponents",
+    "status": "in_progress",
+    "story": "As a developer, I want the Exercise component split so that state logic and rendering are independently testable",
+    "acceptance_criteria": [
+      "All exercise state (phase, word, text, annotations, apiKey, durationSeconds, isValidating, apiKeyError) is extracted into a custom hook with its own test file using renderHook",
+      "Each phase (idle, writing, results) is rendered by a separate component that accepts state and callbacks as props",
+      "Each phase component has its own test file exercising it independently via props",
+      "Each phase component has a Storybook story covering at least its default state",
+      "The Exercise component calls the hook and delegates rendering to the phase components",
+      "All existing Exercise tests continue to pass"
+    ],
+    "dependencies": [],
+    "non_goals": [
+      "Changing any user-visible behavior",
+      "Adding new features or fixing bugs beyond those directly enabled by the refactor",
+      "Migrating to a different state management approach (e.g., context, Zustand)"
+    ],
+    "assumptions": [
+      "Storybook is already installed and configured in the project",
+      "The current Exercise component has existing tests worth preserving",
+      "`renderHook` is available via `@testing-library/react`"
+    ],
+    "groomed_at": "2026-04-28T20:30:00Z"
+  }
+]
