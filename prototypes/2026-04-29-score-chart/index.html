@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Writing Progress — Prototype Explorer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 48px 24px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 14px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+    }
+    .badge {
+      display: inline-block;
+      background: #1e2d4a;
+      color: #60a5fa;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .card h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 12px;
+    }
+    .card p {
+      color: #94a3b8;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      margin-bottom: 24px;
+      flex: 1;
+    }
+    .pros-cons {
+      margin-bottom: 24px;
+    }
+    .pros-cons h3 {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .pros h3 { color: #4ade80; }
+    .cons h3 { color: #f87171; }
+    .pros { margin-bottom: 12px; }
+    ul { list-style: none; }
+    ul li {
+      font-size: 0.83rem;
+      color: #94a3b8;
+      padding: 2px 0 2px 18px;
+      position: relative;
+    }
+    .pros li::before { content: '+'; position: absolute; left: 0; color: #4ade80; font-weight: 700; }
+    .cons li::before { content: '−'; position: absolute; left: 0; color: #f87171; font-weight: 700; }
+    .btn {
+      display: block;
+      text-align: center;
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Writing Progress Visualization</h1>
+    <p class="subtitle">Four approaches to charting a single skill score (0–1) over 20 days</p>
+  </header>
+  <div class="grid">
+
+    <div class="card">
+      <span class="badge">Approach 1</span>
+      <h2>Line Chart + Rolling Average</h2>
+      <p>A smooth line chart of daily scores with a 5-day rolling average overlaid as a dashed line. Hover any point for the exact score. The trend line smooths out day-to-day noise to reveal true direction.</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h3>Pros</h3>
+          <ul>
+            <li>Immediately readable</li>
+            <li>Shows raw variance and trend together</li>
+            <li>Easy to spot outlier sessions</li>
+            <li>Familiar chart pattern</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h3>Cons</h3>
+          <ul>
+            <li>Feels clinical, data-report-like</li>
+            <li>Doesn't mark milestones or celebrate progress</li>
+            <li>Two overlapping lines can clutter small screens</li>
+          </ul>
+        </div>
+      </div>
+      <a class="btn" href="approach-1.html">Explore →</a>
+    </div>
+
+    <div class="card">
+      <span class="badge">Approach 2</span>
+      <h2>Score Heatmap Grid</h2>
+      <p>A 4×5 grid of day-cells colored by score intensity — lighter means lower, darker means higher. Click any cell to open a detail panel with exact score, a fill bar, and context. Streaks and gaps surface instantly.</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h3>Pros</h3>
+          <ul>
+            <li>Streaks and consistency are instantly visible</li>
+            <li>Compact — fits in a card or widget</li>
+            <li>Click-to-drill interaction feels tactile</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h3>Cons</h3>
+          <ul>
+            <li>Trend direction less obvious than a line</li>
+            <li>Exact values require clicking each cell</li>
+            <li>Color encoding can be ambiguous without a legend</li>
+          </ul>
+        </div>
+      </div>
+      <a class="btn" href="approach-2.html">Explore →</a>
+    </div>
+
+    <div class="card">
+      <span class="badge">Approach 3</span>
+      <h2>Gauge + History Strip</h2>
+      <p>A large animated arc gauge shows the selected day's score. A strip of 20 bars below represents history — click any bar to animate the needle to that day's score. Milestone badges unlock as thresholds are crossed.</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h3>Pros</h3>
+          <ul>
+            <li>Rewarding, gamified feel</li>
+            <li>Score feels concrete and present-tense</li>
+            <li>Milestone unlocks make progress memorable</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h3>Cons</h3>
+          <ul>
+            <li>Trend analysis requires more scanning</li>
+            <li>Gauge metaphor can feel abstract</li>
+            <li>More complex UI for a simple metric</li>
+          </ul>
+        </div>
+      </div>
+      <a class="btn" href="approach-3.html">Explore →</a>
+    </div>
+
+    <div class="card">
+      <span class="badge">Approach 4</span>
+      <h2>Chart + Drilldown Heatmap</h2>
+      <p>A line chart on top for overall trend, paired with a blue-to-red heatmap below for session navigation. Click any cell to drill into eight per-sense sub-scores (words, sight, hearing, touch, kinaesthetic, organic, smell), each shown as an animated bar.</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h3>Pros</h3>
+          <ul>
+            <li>Combines trend and session detail in one view</li>
+            <li>Sub-score bars reveal what drove the overall score</li>
+            <li>Blue-red scale immediately signals high vs. low</li>
+            <li>Scales naturally to more dimensions</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h3>Cons</h3>
+          <ul>
+            <li>More visual weight than the other approaches</li>
+            <li>Requires real sub-score data from the backend</li>
+            <li>Heatmap and chart can feel disconnected</li>
+          </ul>
+        </div>
+      </div>
+      <a class="btn" href="approach-4.html">Explore →</a>
+    </div>
+
+  </div>
+</body>
+</html>

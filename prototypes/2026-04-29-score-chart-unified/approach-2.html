@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approach 2 — Interaction Linking</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="data/scores.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 48px 32px;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+      transition: color 0.15s;
+    }
+    .back:hover { color: #94a3b8; }
+    h1 { font-size: 1.6rem; font-weight: 700; color: #f8fafc; margin-bottom: 6px; }
+    .subtitle { color: #64748b; font-size: 0.88rem; margin-bottom: 8px; }
+    .hint { color: #475569; font-size: 0.8rem; margin-bottom: 28px; font-style: italic; }
+
+    .layout {
+      display: flex;
+      gap: 24px;
+      max-width: 980px;
+      align-items: flex-start;
+    }
+    .left-col { flex: 1; min-width: 0; }
+    .right-col { flex: 0 0 260px; }
+
+    /* ── Chart card ── */
+    .chart-card {
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 14px;
+      padding: 24px 24px 16px;
+      margin-bottom: 20px;
+    }
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #475569;
+      margin-bottom: 10px;
+    }
+    .chart-outer {
+      position: relative;
+      height: 190px;
+      cursor: crosshair;
+    }
+    #line-chart { display: block; }
+
+    /* Brush overlay */
+    #brush-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+    }
+
+    /* Highlight band (spans chart + heatmap — absolutely positioned relative to .left-col via JS) */
+    #highlight-band {
+      position: absolute;
+      top: 0;
+      background: rgba(248,250,252,0.06);
+      border-left: 1px solid rgba(248,250,252,0.2);
+      border-right: 1px solid rgba(248,250,252,0.2);
+      pointer-events: none;
+      display: none;
+      z-index: 5;
+      border-radius: 2px;
+      transition: left 0.18s ease, width 0.18s ease;
+    }
+
+    /* ── Heatmap card ── */
+    .heatmap-card {
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 14px;
+      padding: 24px;
+      position: relative;
+    }
+    .heatmap {
+      display: grid;
+      grid-template-columns: repeat(5, 52px);
+      grid-template-rows: repeat(4, 52px);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .cell {
+      border-radius: 7px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: transform 0.12s, filter 0.2s;
+      user-select: none;
+    }
+    .cell.dimmed { filter: brightness(0.35) saturate(0.3); }
+    .cell.selected { box-shadow: 0 0 0 2.5px #f8fafc; transform: scale(1.1); z-index: 2; filter: brightness(1.3); }
+    .cell-day { font-size: 0.55rem; font-weight: 700; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.04em; }
+    .cell-score { font-size: 0.82rem; font-weight: 800; color: rgba(255,255,255,0.85); }
+    .legend-row { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; color: #475569; }
+    #legend-canvas { flex: 1; height: 7px; border-radius: 4px; }
+
+    /* ── Detail panel ── */
+    .detail-panel {
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 14px;
+      padding: 24px;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .detail-empty { color: #475569; font-size: 0.85rem; text-align: center; line-height: 1.6; }
+    .detail-content { display: none; }
+    .detail-content.visible { display: block; }
+    .detail-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+    .detail-date { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #475569; }
+    .detail-score { font-size: 1.4rem; font-weight: 800; color: #f8fafc; }
+    .sub-scores { display: flex; flex-direction: column; gap: 8px; }
+    .sub-row { display: grid; grid-template-columns: 1fr 60px 24px; align-items: center; gap: 8px; }
+    .sub-label { font-size: 0.72rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sub-track { height: 6px; border-radius: 3px; background: #1e2535; overflow: hidden; }
+    .sub-fill { height: 100%; border-radius: 3px; transition: width 0.35s ease; }
+    .sub-value { font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-align: right; }
+
+    /* Pulse keyframe for chart point on heatmap click */
+    @keyframes pulse-ring {
+      0%   { transform: scale(1);   opacity: 1; }
+      60%  { transform: scale(2.2); opacity: 0; }
+      100% { transform: scale(1);   opacity: 0; }
+    }
+    .pulse {
+      position: absolute;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: white;
+      pointer-events: none;
+      animation: pulse-ring 0.55s ease-out forwards;
+      z-index: 20;
+      transform-origin: center;
+    }
+
+    /* Brush instructions */
+    .brush-hint {
+      font-size: 0.72rem;
+      color: #475569;
+      margin-top: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Back</a>
+  <h1>Interaction Linking</h1>
+  <p class="subtitle">One action, two responses. Both charts react to the same selection.</p>
+  <p class="hint">Drag on the chart to brush a date range · Click any heatmap cell to select a session</p>
+
+  <div class="layout">
+    <div class="left-col" id="left-col" style="position:relative;">
+      <!-- Highlight band — spans chart + heatmap -->
+      <div id="highlight-band"></div>
+
+      <div class="chart-card">
+        <div class="section-label">Overall Score — 20 days</div>
+        <div class="chart-outer" id="chart-outer">
+          <canvas id="line-chart"></canvas>
+          <canvas id="brush-overlay"></canvas>
+        </div>
+        <div class="brush-hint" id="brush-hint">Drag to filter · Click anywhere to reset</div>
+      </div>
+
+      <div class="heatmap-card" id="heatmap-card">
+        <div class="section-label">Session Grid</div>
+        <div class="heatmap" id="heatmap"></div>
+        <div class="legend-row">
+          <span>Low</span>
+          <canvas id="legend-canvas" width="260" height="7"></canvas>
+          <span>High</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="detail-panel" id="detail-panel">
+        <div class="detail-empty">← Click a cell or chart point to see sub-scores</div>
+        <div class="detail-content" id="detail-content">
+          <div class="detail-header">
+            <div class="detail-date" id="d-date"></div>
+            <div class="detail-score" id="d-score"></div>
+          </div>
+          <div class="sub-scores" id="sub-scores"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedIdx = null;
+    let brushStart = null;
+    let brushEnd = null;
+    let isDragging = false;
+    let brushRange = null; // { lo, hi } index range or null
+
+    // ── Legend ──
+    const lc = document.getElementById('legend-canvas');
+    const lctx = lc.getContext('2d');
+    const g = lctx.createLinearGradient(0, 0, 260, 0);
+    for (let i = 0; i <= 20; i++) g.addColorStop(i / 20, scoreColor(i / 20));
+    lctx.fillStyle = g;
+    lctx.fillRect(0, 0, 260, 7);
+
+    // ── Line chart ──
+    const lineCtx = document.getElementById('line-chart').getContext('2d');
+    const lineChart = new Chart(lineCtx, {
+      type: 'line',
+      data: {
+        labels: SCORES_DATA.map(d => d.date),
+        datasets: [{
+          data: SCORES_DATA.map(d => d.score),
+          borderColor: '#3b82f6',
+          backgroundColor: ctx => {
+            const { chartArea, ctx: c } = ctx.chart;
+            if (!chartArea) return 'transparent';
+            const grd = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+            grd.addColorStop(0, 'rgba(59,130,246,0.18)');
+            grd.addColorStop(1, 'rgba(59,130,246,0.01)');
+            return grd;
+          },
+          fill: true,
+          tension: 0.3,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointBackgroundColor: SCORES_DATA.map(d => scoreColor(d.score)),
+          pointBorderColor: '#0f1117',
+          pointBorderWidth: 2,
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1f2e',
+            borderColor: '#252d3d',
+            borderWidth: 1,
+            titleColor: '#f1f5f9',
+            bodyColor: '#94a3b8',
+            padding: 10,
+            callbacks: { label: ctx => 'Score: ' + (ctx.raw * 100).toFixed(0) + '%' }
+          }
+        },
+        scales: {
+          y: {
+            min: 0, max: 1,
+            ticks: { color: '#475569', callback: v => (v * 100).toFixed(0) + '%', stepSize: 0.25 },
+            grid: { color: 'rgba(37,45,61,0.8)' },
+            border: { color: '#252d3d', dash: [4, 4] },
+          },
+          x: {
+            ticks: { color: '#475569', maxRotation: 0, font: { size: 10 } },
+            grid: { display: false },
+            border: { color: '#252d3d' },
+          }
+        },
+        onClick: (event, elements) => {
+          if (brushRange) return; // ignore chart clicks during brush
+          if (elements.length) selectIndex(elements[0].index);
+        }
+      }
+    });
+
+    // ── Heatmap ──
+    const heatmapEl = document.getElementById('heatmap');
+    const cells = [];
+    SCORES_DATA.forEach((d, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.style.background = scoreColor(d.score);
+      cell.innerHTML = `<div class="cell-day">Day ${i+1}</div><div class="cell-score">${(d.score*100).toFixed(0)}%</div>`;
+      cell.addEventListener('click', () => {
+        selectIndex(i);
+        fireChartPulse(i);
+      });
+      heatmapEl.appendChild(cell);
+      cells.push(cell);
+    });
+
+    // ── Selection ──
+    function selectIndex(idx) {
+      selectedIdx = idx;
+      cells.forEach((c, i) => {
+        c.classList.toggle('selected', i === idx);
+        if (!brushRange) c.classList.remove('dimmed');
+      });
+      if (brushRange) applyBrushDim();
+      positionHighlightBand(idx);
+      openDetail(idx);
+    }
+
+    // ── Highlight band ──
+    function positionHighlightBand(idx) {
+      const meta = lineChart.getDatasetMeta(0);
+      const pt = meta.data[idx];
+      if (!pt) return;
+
+      const canvas = document.getElementById('line-chart');
+      const chartCard = document.querySelector('.chart-card');
+      const heatmapCard = document.getElementById('heatmap-card');
+      const leftCol = document.getElementById('left-col');
+
+      const cellW = meta.data.length > 1
+        ? Math.max(14, (meta.data[1].x - meta.data[0].x) * 0.9)
+        : 28;
+
+      // Band x relative to left-col
+      const canvasRect = canvas.getBoundingClientRect();
+      const colRect = leftCol.getBoundingClientRect();
+      const relX = canvasRect.left - colRect.left + pt.x - cellW / 2;
+
+      // Band height: from top of chart-card to bottom of heatmap-card
+      const topY = chartCard.offsetTop;
+      const bottomY = heatmapCard.offsetTop + heatmapCard.offsetHeight;
+
+      const band = document.getElementById('highlight-band');
+      band.style.display = 'block';
+      band.style.left = relX + 'px';
+      band.style.width = cellW + 'px';
+      band.style.top = topY + 'px';
+      band.style.height = (bottomY - topY) + 'px';
+    }
+
+    // ── Pulse on chart point ──
+    function fireChartPulse(idx) {
+      const meta = lineChart.getDatasetMeta(0);
+      const pt = meta.data[idx];
+      if (!pt) return;
+      const canvas = document.getElementById('line-chart');
+      const outer = document.getElementById('chart-outer');
+      const canvasRect = canvas.getBoundingClientRect();
+      const outerRect = outer.getBoundingClientRect();
+
+      const pulse = document.createElement('div');
+      pulse.className = 'pulse';
+      pulse.style.left = (canvasRect.left - outerRect.left + pt.x - 7) + 'px';
+      pulse.style.top = (canvasRect.top - outerRect.top + pt.y - 7) + 'px';
+      outer.appendChild(pulse);
+      pulse.addEventListener('animationend', () => pulse.remove());
+    }
+
+    // ── Brush on chart canvas ──
+    const brushCanvas = document.getElementById('brush-overlay');
+    const bctx = brushCanvas.getContext('2d');
+
+    function syncBrushCanvasSize() {
+      const chartCanvas = document.getElementById('line-chart');
+      brushCanvas.width = chartCanvas.width;
+      brushCanvas.height = chartCanvas.height;
+      brushCanvas.style.width = chartCanvas.style.width;
+      brushCanvas.style.height = chartCanvas.style.height;
+    }
+
+    function xToIndex(x) {
+      const meta = lineChart.getDatasetMeta(0);
+      let closest = 0;
+      let minDist = Infinity;
+      meta.data.forEach((pt, i) => {
+        const d = Math.abs(pt.x - x);
+        if (d < minDist) { minDist = d; closest = i; }
+      });
+      return closest;
+    }
+
+    function drawBrush(x1, x2) {
+      syncBrushCanvasSize();
+      bctx.clearRect(0, 0, brushCanvas.width, brushCanvas.height);
+      const lo = Math.min(x1, x2);
+      const hi = Math.max(x1, x2);
+      // Shade outside
+      bctx.fillStyle = 'rgba(0,0,0,0.55)';
+      const ca = lineChart.chartArea;
+      bctx.fillRect(ca.left, ca.top, lo - ca.left, ca.height);
+      bctx.fillRect(hi, ca.top, ca.right - hi, ca.height);
+      // Brush border
+      bctx.strokeStyle = 'rgba(248,250,252,0.3)';
+      bctx.lineWidth = 1;
+      bctx.strokeRect(lo, ca.top, hi - lo, ca.height);
+    }
+
+    function clearBrush() {
+      syncBrushCanvasSize();
+      bctx.clearRect(0, 0, brushCanvas.width, brushCanvas.height);
+    }
+
+    function applyBrushDim() {
+      if (!brushRange) {
+        cells.forEach(c => c.classList.remove('dimmed'));
+        return;
+      }
+      cells.forEach((c, i) => {
+        const inRange = i >= brushRange.lo && i <= brushRange.hi;
+        c.classList.toggle('dimmed', !inRange);
+      });
+    }
+
+    brushCanvas.addEventListener('mousedown', e => {
+      const rect = brushCanvas.getBoundingClientRect();
+      const ca = lineChart.chartArea;
+      const x = (e.clientX - rect.left) * (brushCanvas.width / rect.width);
+      if (x < ca.left || x > ca.right) return;
+      isDragging = true;
+      brushStart = x;
+      brushEnd = x;
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const rect = brushCanvas.getBoundingClientRect();
+      const ca = lineChart.chartArea;
+      const x = Math.max(ca.left, Math.min(ca.right,
+        (e.clientX - rect.left) * (brushCanvas.width / rect.width)));
+      brushEnd = x;
+      drawBrush(brushStart, brushEnd);
+    });
+
+    window.addEventListener('mouseup', e => {
+      if (!isDragging) return;
+      isDragging = false;
+
+      const dist = Math.abs(brushEnd - brushStart);
+      if (dist < 8) {
+        // Treat as click — reset brush
+        brushRange = null;
+        clearBrush();
+        applyBrushDim();
+        document.getElementById('brush-hint').textContent = 'Drag to filter · Click anywhere to reset';
+        return;
+      }
+
+      const lo = xToIndex(Math.min(brushStart, brushEnd));
+      const hi = xToIndex(Math.max(brushStart, brushEnd));
+      brushRange = { lo, hi };
+
+      // Snap brush to point positions
+      const meta = lineChart.getDatasetMeta(0);
+      drawBrush(meta.data[lo].x, meta.data[hi].x);
+      applyBrushDim();
+      document.getElementById('brush-hint').textContent =
+        `Showing ${SCORES_DATA[lo].date} – ${SCORES_DATA[hi].date} · Click to reset`;
+    });
+
+    // ── Detail panel ──
+    function openDetail(idx) {
+      const d = SCORES_DATA[idx];
+      document.getElementById('d-date').textContent = d.date + ' · Day ' + (idx + 1);
+      document.getElementById('d-score').textContent = (d.score * 100).toFixed(0) + '%';
+
+      const container = document.getElementById('sub-scores');
+      container.innerHTML = '';
+      SUB_LABELS.forEach(({ key, label }) => {
+        const val = d.sub[key];
+        const t = val / 10;
+        const row = document.createElement('div');
+        row.className = 'sub-row';
+        row.innerHTML = `
+          <div class="sub-label">${label}</div>
+          <div class="sub-track"><div class="sub-fill" style="width:0%;background:${scoreColor(t)}"></div></div>
+          <div class="sub-value">${val}</div>`;
+        container.appendChild(row);
+        setTimeout(() => row.querySelector('.sub-fill').style.width = (t * 100) + '%', 30);
+      });
+
+      document.querySelector('.detail-empty').style.display = 'none';
+      document.getElementById('detail-content').classList.add('visible');
+    }
+
+    // ── Resize brush canvas on chart init ──
+    lineChart.options.animation = { onComplete: syncBrushCanvasSize };
+    lineChart.update();
+  </script>
+</body>
+</html>

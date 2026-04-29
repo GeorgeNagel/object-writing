@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approach 2 — Score Heatmap Grid</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 48px 32px;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+      transition: color 0.15s;
+    }
+    .back:hover { color: #94a3b8; }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      color: #64748b;
+      font-size: 0.88rem;
+      margin-bottom: 36px;
+    }
+    .layout {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      max-width: 780px;
+    }
+    .left { flex: 0 0 auto; }
+    .right { flex: 1; }
+    .heatmap {
+      display: grid;
+      grid-template-columns: repeat(5, 72px);
+      grid-template-rows: repeat(4, 72px);
+      gap: 8px;
+    }
+    .cell {
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      user-select: none;
+    }
+    .cell:hover {
+      transform: scale(1.08);
+      z-index: 1;
+    }
+    .cell.selected {
+      box-shadow: 0 0 0 2.5px #f8fafc;
+      transform: scale(1.08);
+      z-index: 2;
+    }
+    .cell-day {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .cell-score {
+      font-size: 1rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.85);
+    }
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 16px;
+      font-size: 0.75rem;
+      color: #475569;
+    }
+    .legend-gradient {
+      flex: 1;
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(to right, #1c2e22, #166534, #4ade80);
+    }
+
+    /* Detail panel */
+    .detail {
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 14px;
+      padding: 28px;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .detail-empty {
+      color: #475569;
+      font-size: 0.88rem;
+      text-align: center;
+    }
+    .detail-content { display: none; }
+    .detail-content.visible { display: block; }
+    .detail-date {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #475569;
+      margin-bottom: 10px;
+    }
+    .detail-score-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .detail-score-big {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #f8fafc;
+      line-height: 1;
+    }
+    .detail-score-label {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    .detail-bar-track {
+      height: 8px;
+      border-radius: 4px;
+      background: #252d3d;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .detail-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+    .detail-note {
+      font-size: 0.88rem;
+      color: #94a3b8;
+      line-height: 1.55;
+    }
+    .detail-rank {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: #475569;
+    }
+    .detail-rank span {
+      color: #94a3b8;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Back to prototypes</a>
+  <h1>Score Heatmap Grid</h1>
+  <p class="subtitle">20 days of writing sessions. Color intensity = score. Click any cell for details.</p>
+
+  <div class="layout">
+    <div class="left">
+      <div class="heatmap" id="heatmap"></div>
+      <div class="legend">
+        <span>Low</span>
+        <div class="legend-gradient"></div>
+        <span>High</span>
+      </div>
+    </div>
+    <div class="right">
+      <div class="detail" id="detail">
+        <div class="detail-empty" id="detail-empty">← Click a cell to inspect that day</div>
+        <div class="detail-content" id="detail-content">
+          <div class="detail-date" id="d-date"></div>
+          <div class="detail-score-row">
+            <div class="detail-score-big" id="d-score"></div>
+            <div class="detail-score-label">score</div>
+          </div>
+          <div class="detail-bar-track">
+            <div class="detail-bar-fill" id="d-fill"></div>
+          </div>
+          <div class="detail-note" id="d-note"></div>
+          <div class="detail-rank" id="d-rank"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const data = [
+      { date: 'Apr 9',  label: 'Apr 9',  score: 0.10 },
+      { date: 'Apr 10', label: 'Apr 10', score: 0.15 },
+      { date: 'Apr 11', label: 'Apr 11', score: 0.12 },
+      { date: 'Apr 12', label: 'Apr 12', score: 0.31 },
+      { date: 'Apr 13', label: 'Apr 13', score: 0.12 },
+      { date: 'Apr 14', label: 'Apr 14', score: 0.05 },
+      { date: 'Apr 15', label: 'Apr 15', score: 0.21 },
+      { date: 'Apr 16', label: 'Apr 16', score: 0.24 },
+      { date: 'Apr 17', label: 'Apr 17', score: 0.41 },
+      { date: 'Apr 18', label: 'Apr 18', score: 0.54 },
+      { date: 'Apr 19', label: 'Apr 19', score: 0.31 },
+      { date: 'Apr 20', label: 'Apr 20', score: 0.35 },
+      { date: 'Apr 21', label: 'Apr 21', score: 0.39 },
+      { date: 'Apr 22', label: 'Apr 22', score: 0.52 },
+      { date: 'Apr 23', label: 'Apr 23', score: 0.45 },
+      { date: 'Apr 24', label: 'Apr 24', score: 0.58 },
+      { date: 'Apr 25', label: 'Apr 25', score: 0.55 },
+      { date: 'Apr 26', label: 'Apr 26', score: 0.61 },
+      { date: 'Apr 27', label: 'Apr 27', score: 0.68 },
+      { date: 'Apr 28', label: 'Apr 28', score: 0.64 },
+    ];
+
+    const sorted = [...data].map(d => d.score).sort((a, b) => b - a);
+
+    function scoreToColor(score) {
+      // Dark forest → vivid green
+      const t = score;
+      const r = Math.round(28  + t * (74  - 28));
+      const g = Math.round(46  + t * (222 - 46));
+      const b = Math.round(34  + t * (128 - 34));
+      return `rgb(${r},${g},${b})`;
+    }
+
+    function noteForScore(score) {
+      if (score >= 0.70) return 'Top-tier session. Your writing showed strong sensory depth and originality.';
+      if (score >= 0.60) return 'Strong session. Noticeably above your baseline — keep this up.';
+      if (score >= 0.50) return 'Solid session. On the right side of average.';
+      if (score >= 0.40) return 'Moderate session. The fundamentals were there but depth was limited.';
+      return 'Early session. Every rep counts — the trend is what matters.';
+    }
+
+    function rankSuffix(n) {
+      if (n === 1) return 'st';
+      if (n === 2) return 'nd';
+      if (n === 3) return 'rd';
+      return 'th';
+    }
+
+    const heatmap = document.getElementById('heatmap');
+    let selected = null;
+
+    data.forEach((d, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.style.background = scoreToColor(d.score);
+
+      const dayEl = document.createElement('div');
+      dayEl.className = 'cell-day';
+      dayEl.textContent = 'Day ' + (i + 1);
+
+      const scoreEl = document.createElement('div');
+      scoreEl.className = 'cell-score';
+      scoreEl.textContent = (d.score * 100).toFixed(0) + '%';
+
+      cell.appendChild(dayEl);
+      cell.appendChild(scoreEl);
+
+      cell.addEventListener('click', () => {
+        if (selected) selected.classList.remove('selected');
+        cell.classList.add('selected');
+        selected = cell;
+
+        const rank = sorted.indexOf(d.score) + 1;
+
+        document.getElementById('detail-empty').style.display = 'none';
+        const content = document.getElementById('detail-content');
+        content.classList.add('visible');
+
+        document.getElementById('d-date').textContent = d.label + ' · Day ' + (i + 1);
+        document.getElementById('d-score').textContent = (d.score * 100).toFixed(0) + '%';
+
+        const fill = document.getElementById('d-fill');
+        fill.style.width = '0%';
+        fill.style.background = scoreToColor(d.score);
+        setTimeout(() => { fill.style.width = (d.score * 100) + '%'; }, 30);
+
+        document.getElementById('d-note').textContent = noteForScore(d.score);
+        document.getElementById('d-rank').innerHTML =
+          'Ranked <span>' + rank + rankSuffix(rank) + ' of 20</span> sessions';
+      });
+
+      heatmap.appendChild(cell);
+    });
+  </script>
+</body>
+</html>

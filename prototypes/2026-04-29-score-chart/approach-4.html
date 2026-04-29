@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approach 4 — Chart + Drilldown Heatmap</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 48px 32px;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+      transition: color 0.15s;
+    }
+    .back:hover { color: #94a3b8; }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      color: #64748b;
+      font-size: 0.88rem;
+      margin-bottom: 28px;
+    }
+
+    /* ── Top chart ── */
+    .chart-card {
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 14px;
+      padding: 24px 28px;
+      max-width: 900px;
+      margin-bottom: 24px;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+    .chart-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #475569;
+    }
+    .chart-wrap {
+      position: relative;
+      height: 200px;
+    }
+
+    /* ── Bottom layout ── */
+    .bottom {
+      display: flex;
+      gap: 24px;
+      max-width: 900px;
+      align-items: flex-start;
+    }
+    .heatmap-col { flex: 0 0 auto; }
+    .detail-col { flex: 1; min-width: 0; }
+
+    /* Heatmap */
+    .heatmap {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-template-rows: repeat(4, 60px);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .cell {
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.12s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      user-select: none;
+    }
+    .cell:hover { transform: scale(1.1); z-index: 1; }
+    .cell.selected { box-shadow: 0 0 0 2.5px #f8fafc; transform: scale(1.1); z-index: 2; }
+    .cell-day {
+      font-size: 0.58rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .cell-score {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.85);
+    }
+    .heatmap-legend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      color: #475569;
+    }
+    .legend-gradient {
+      flex: 1;
+      height: 7px;
+      border-radius: 4px;
+    }
+
+    /* Detail panel */
+    .detail-panel {
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 14px;
+      padding: 24px;
+      min-height: 290px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .detail-empty {
+      color: #475569;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    .detail-content { display: none; }
+    .detail-content.visible { display: block; }
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 18px;
+    }
+    .detail-date {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #475569;
+    }
+    .detail-score {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+    .sub-scores { display: flex; flex-direction: column; gap: 9px; }
+    .sub-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 28px;
+      align-items: center;
+      gap: 10px;
+    }
+    .sub-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sub-track {
+      height: 7px;
+      border-radius: 4px;
+      background: #1e2535;
+      overflow: hidden;
+    }
+    .sub-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.35s ease;
+    }
+    .sub-value {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Back to prototypes</a>
+  <h1>Chart + Drilldown Heatmap</h1>
+  <p class="subtitle">Line chart for overall trend; heatmap below for session navigation. Click any cell to drill into per-sense sub-scores.</p>
+
+  <!-- Top: line chart -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Overall Score — 20 days</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="line-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- Bottom: heatmap + detail -->
+  <div class="bottom">
+    <div class="heatmap-col">
+      <div class="heatmap" id="heatmap"></div>
+      <div class="heatmap-legend">
+        <span>Low</span>
+        <canvas class="legend-gradient" id="legend-canvas" width="200" height="7"></canvas>
+        <span>High</span>
+      </div>
+    </div>
+    <div class="detail-col">
+      <div class="detail-panel" id="detail-panel">
+        <div class="detail-empty">← Click a session to see sub-scores</div>
+        <div class="detail-content" id="detail-content">
+          <div class="detail-header">
+            <div class="detail-date" id="d-date"></div>
+            <div class="detail-score" id="d-score"></div>
+          </div>
+          <div class="sub-scores" id="sub-scores"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const data = [
+      { date: 'Apr 9',  score: 0.10 },
+      { date: 'Apr 10', score: 0.15 },
+      { date: 'Apr 11', score: 0.12 },
+      { date: 'Apr 12', score: 0.31 },
+      { date: 'Apr 13', score: 0.12 },
+      { date: 'Apr 14', score: 0.05 },
+      { date: 'Apr 15', score: 0.21 },
+      { date: 'Apr 16', score: 0.24 },
+      { date: 'Apr 17', score: 0.41 },
+      { date: 'Apr 18', score: 0.54 },
+      { date: 'Apr 19', score: 0.31 },
+      { date: 'Apr 20', score: 0.35 },
+      { date: 'Apr 21', score: 0.39 },
+      { date: 'Apr 22', score: 0.52 },
+      { date: 'Apr 23', score: 0.45 },
+      { date: 'Apr 24', score: 0.58 },
+      { date: 'Apr 25', score: 0.55 },
+      { date: 'Apr 26', score: 0.61 },
+      { date: 'Apr 27', score: 0.68 },
+      { date: 'Apr 28', score: 0.64 },
+    ];
+
+    const subScoreData = [
+      { words: 3,  senses: 1, sight: 2, hearing: 1, touch: 0, kinaesthetic: 0, organic: 0, smell: 0 },
+      { words: 5,  senses: 3, sight: 4, hearing: 2, touch: 2, kinaesthetic: 1, organic: 0, smell: 0 },
+      { words: 3,  senses: 1, sight: 2, hearing: 1, touch: 0, kinaesthetic: 0, organic: 0, smell: 0 },
+      { words: 6,  senses: 4, sight: 5, hearing: 3, touch: 2, kinaesthetic: 2, organic: 1, smell: 0 },
+      { words: 4,  senses: 2, sight: 3, hearing: 1, touch: 1, kinaesthetic: 1, organic: 0, smell: 0 },
+      { words: 7,  senses: 4, sight: 5, hearing: 3, touch: 3, kinaesthetic: 2, organic: 2, smell: 1 },
+      { words: 5,  senses: 2, sight: 3, hearing: 2, touch: 2, kinaesthetic: 1, organic: 0, smell: 0 },
+      { words: 8,  senses: 5, sight: 6, hearing: 4, touch: 3, kinaesthetic: 3, organic: 2, smell: 1 },
+      { words: 5,  senses: 3, sight: 4, hearing: 2, touch: 2, kinaesthetic: 2, organic: 1, smell: 0 },
+      { words: 7,  senses: 4, sight: 5, hearing: 3, touch: 3, kinaesthetic: 3, organic: 2, smell: 1 },
+      { words: 5,  senses: 3, sight: 4, hearing: 2, touch: 2, kinaesthetic: 1, organic: 1, smell: 0 },
+      { words: 8,  senses: 5, sight: 6, hearing: 5, touch: 4, kinaesthetic: 3, organic: 3, smell: 2 },
+      { words: 6,  senses: 3, sight: 4, hearing: 3, touch: 3, kinaesthetic: 2, organic: 1, smell: 1 },
+      { words: 9,  senses: 6, sight: 7, hearing: 5, touch: 5, kinaesthetic: 4, organic: 3, smell: 2 },
+      { words: 6,  senses: 4, sight: 5, hearing: 3, touch: 3, kinaesthetic: 3, organic: 2, smell: 1 },
+      { words: 9,  senses: 7, sight: 8, hearing: 6, touch: 5, kinaesthetic: 5, organic: 4, smell: 3 },
+      { words: 7,  senses: 4, sight: 5, hearing: 4, touch: 4, kinaesthetic: 3, organic: 2, smell: 2 },
+      { words: 10, senses: 7, sight: 8, hearing: 6, touch: 6, kinaesthetic: 5, organic: 4, smell: 3 },
+      { words: 7,  senses: 5, sight: 6, hearing: 4, touch: 4, kinaesthetic: 4, organic: 3, smell: 2 },
+      { words: 9,  senses: 6, sight: 7, hearing: 6, touch: 5, kinaesthetic: 5, organic: 4, smell: 3 },
+    ];
+
+    const subLabels = [
+      { key: 'words',        label: 'Number of Words' },
+      { key: 'senses',       label: 'Number of Senses' },
+      { key: 'sight',        label: 'Sight Count' },
+      { key: 'hearing',      label: 'Hearing Count' },
+      { key: 'touch',        label: 'Touch Count' },
+      { key: 'kinaesthetic', label: 'Kinaesthetic Count' },
+      { key: 'organic',      label: 'Organic Count' },
+      { key: 'smell',        label: 'Smell Count' },
+    ];
+
+    // Color: dark navy blue → bright red via purple
+    function scoreColor(t) {
+      const hue   = 240 + t * 120;     // 240° (blue) → 360° (red)
+      const sat   = 60  + t * 40;      // 60% → 100%
+      const light = 18  + t * 38;      // 18% → 56%
+      return `hsl(${hue}, ${sat}%, ${light}%)`;
+    }
+
+    // ── Legend canvas ──
+    const lc = document.getElementById('legend-canvas');
+    const lctx = lc.getContext('2d');
+    const grad = lctx.createLinearGradient(0, 0, 200, 0);
+    for (let i = 0; i <= 20; i++) {
+      grad.addColorStop(i / 20, scoreColor(i / 20));
+    }
+    lctx.fillStyle = grad;
+    lctx.fillRect(0, 0, 200, 7);
+
+    // ── Line chart (no rolling avg) ──
+    const lineCtx = document.getElementById('line-chart').getContext('2d');
+    let highlightIndex = null;
+
+    const lineChart = new Chart(lineCtx, {
+      type: 'line',
+      data: {
+        labels: data.map(d => d.date),
+        datasets: [{
+          label: 'Score',
+          data: data.map(d => d.score),
+          borderColor: '#3b82f6',
+          backgroundColor: (ctx) => {
+            const { chartArea, ctx: c } = ctx.chart;
+            if (!chartArea) return 'transparent';
+            const g = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+            g.addColorStop(0, 'rgba(59,130,246,0.2)');
+            g.addColorStop(1, 'rgba(59,130,246,0.01)');
+            return g;
+          },
+          fill: true,
+          tension: 0.35,
+          pointRadius: (ctx) => ctx.dataIndex === highlightIndex ? 9 : 4,
+          pointBackgroundColor: (ctx) =>
+            ctx.dataIndex === highlightIndex ? '#f8fafc' : '#3b82f6',
+          pointBorderColor: '#0f1117',
+          pointBorderWidth: 2,
+          borderWidth: 2.5,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1f2e',
+            borderColor: '#252d3d',
+            borderWidth: 1,
+            titleColor: '#f1f5f9',
+            bodyColor: '#94a3b8',
+            padding: 10,
+            callbacks: {
+              label: ctx => 'Score: ' + (ctx.raw * 100).toFixed(0) + '%',
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: 0, max: 1,
+            ticks: {
+              color: '#475569',
+              callback: v => (v * 100).toFixed(0) + '%',
+              stepSize: 0.25,
+            },
+            grid: { color: 'rgba(37,45,61,0.8)' },
+            border: { color: '#252d3d', dash: [4, 4] },
+          },
+          x: {
+            ticks: { color: '#475569', maxRotation: 0 },
+            grid: { display: false },
+            border: { color: '#252d3d' },
+          }
+        }
+      }
+    });
+
+    // ── Heatmap ──
+    const heatmap = document.getElementById('heatmap');
+    let selectedCell = null;
+
+    data.forEach((d, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.style.background = scoreColor(d.score);
+
+      const dayEl = document.createElement('div');
+      dayEl.className = 'cell-day';
+      dayEl.textContent = 'Day ' + (i + 1);
+
+      const scoreEl = document.createElement('div');
+      scoreEl.className = 'cell-score';
+      scoreEl.textContent = (d.score * 100).toFixed(0) + '%';
+
+      cell.appendChild(dayEl);
+      cell.appendChild(scoreEl);
+      heatmap.appendChild(cell);
+
+      cell.addEventListener('click', () => {
+        if (selectedCell) selectedCell.classList.remove('selected');
+        cell.classList.add('selected');
+        selectedCell = cell;
+
+        // Highlight point on line chart
+        highlightIndex = i;
+        lineChart.update();
+
+        // Detail panel
+        document.querySelector('.detail-empty').style.display = 'none';
+        const content = document.getElementById('detail-content');
+        content.classList.add('visible');
+
+        document.getElementById('d-date').textContent = d.date + ' · Day ' + (i + 1);
+        document.getElementById('d-score').textContent = (d.score * 100).toFixed(0) + '%';
+
+        const sub = subScoreData[i];
+        const container = document.getElementById('sub-scores');
+        container.innerHTML = '';
+
+        subLabels.forEach(({ key, label }) => {
+          const val = sub[key];
+          const t = val / 10;
+          const color = scoreColor(t);
+
+          const row = document.createElement('div');
+          row.className = 'sub-row';
+
+          const lbl = document.createElement('div');
+          lbl.className = 'sub-label';
+          lbl.textContent = label;
+
+          const track = document.createElement('div');
+          track.className = 'sub-track';
+          const fill = document.createElement('div');
+          fill.className = 'sub-fill';
+          fill.style.width = '0%';
+          fill.style.background = color;
+          track.appendChild(fill);
+
+          const valEl = document.createElement('div');
+          valEl.className = 'sub-value';
+          valEl.textContent = val;
+
+          row.appendChild(lbl);
+          row.appendChild(track);
+          row.appendChild(valEl);
+          container.appendChild(row);
+
+          setTimeout(() => { fill.style.width = (t * 100) + '%'; }, 30);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

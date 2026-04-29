@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approach 3 — Gauge + History Strip</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 48px 32px;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+      transition: color 0.15s;
+    }
+    .back:hover { color: #94a3b8; }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      color: #64748b;
+      font-size: 0.88rem;
+      margin-bottom: 40px;
+    }
+
+    .gauge-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .gauge-wrap {
+      position: relative;
+      width: 340px;
+      height: 210px;
+    }
+    #gauge-svg {
+      width: 340px;
+      height: 210px;
+      overflow: visible;
+    }
+    .gauge-center-text {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      pointer-events: none;
+    }
+    .gauge-score-big {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #f8fafc;
+      line-height: 1;
+      transition: opacity 0.2s;
+    }
+    .gauge-date {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .milestones {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 36px;
+    }
+    .milestone {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      color: #475569;
+      transition: background 0.35s, border-color 0.35s, color 0.35s;
+    }
+    .milestone.unlocked {
+      background: #132213;
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .strip-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #475569;
+      margin-bottom: 10px;
+      max-width: 520px;
+      width: 100%;
+    }
+    .strip {
+      display: flex;
+      gap: 5px;
+      align-items: flex-end;
+      height: 80px;
+      max-width: 520px;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    .bar-wrap {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+      cursor: pointer;
+    }
+    .bar-wrap:hover .bar { opacity: 0.75; }
+    .bar-wrap.selected .bar { box-shadow: 0 0 0 2px #f8fafc; }
+    .bar {
+      width: 100%;
+      border-radius: 3px 3px 0 0;
+      transition: opacity 0.15s;
+      position: relative;
+    }
+    .bar-tooltip {
+      position: absolute;
+      bottom: calc(100% + 4px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      color: #94a3b8;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+    .bar-wrap:hover .bar-tooltip,
+    .bar-wrap.selected .bar-tooltip {
+      opacity: 1;
+    }
+    .strip-axis {
+      display: flex;
+      gap: 5px;
+      max-width: 520px;
+      width: 100%;
+    }
+    .axis-label {
+      flex: 1;
+      text-align: center;
+      font-size: 0.6rem;
+      color: #334155;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Back to prototypes</a>
+  <h1>Gauge + History Strip</h1>
+  <p class="subtitle">Click any bar to navigate to that session. Milestones unlock as score thresholds are crossed.</p>
+
+  <div class="gauge-section">
+    <div class="gauge-wrap">
+      <svg id="gauge-svg" viewBox="0 0 340 210">
+        <defs>
+          <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="#f87171"/>
+            <stop offset="45%"  stop-color="#fbbf24"/>
+            <stop offset="100%" stop-color="#4ade80"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Track -->
+        <path id="arc-track" fill="none" stroke="#1a1f2e" stroke-width="22" stroke-linecap="round"/>
+        <!-- Fill -->
+        <path id="arc-fill" fill="none" stroke="url(#arcGrad)" stroke-width="22" stroke-linecap="round" filter="url(#glow)"/>
+        <!-- Needle -->
+        <line id="needle"
+          x1="170" y1="165"
+          x2="170" y2="62"
+          stroke="#f8fafc"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+        <circle cx="170" cy="165" r="7" fill="#f8fafc"/>
+        <circle cx="170" cy="165" r="3" fill="#0f1117"/>
+      </svg>
+      <div class="gauge-center-text">
+        <div class="gauge-score-big" id="g-score">72%</div>
+        <div class="gauge-date" id="g-date">Apr 28</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="milestones" id="milestones">
+    <div class="milestone" data-threshold="0.5">Halfway There</div>
+    <div class="milestone" data-threshold="0.6">Getting Sharp</div>
+    <div class="milestone" data-threshold="0.7">On Fire</div>
+  </div>
+
+  <div class="strip-label">Session history — click to explore</div>
+  <div class="strip" id="strip"></div>
+  <div class="strip-axis" id="axis"></div>
+
+  <script>
+    const data = [
+      { date: 'Apr 9',  score: 0.10 },
+      { date: 'Apr 10', score: 0.15 },
+      { date: 'Apr 11', score: 0.12 },
+      { date: 'Apr 12', score: 0.31 },
+      { date: 'Apr 13', score: 0.12 },
+      { date: 'Apr 14', score: 0.05 },
+      { date: 'Apr 15', score: 0.21 },
+      { date: 'Apr 16', score: 0.24 },
+      { date: 'Apr 17', score: 0.41 },
+      { date: 'Apr 18', score: 0.54 },
+      { date: 'Apr 19', score: 0.31 },
+      { date: 'Apr 20', score: 0.35 },
+      { date: 'Apr 21', score: 0.39 },
+      { date: 'Apr 22', score: 0.52 },
+      { date: 'Apr 23', score: 0.45 },
+      { date: 'Apr 24', score: 0.58 },
+      { date: 'Apr 25', score: 0.55 },
+      { date: 'Apr 26', score: 0.61 },
+      { date: 'Apr 27', score: 0.68 },
+      { date: 'Apr 28', score: 0.64 },
+    ];
+
+    // Gauge geometry
+    // Center: (170, 165), radius: 110, sweep: -215deg to 35deg (250deg total)
+    const CX = 170, CY = 165, R = 110;
+    const START_DEG = -215, END_DEG = 35;
+    const SWEEP = END_DEG - START_DEG;
+
+    function toRad(deg) { return deg * Math.PI / 180; }
+
+    function arcPoint(deg) {
+      return {
+        x: CX + R * Math.cos(toRad(deg)),
+        y: CY + R * Math.sin(toRad(deg)),
+      };
+    }
+
+    function arcPath(fromDeg, toDeg) {
+      const s = arcPoint(fromDeg);
+      const e = arcPoint(toDeg);
+      const sweep = toDeg - fromDeg;
+      const large = Math.abs(sweep) > 180 ? 1 : 0;
+      const dir = sweep > 0 ? 1 : 0;
+      return `M ${s.x} ${s.y} A ${R} ${R} 0 ${large} ${dir} ${e.x} ${e.y}`;
+    }
+
+    const arcTrack = document.getElementById('arc-track');
+    const arcFill  = document.getElementById('arc-fill');
+    const needle   = document.getElementById('needle');
+
+    arcTrack.setAttribute('d', arcPath(START_DEG, END_DEG));
+
+    let currentAngle = null;
+
+    function setGauge(score, date, animate) {
+      const targetDeg = START_DEG + score * SWEEP;
+
+      // Arc fill
+      arcFill.setAttribute('d', arcPath(START_DEG, targetDeg));
+
+      // Needle rotation: default needle points up (SVG -90deg from x-axis)
+      // To point at targetDeg, rotate by (targetDeg + 90)
+      const rotation = targetDeg + 90;
+      if (!animate) {
+        needle.style.transition = 'none';
+      } else {
+        needle.style.transition = 'transform 0.55s cubic-bezier(0.34, 1.4, 0.64, 1)';
+      }
+      needle.setAttribute('transform', `rotate(${rotation} ${CX} ${CY})`);
+
+      document.getElementById('g-score').textContent = (score * 100).toFixed(0) + '%';
+      document.getElementById('g-date').textContent = date;
+
+      document.querySelectorAll('.milestone').forEach(m => {
+        m.classList.toggle('unlocked', score >= parseFloat(m.dataset.threshold));
+      });
+    }
+
+    function barColor(score) {
+      return `hsl(${score * 120}, 65%, 52%)`;
+    }
+
+    const strip = document.getElementById('strip');
+    const axis  = document.getElementById('axis');
+    const maxScore = Math.max(...data.map(d => d.score));
+    let selectedWrap = null;
+
+    data.forEach((d, i) => {
+      // Bar
+      const wrap = document.createElement('div');
+      wrap.className = 'bar-wrap';
+
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      const heightPct = (d.score / maxScore) * 100;
+      bar.style.height = heightPct + '%';
+      bar.style.background = barColor(d.score);
+
+      const tip = document.createElement('div');
+      tip.className = 'bar-tooltip';
+      tip.textContent = (d.score * 100).toFixed(0) + '%';
+
+      bar.appendChild(tip);
+      wrap.appendChild(bar);
+      strip.appendChild(wrap);
+
+      // Axis label (every 5th)
+      const lbl = document.createElement('div');
+      lbl.className = 'axis-label';
+      lbl.textContent = (i % 5 === 0 || i === data.length - 1) ? d.date : '';
+      axis.appendChild(lbl);
+
+      wrap.addEventListener('click', () => {
+        if (selectedWrap) selectedWrap.classList.remove('selected');
+        wrap.classList.add('selected');
+        selectedWrap = wrap;
+        setGauge(d.score, d.date, true);
+      });
+    });
+
+    // Init to last day without animation
+    const lastWrap = strip.lastChild;
+    lastWrap.classList.add('selected');
+    selectedWrap = lastWrap;
+    setGauge(data[data.length - 1].score, data[data.length - 1].date, false);
+  </script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approach 1 — Visual Linking</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="data/scores.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 48px 32px;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+      transition: color 0.15s;
+    }
+    .back:hover { color: #94a3b8; }
+    h1 { font-size: 1.6rem; font-weight: 700; color: #f8fafc; margin-bottom: 6px; }
+    .subtitle { color: #64748b; font-size: 0.88rem; margin-bottom: 32px; }
+
+    /* ── Outer card ── */
+    .card {
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 14px;
+      padding: 28px;
+      max-width: 920px;
+    }
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #475569;
+      margin-bottom: 10px;
+    }
+
+    /* ── Unified container — chart + bridge + heatmap share same x-axis ── */
+    .unified {
+      position: relative;
+    }
+
+    /* Line chart */
+    .chart-wrap {
+      position: relative;
+      height: 180px;
+      margin-bottom: 0;
+    }
+
+    /* The vertical guide spans chart + date row + heatmap */
+    #guide {
+      position: absolute;
+      top: 0;
+      width: 1px;
+      background: rgba(248, 250, 252, 0.25);
+      pointer-events: none;
+      display: none;
+      z-index: 10;
+    }
+
+    /* Shared date labels row — sits between chart and heatmap */
+    #date-row {
+      display: flex;
+      height: 28px;
+      align-items: center;
+      position: relative;
+    }
+    .date-label {
+      position: absolute;
+      font-size: 0.6rem;
+      color: #475569;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    /* Only show every 4th label to avoid crowding */
+    .date-label.hidden { display: none; }
+
+    /* Heatmap strip */
+    #heatmap-strip {
+      position: relative;
+      height: 44px;
+      margin-bottom: 14px;
+    }
+    .strip-cell {
+      position: absolute;
+      top: 0;
+      height: 44px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: filter 0.12s, transform 0.12s;
+    }
+    .strip-cell:hover { filter: brightness(1.35); transform: scaleY(1.08); }
+    .strip-cell.active {
+      filter: brightness(1.5);
+      box-shadow: 0 0 0 2px #f8fafc;
+      transform: scaleY(1.12);
+      z-index: 2;
+    }
+
+    /* Legend */
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.72rem;
+      color: #475569;
+      margin-top: 6px;
+    }
+    #legend-canvas { flex: 1; height: 7px; border-radius: 4px; }
+
+    /* Detail tooltip */
+    #detail {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #252d3d;
+      display: none;
+    }
+    #detail.visible { display: block; }
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+    }
+    .detail-date { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #475569; }
+    .detail-score { font-size: 1.4rem; font-weight: 800; color: #f8fafc; }
+    .sub-scores { display: flex; flex-direction: column; gap: 8px; }
+    .sub-row { display: grid; grid-template-columns: 130px 1fr 28px; align-items: center; gap: 10px; }
+    .sub-label { font-size: 0.74rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sub-track { height: 6px; border-radius: 3px; background: #1e2535; overflow: hidden; }
+    .sub-fill { height: 100%; border-radius: 3px; transition: width 0.35s ease; }
+    .sub-value { font-size: 0.74rem; font-weight: 700; color: #94a3b8; text-align: right; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Back</a>
+  <h1>Visual Linking</h1>
+  <p class="subtitle">Same color scale, shared axis row, and a hover guide rule that bridges both charts simultaneously.</p>
+
+  <div class="card">
+    <div class="section-label">Overall Score — 20 days</div>
+    <div class="unified" id="unified">
+      <div class="chart-wrap">
+        <canvas id="line-chart"></canvas>
+      </div>
+      <!-- guide line -->
+      <div id="guide"></div>
+      <!-- shared date labels -->
+      <div id="date-row"></div>
+      <!-- heatmap strip -->
+      <div id="heatmap-strip"></div>
+      <div class="legend-row">
+        <span>Low</span>
+        <canvas id="legend-canvas" width="400" height="7"></canvas>
+        <span>High</span>
+      </div>
+    </div>
+    <div id="detail">
+      <div class="detail-header">
+        <div class="detail-date" id="d-date"></div>
+        <div class="detail-score" id="d-score"></div>
+      </div>
+      <div class="sub-scores" id="sub-scores"></div>
+    </div>
+  </div>
+
+  <script>
+    let highlightIdx = null;
+    let activeIdx = null;
+
+    // ── Legend ──
+    const lc = document.getElementById('legend-canvas');
+    const lctx = lc.getContext('2d');
+    const grad = lctx.createLinearGradient(0, 0, 400, 0);
+    for (let i = 0; i <= 20; i++) grad.addColorStop(i / 20, scoreColor(i / 20));
+    lctx.fillStyle = grad;
+    lctx.fillRect(0, 0, 400, 7);
+
+    // ── Line chart ──
+    const lineCtx = document.getElementById('line-chart').getContext('2d');
+
+    const lineChart = new Chart(lineCtx, {
+      type: 'line',
+      data: {
+        labels: SCORES_DATA.map(d => d.date),
+        datasets: [{
+          data: SCORES_DATA.map(d => d.score),
+          borderColor: 'rgba(148,163,184,0.4)',
+          borderWidth: 2,
+          tension: 0.3,
+          fill: false,
+          pointRadius: 6,
+          pointHoverRadius: 9,
+          pointBackgroundColor: SCORES_DATA.map(d => scoreColor(d.score)),
+          pointBorderColor: SCORES_DATA.map(d => scoreColor(d.score)),
+          pointBorderWidth: 0,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        onHover: (event, elements) => {
+          if (elements.length) {
+            const idx = elements[0].index;
+            highlightIdx = idx;
+            updateGuide(idx);
+            highlightCell(idx);
+          } else {
+            highlightIdx = null;
+            hideGuide();
+            unhighlightCells();
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1f2e',
+            borderColor: '#252d3d',
+            borderWidth: 1,
+            titleColor: '#f1f5f9',
+            bodyColor: '#94a3b8',
+            padding: 10,
+            callbacks: {
+              title: ctx => SCORES_DATA[ctx[0].dataIndex].date,
+              label: ctx => 'Score: ' + (ctx.raw * 100).toFixed(0) + '%',
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: 0, max: 1,
+            ticks: { color: '#475569', callback: v => (v * 100).toFixed(0) + '%', stepSize: 0.25 },
+            grid: { color: 'rgba(37,45,61,0.8)' },
+            border: { color: '#252d3d', dash: [4, 4] },
+          },
+          x: {
+            display: false, // hidden — we render our own shared labels
+          }
+        }
+      }
+    });
+
+    // ── After chart renders, position date labels and heatmap cells ──
+    function buildAlignedElements() {
+      const meta = lineChart.getDatasetMeta(0);
+      const canvasEl = document.getElementById('line-chart');
+
+      const dateRow = document.getElementById('date-row');
+      const strip = document.getElementById('heatmap-strip');
+      const guide = document.getElementById('guide');
+
+      dateRow.innerHTML = '';
+      strip.innerHTML = '';
+
+      const points = meta.data;
+      if (!points.length) return;
+
+      // Determine cell width from gap between adjacent points
+      const cellW = points.length > 1
+        ? Math.max(12, (points[1].x - points[0].x) * 0.85)
+        : 32;
+
+      // Guide height: chart + date row + heatmap strip
+      const guideHeight = canvasEl.offsetHeight + 28 + 44;
+      guide.style.height = guideHeight + 'px';
+
+      points.forEach((pt, i) => {
+        // Date label
+        const lbl = document.createElement('div');
+        lbl.className = 'date-label' + (i % 4 !== 0 ? ' hidden' : '');
+        lbl.textContent = SCORES_DATA[i].date;
+        lbl.style.left = pt.x + 'px';
+        dateRow.appendChild(lbl);
+
+        // Heatmap cell
+        const cell = document.createElement('div');
+        cell.className = 'strip-cell';
+        cell.style.background = scoreColor(SCORES_DATA[i].score);
+        cell.style.left = (pt.x - cellW / 2) + 'px';
+        cell.style.width = cellW + 'px';
+        cell.title = SCORES_DATA[i].date + ': ' + (SCORES_DATA[i].score * 100).toFixed(0) + '%';
+
+        cell.addEventListener('mouseenter', () => {
+          highlightChartPoint(i);
+          positionGuide(pt.x);
+        });
+        cell.addEventListener('mouseleave', () => {
+          unhighlightChart();
+          hideGuide();
+        });
+        cell.addEventListener('click', () => {
+          activeIdx = i;
+          markActiveCell(i);
+          openDetail(i);
+        });
+
+        strip.appendChild(cell);
+      });
+    }
+
+    // Run after chart renders
+    lineChart.options.animation = {
+      onComplete: buildAlignedElements
+    };
+    lineChart.update();
+
+    // ── Guide line helpers ──
+    function positionGuide(x) {
+      const guide = document.getElementById('guide');
+      guide.style.left = x + 'px';
+      guide.style.display = 'block';
+    }
+    function updateGuide(idx) {
+      const meta = lineChart.getDatasetMeta(0);
+      if (meta.data[idx]) positionGuide(meta.data[idx].x);
+    }
+    function hideGuide() {
+      document.getElementById('guide').style.display = 'none';
+    }
+
+    // ── Cell highlight from chart hover ──
+    function highlightCell(idx) {
+      const cells = document.querySelectorAll('.strip-cell');
+      cells.forEach((c, i) => {
+        c.style.filter = i === idx ? 'brightness(1.5)' : 'brightness(0.5)';
+      });
+    }
+    function unhighlightCells() {
+      document.querySelectorAll('.strip-cell').forEach(c => {
+        c.style.filter = c.classList.contains('active') ? 'brightness(1.5)' : '';
+      });
+    }
+
+    // ── Chart point highlight from cell hover ──
+    function highlightChartPoint(idx) {
+      lineChart.setActiveElements([{ datasetIndex: 0, index: idx }]);
+      lineChart.update('none');
+    }
+    function unhighlightChart() {
+      lineChart.setActiveElements([]);
+      lineChart.update('none');
+    }
+
+    // ── Active cell marking ──
+    function markActiveCell(idx) {
+      document.querySelectorAll('.strip-cell').forEach((c, i) => {
+        c.classList.toggle('active', i === idx);
+      });
+    }
+
+    // ── Detail panel ──
+    function openDetail(idx) {
+      const d = SCORES_DATA[idx];
+      document.getElementById('d-date').textContent = d.date + ' · Day ' + (idx + 1);
+      document.getElementById('d-score').textContent = (d.score * 100).toFixed(0) + '%';
+
+      const container = document.getElementById('sub-scores');
+      container.innerHTML = '';
+      SUB_LABELS.forEach(({ key, label }) => {
+        const val = d.sub[key];
+        const t = val / 10;
+        const row = document.createElement('div');
+        row.className = 'sub-row';
+        row.innerHTML = `
+          <div class="sub-label">${label}</div>
+          <div class="sub-track"><div class="sub-fill" style="width:0%;background:${scoreColor(t)}"></div></div>
+          <div class="sub-value">${val}</div>`;
+        container.appendChild(row);
+        setTimeout(() => row.querySelector('.sub-fill').style.width = (t * 100) + '%', 30);
+      });
+
+      document.getElementById('detail').classList.add('visible');
+    }
+  </script>
+</body>
+</html>

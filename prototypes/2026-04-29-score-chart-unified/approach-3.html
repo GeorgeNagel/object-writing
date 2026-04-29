@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approach 3 — Structural Unification</title>
+  <script src="data/scores.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 48px 32px;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+      transition: color 0.15s;
+    }
+    .back:hover { color: #94a3b8; }
+    h1 { font-size: 1.6rem; font-weight: 700; color: #f8fafc; margin-bottom: 6px; }
+    .subtitle { color: #64748b; font-size: 0.88rem; margin-bottom: 8px; }
+    .hint { color: #475569; font-size: 0.8rem; margin-bottom: 28px; font-style: italic; }
+
+    .card {
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 14px;
+      padding: 28px;
+      max-width: 980px;
+      overflow-x: auto;
+    }
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #475569;
+      margin-bottom: 16px;
+    }
+
+    /* SVG chart */
+    #chart-svg {
+      display: block;
+      overflow: visible;
+    }
+
+    /* Tooltip */
+    #tooltip {
+      position: fixed;
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 10px;
+      padding: 12px 16px;
+      pointer-events: none;
+      display: none;
+      z-index: 100;
+      min-width: 180px;
+    }
+    .tt-date { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #475569; margin-bottom: 6px; }
+    .tt-score { font-size: 1.3rem; font-weight: 800; color: #f8fafc; margin-bottom: 10px; }
+    .tt-subs { display: flex; flex-direction: column; gap: 5px; }
+    .tt-row { display: grid; grid-template-columns: 1fr 42px 20px; align-items: center; gap: 6px; }
+    .tt-label { font-size: 0.7rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tt-bar-bg { height: 5px; border-radius: 3px; background: #1e2535; overflow: hidden; }
+    .tt-bar-fill { height: 100%; border-radius: 3px; }
+    .tt-val { font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-align: right; }
+
+    /* Layer labels */
+    .layer-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      fill: #475569;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Back</a>
+  <h1>Structural Unification</h1>
+  <p class="subtitle">One visualization, three layers. Line trend, score strip, and sub-score bars share a single x-axis.</p>
+  <p class="hint">Hover any column to see all data for that session</p>
+
+  <div class="card">
+    <div class="section-label">Writing Progress — 20 days</div>
+    <svg id="chart-svg"></svg>
+  </div>
+
+  <div id="tooltip">
+    <div class="tt-date" id="tt-date"></div>
+    <div class="tt-score" id="tt-score"></div>
+    <div class="tt-subs" id="tt-subs"></div>
+  </div>
+
+  <script>
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+
+    // Layout constants
+    const MARGIN_LEFT  = 44; // y-axis labels
+    const MARGIN_RIGHT = 16;
+    const COL_COUNT    = SCORES_DATA.length;
+    const COL_W        = 38;
+    const COL_GAP      = 4;
+    const STEP         = COL_W + COL_GAP;
+    const TOTAL_W      = MARGIN_LEFT + COL_COUNT * STEP - COL_GAP + MARGIN_RIGHT;
+
+    // Layer heights
+    const LINE_H      = 160; // line chart area
+    const STRIP_H     = 32;  // overall score color strip
+    const STACK_H     = 100; // stacked sub-score bars
+    const LABEL_H     = 28;  // date labels
+    const LAYER_GAP   = 8;
+    const TOTAL_H     = LINE_H + LAYER_GAP + STRIP_H + LAYER_GAP + STACK_H + LABEL_H + 8;
+
+    // Y positions of each layer top
+    const LINE_TOP   = 0;
+    const STRIP_TOP  = LINE_H + LAYER_GAP;
+    const STACK_TOP  = STRIP_TOP + STRIP_H + LAYER_GAP;
+    const LABEL_TOP  = STACK_TOP + STACK_H + 6;
+
+    const svg = document.getElementById('chart-svg');
+    svg.setAttribute('width', TOTAL_W);
+    svg.setAttribute('height', TOTAL_H + 8);
+    svg.setAttribute('viewBox', `0 0 ${TOTAL_W} ${TOTAL_H + 8}`);
+
+    function el(tag, attrs) {
+      const e = document.createElementNS(SVG_NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+      return e;
+    }
+    function txt(content, attrs) {
+      const e = el('text', attrs);
+      e.textContent = content;
+      return e;
+    }
+
+    // ── Y-axis grid lines + labels (line chart) ──
+    [0, 0.25, 0.5, 0.75, 1].forEach(v => {
+      const y = LINE_TOP + LINE_H - v * LINE_H;
+      svg.appendChild(el('line', {
+        x1: MARGIN_LEFT, y1: y,
+        x2: TOTAL_W - MARGIN_RIGHT, y2: y,
+        stroke: 'rgba(37,45,61,0.8)', 'stroke-width': 1,
+        'stroke-dasharray': '4 4'
+      }));
+      svg.appendChild(txt((v * 100).toFixed(0) + '%', {
+        x: MARGIN_LEFT - 6, y: y + 4,
+        'text-anchor': 'end',
+        fill: '#475569',
+        'font-size': '10',
+        'font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      }));
+    });
+
+    // ── Layer separator lines ──
+    [STRIP_TOP - 2, STACK_TOP - 2].forEach(y => {
+      svg.appendChild(el('line', {
+        x1: MARGIN_LEFT, y1: y,
+        x2: TOTAL_W - MARGIN_RIGHT, y2: y,
+        stroke: '#252d3d', 'stroke-width': 1,
+      }));
+    });
+
+    // ── Layer labels (left margin) ──
+    [
+      { y: LINE_TOP + LINE_H / 2, label: 'TREND' },
+      { y: STRIP_TOP + STRIP_H / 2 + 4, label: 'SCORE' },
+      { y: STACK_TOP + STACK_H / 2 + 4, label: 'SENSES' },
+    ].forEach(({ y, label }) => {
+      const t = txt(label, {
+        x: MARGIN_LEFT - 8,
+        y,
+        'text-anchor': 'end',
+        fill: '#334155',
+        'font-size': '8',
+        'font-weight': '700',
+        'letter-spacing': '0.08em',
+        'font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      });
+      svg.appendChild(t);
+    });
+
+    // ── Compute line chart y pixel for a score ──
+    function lineY(score) {
+      return LINE_TOP + LINE_H - score * LINE_H;
+    }
+
+    // ── Column x (center) ──
+    function colX(i) {
+      return MARGIN_LEFT + i * STEP + COL_W / 2;
+    }
+
+    // ── Hover column group ──
+    const hoverGroups = [];
+
+    SCORES_DATA.forEach((d, i) => {
+      const x = MARGIN_LEFT + i * STEP;
+      const cx = colX(i);
+
+      // Hover target (full column height, invisible)
+      const hitArea = el('rect', {
+        x, y: LINE_TOP,
+        width: COL_W, height: STACK_TOP + STACK_H - LINE_TOP,
+        fill: 'transparent',
+        cursor: 'pointer',
+      });
+      hitArea.addEventListener('mouseenter', e => showTooltip(i, e));
+      hitArea.addEventListener('mousemove', e => moveTooltip(e));
+      hitArea.addEventListener('mouseleave', () => hideTooltip(i));
+      svg.appendChild(hitArea);
+
+      // Column hover highlight
+      const colHighlight = el('rect', {
+        x, y: LINE_TOP,
+        width: COL_W, height: STACK_TOP + STACK_H - LINE_TOP,
+        fill: 'rgba(248,250,252,0)',
+        rx: 3, ry: 3,
+        'pointer-events': 'none',
+        'transition': 'fill 0.12s',
+      });
+      colHighlight.dataset.idx = i;
+      svg.appendChild(colHighlight);
+      hoverGroups.push({ highlight: colHighlight });
+
+      // ── Score color strip ──
+      svg.appendChild(el('rect', {
+        x, y: STRIP_TOP,
+        width: COL_W, height: STRIP_H,
+        fill: scoreColor(d.score),
+        rx: 3, ry: 3,
+      }));
+
+      // Score % label on strip
+      svg.appendChild(txt((d.score * 100).toFixed(0) + '%', {
+        x: cx, y: STRIP_TOP + STRIP_H / 2 + 4,
+        'text-anchor': 'middle',
+        fill: 'rgba(255,255,255,0.75)',
+        'font-size': '9',
+        'font-weight': '700',
+        'font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        'pointer-events': 'none',
+      }));
+
+      // ── Stacked sub-score bars ──
+      // Senses to stack (excluding 'words' and 'senses' aggregates — use the 6 sense dimensions)
+      const senseKeys = ['sight', 'hearing', 'touch', 'kinaesthetic', 'organic', 'smell'];
+      const senseColors = [
+        scoreColor(0.85), scoreColor(0.70), scoreColor(0.55),
+        scoreColor(0.40), scoreColor(0.25), scoreColor(0.10)
+      ];
+      const maxVal = 10;
+      let stackY = STACK_TOP + STACK_H; // start from bottom
+
+      senseKeys.forEach((key, ki) => {
+        const val = d.sub[key];
+        const barH = (val / maxVal) * STACK_H;
+        if (barH < 1) return;
+        const barY = stackY - barH;
+        svg.appendChild(el('rect', {
+          x: x + 1, y: barY,
+          width: COL_W - 2, height: barH,
+          fill: senseColors[ki],
+          rx: ki === 0 ? 2 : 0,
+          ry: ki === 0 ? 2 : 0,
+          'pointer-events': 'none',
+        }));
+        stackY = barY;
+      });
+
+      // Date label
+      if (i % 4 === 0 || i === SCORES_DATA.length - 1) {
+        svg.appendChild(txt(d.date, {
+          x: cx, y: LABEL_TOP + 14,
+          'text-anchor': 'middle',
+          fill: '#475569',
+          'font-size': '10',
+          'font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          'pointer-events': 'none',
+        }));
+      }
+    });
+
+    // ── Line chart (drawn on top) ──
+    // Area fill
+    const areaPoints = SCORES_DATA.map((d, i) => `${colX(i)},${lineY(d.score)}`).join(' ');
+    const firstX = colX(0), lastX = colX(SCORES_DATA.length - 1);
+    const bottomY = LINE_TOP + LINE_H;
+    const area = el('polygon', {
+      points: `${firstX},${bottomY} ${areaPoints} ${lastX},${bottomY}`,
+      fill: 'rgba(59,130,246,0.08)',
+      'pointer-events': 'none',
+    });
+    svg.appendChild(area);
+
+    // Line path
+    const linePoints = SCORES_DATA.map((d, i) => {
+      const x = colX(i), y = lineY(d.score);
+      if (i === 0) return `M ${x} ${y}`;
+      const px = colX(i - 1), py = lineY(SCORES_DATA[i - 1].score);
+      const cpx = (px + x) / 2;
+      return `C ${cpx} ${py} ${cpx} ${y} ${x} ${y}`;
+    }).join(' ');
+    svg.appendChild(el('path', {
+      d: linePoints,
+      stroke: 'rgba(148,163,184,0.5)',
+      'stroke-width': '2',
+      fill: 'none',
+      'pointer-events': 'none',
+    }));
+
+    // Data points (drawn last so they're on top)
+    const pointEls = SCORES_DATA.map((d, i) => {
+      const circle = el('circle', {
+        cx: colX(i), cy: lineY(d.score),
+        r: 5,
+        fill: scoreColor(d.score),
+        stroke: '#0f1117',
+        'stroke-width': '2',
+        'pointer-events': 'none',
+      });
+      svg.appendChild(circle);
+      return circle;
+    });
+
+    // ── Hover ──
+    function showTooltip(idx, e) {
+      hoverGroups[idx].highlight.setAttribute('fill', 'rgba(248,250,252,0.05)');
+      pointEls[idx].setAttribute('r', '8');
+      pointEls[idx].setAttribute('stroke-width', '3');
+
+      const d = SCORES_DATA[idx];
+      document.getElementById('tt-date').textContent = d.date + ' · Day ' + (idx + 1);
+      document.getElementById('tt-score').textContent = (d.score * 100).toFixed(0) + '%';
+
+      const subsContainer = document.getElementById('tt-subs');
+      subsContainer.innerHTML = '';
+      SUB_LABELS.forEach(({ key, label }) => {
+        const val = d.sub[key];
+        const t = val / 10;
+        const row = document.createElement('div');
+        row.className = 'tt-row';
+        row.innerHTML = `
+          <div class="tt-label">${label}</div>
+          <div class="tt-bar-bg"><div class="tt-bar-fill" style="width:${t*100}%;background:${scoreColor(t)}"></div></div>
+          <div class="tt-val">${val}</div>`;
+        subsContainer.appendChild(row);
+      });
+
+      const tooltip = document.getElementById('tooltip');
+      tooltip.style.display = 'block';
+      moveTooltip(e);
+    }
+
+    function moveTooltip(e) {
+      const tooltip = document.getElementById('tooltip');
+      let left = e.clientX + 16;
+      let top = e.clientY - 20;
+      const tw = tooltip.offsetWidth || 200;
+      const th = tooltip.offsetHeight || 260;
+      if (left + tw > window.innerWidth - 16) left = e.clientX - tw - 16;
+      if (top + th > window.innerHeight - 16) top = e.clientY - th;
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = top + 'px';
+    }
+
+    function hideTooltip(idx) {
+      hoverGroups[idx].highlight.setAttribute('fill', 'rgba(248,250,252,0)');
+      pointEls[idx].setAttribute('r', '5');
+      pointEls[idx].setAttribute('stroke-width', '2');
+      document.getElementById('tooltip').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

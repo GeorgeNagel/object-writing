@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approach 1 — Line Chart + Rolling Average</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 48px 32px;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+      transition: color 0.15s;
+    }
+    .back:hover { color: #94a3b8; }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      color: #64748b;
+      font-size: 0.88rem;
+      margin-bottom: 36px;
+    }
+    .card {
+      background: #1a1f2e;
+      border: 1px solid #252d3d;
+      border-radius: 14px;
+      padding: 32px;
+      max-width: 900px;
+    }
+    .stats {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 32px;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #f1f5f9;
+    }
+    .stat-value.positive { color: #4ade80; }
+    .chart-wrap {
+      position: relative;
+      height: 340px;
+    }
+    .legend {
+      display: flex;
+      gap: 24px;
+      margin-top: 20px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    .legend-line {
+      width: 24px;
+      height: 2px;
+      border-radius: 2px;
+    }
+    .legend-dashed {
+      width: 24px;
+      border-top: 2px dashed #f59e0b;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Back to prototypes</a>
+  <h1>Line Chart + Rolling Average</h1>
+  <p class="subtitle">Daily writing score over 20 days with a 5-day rolling average. Hover for details.</p>
+
+  <div class="card">
+    <div class="stats">
+      <div>
+        <div class="stat-label">Latest Score</div>
+        <div class="stat-value" id="stat-latest">—</div>
+      </div>
+      <div>
+        <div class="stat-label">20-Day Change</div>
+        <div class="stat-value positive" id="stat-change">—</div>
+      </div>
+      <div>
+        <div class="stat-label">Personal Best</div>
+        <div class="stat-value" id="stat-best">—</div>
+      </div>
+      <div>
+        <div class="stat-label">Average</div>
+        <div class="stat-value" id="stat-avg">—</div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chart"></canvas>
+    </div>
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-line" style="background:#3b82f6;"></div>
+        Daily score
+      </div>
+      <div class="legend-item">
+        <div class="legend-dashed"></div>
+        5-day rolling average
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const data = [
+      { date: 'Apr 9',  score: 0.10 },
+      { date: 'Apr 10', score: 0.15 },
+      { date: 'Apr 11', score: 0.12 },
+      { date: 'Apr 12', score: 0.31 },
+      { date: 'Apr 13', score: 0.12 },
+      { date: 'Apr 14', score: 0.05 },
+      { date: 'Apr 15', score: 0.21 },
+      { date: 'Apr 16', score: 0.24 },
+      { date: 'Apr 17', score: 0.41 },
+      { date: 'Apr 18', score: 0.54 },
+      { date: 'Apr 19', score: 0.31 },
+      { date: 'Apr 20', score: 0.35 },
+      { date: 'Apr 21', score: 0.39 },
+      { date: 'Apr 22', score: 0.52 },
+      { date: 'Apr 23', score: 0.45 },
+      { date: 'Apr 24', score: 0.58 },
+      { date: 'Apr 25', score: 0.55 },
+      { date: 'Apr 26', score: 0.61 },
+      { date: 'Apr 27', score: 0.68 },
+      { date: 'Apr 28', score: 0.64 },
+    ];
+
+    const rolling = data.map((_, i) => {
+      if (i < 4) return null;
+      const window = data.slice(i - 4, i + 1);
+      return +(window.reduce((s, d) => s + d.score, 0) / 5).toFixed(4);
+    });
+
+    const scores = data.map(d => d.score);
+    const labels = data.map(d => d.date);
+    const first = scores[0], last = scores[scores.length - 1];
+    const best = Math.max(...scores);
+    const avg = scores.reduce((s, v) => s + v, 0) / scores.length;
+    const bestDay = data.find(d => d.score === best).date;
+
+    document.getElementById('stat-latest').textContent = pct(last);
+    document.getElementById('stat-change').textContent = '+' + ((last - first) * 100).toFixed(0) + 'pp';
+    document.getElementById('stat-best').textContent = pct(best) + ' (' + bestDay + ')';
+    document.getElementById('stat-avg').textContent = pct(avg);
+
+    function pct(v) { return (v * 100).toFixed(0) + '%'; }
+
+    const ctx = document.getElementById('chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Daily Score',
+            data: scores,
+            borderColor: '#3b82f6',
+            backgroundColor: (context) => {
+              const chart = context.chart;
+              const { ctx: c, chartArea } = chart;
+              if (!chartArea) return 'transparent';
+              const gradient = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+              gradient.addColorStop(0, 'rgba(59,130,246,0.25)');
+              gradient.addColorStop(1, 'rgba(59,130,246,0.02)');
+              return gradient;
+            },
+            fill: true,
+            tension: 0.35,
+            pointRadius: 5,
+            pointHoverRadius: 9,
+            pointBackgroundColor: '#3b82f6',
+            pointBorderColor: '#0f1117',
+            pointBorderWidth: 2,
+            borderWidth: 2.5,
+            order: 2,
+          },
+          {
+            label: '5-Day Avg',
+            data: rolling,
+            borderColor: '#f59e0b',
+            borderDash: [6, 4],
+            borderWidth: 2,
+            pointRadius: 0,
+            fill: false,
+            tension: 0.35,
+            spanGaps: false,
+            order: 1,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1f2e',
+            borderColor: '#252d3d',
+            borderWidth: 1,
+            titleColor: '#f1f5f9',
+            bodyColor: '#94a3b8',
+            padding: 12,
+            callbacks: {
+              label: (ctx) => {
+                if (ctx.raw === null) return null;
+                return ctx.dataset.label + ': ' + (ctx.raw * 100).toFixed(1) + '%';
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: 0,
+            max: 1,
+            ticks: {
+              color: '#475569',
+              callback: v => (v * 100).toFixed(0) + '%',
+              stepSize: 0.2,
+            },
+            grid: { color: 'rgba(37,45,61,0.8)' },
+            border: { color: '#252d3d', dash: [4, 4] }
+          },
+          x: {
+            ticks: { color: '#475569', maxRotation: 0 },
+            grid: { display: false },
+            border: { color: '#252d3d' }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
