@@ -60,33 +60,6 @@
     "dependencies": []
   },
   {
-    "id": "051",
-    "title": "Django project scaffolding with custom user model",
-    "status": "todo",
-    "story": "As a developer, I want a Django project set up with a custom user model so that I have a solid foundation for the backend with room for future user model extensions.",
-    "acceptance_criteria": [
-      "Django project exists at backend/ in the monorepo root",
-      "Custom user model (CustomUser) extends AbstractUser",
-      "AUTH_USER_MODEL is set to the custom user model",
-      "Initial migrations are created and apply cleanly",
-      "Django admin has a `CustomUserAdmin` class registered for `CustomUser`",
-      "The default Django welcome page loads without error when running `python manage.py runserver`",
-      "A `requirements.txt` exists at `backend/` with Django pinned",
-      "A virtual environment exists at `backend/venv/`",
-      "A test exists verifying that a `CustomUser` instance can be saved to and retrieved from the database"
-    ],
-    "dependencies": [],
-    "non_goals": [
-      "Database configuration (covered in a separate ticket)",
-      "Docker container for the Django app"
-    ],
-    "assumptions": [
-      "Python is installed locally",
-      "SQLite is used as the default database for this ticket; Postgres configuration is covered in ticket 054"
-    ],
-    "groomed_at": "2026-04-28T20:07:12Z"
-  },
-  {
     "id": "052",
     "title": "Django REST Framework setup",
     "status": "todo",
@@ -240,13 +213,26 @@
   },
   {
     "id": "059",
-    "title": "As a developer, i want a skill that moves a backlog ticket into the current sprint",
+    "title": "Add ability to add tickets to an in-progress sprint",
     "status": "todo",
-    "story": "",
-    "acceptance_criteria": [],
+    "story": "As a developer, I want to be able to move groomed tickets into the current sprint so that I can start work on them before closing the sprint.",
+    "acceptance_criteria": [
+      "Given a ticket ID, the skill moves the ticket from backlog.json into current-sprint.json",
+      "If the specified ticket has not been groomed (groomed_at is null), the skill exits with an error and does not move the ticket",
+      "If the specified ticket is not found in the backlog, the skill exits with an error"
+    ],
     "dependencies": [],
-    "non_goals": [],
-    "assumptions": [],
-    "groomed_at": null
+    "non_goals": [
+      "Grooming the ticket",
+      "Moving multiple tickets at once",
+      "Reordering or prioritizing tickets within the sprint",
+      "Moving tickets out of the sprint back to the backlog"
+    ],
+    "assumptions": [
+      "current-sprint.json and backlog.json exist and follow the established schema",
+      "Tickets have a groomed_at field that is non-null when groomed (the schema is stable)",
+      "The skill is invoked with a single ticket ID argument"
+    ],
+    "groomed_at": "2026-04-29T00:00:00Z"
   }
 ]

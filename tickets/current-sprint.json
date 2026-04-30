@@ -68,6 +68,39 @@
     "closed_reason": "Already done"
   },
   {
+    "id": "051",
+    "title": "Django project scaffolding with custom user model",
+    "status": "done",
+    "story": "As a developer, I want a Django project set up with a custom user model so that I have a solid foundation for the backend with room for future user model extensions.",
+    "acceptance_criteria": [
+      "Django project exists at backend/ in the monorepo root",
+      "Custom user model (CustomUser) extends AbstractUser",
+      "AUTH_USER_MODEL is set to the custom user model",
+      "Initial migrations are created and apply cleanly",
+      "Django admin has a `CustomUserAdmin` class registered for `CustomUser`",
+      "The default Django welcome page loads without error when running `python manage.py runserver`",
+      "A `requirements.txt` exists at `backend/` with Django pinned",
+      "A virtual environment exists at `backend/venv/`",
+      "A test exists verifying that a `CustomUser` instance can be saved to and retrieved from the database"
+    ],
+    "dependencies": [],
+    "non_goals": [
+      "Database configuration (covered in a separate ticket)",
+      "Docker container for the Django app"
+    ],
+    "assumptions": [
+      "Python is installed locally",
+      "SQLite is used as the default database for this ticket; Postgres configuration is covered in ticket 054"
+    ],
+    "groomed_at": "2026-04-28T20:07:12Z",
+    "retro_notes": {
+      "user": [
+        "we should be checking at some stage (ticket-do or retro) to see if there are any things that should be added to the readme"
+      ]
+    },
+    "completed_at": "2026-04-29T21:26:37.039799"
+  },
+  {
     "id": "058",
     "title": "Refactor Exercise component: extract state hook and phase subcomponents",
     "status": "done",

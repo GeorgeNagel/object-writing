@@ -39,9 +39,11 @@ python3 .claude/skills/retro/append-retro-note.py <ticket_id> "<note>"
 
 Limit notes to these event types. Do not log execution steps, tool calls, or routine progress.
 
-## Step 4: Retrospective
+## Step 4: User Retrospective
 
-**User retro** (`retro_notes.user`): Ask the user: "Anything to add to the retro for this ticket?" Wait for their response. If they decline or have nothing to add, leave `retro_notes.user` unset. Otherwise append their response verbatim as a string to the `retro_notes.user` array in `tickets/current-sprint.json`. Do not implement their suggested changes from this question.
+Do not implement suggested changes from this step.
+
+**User retro** (`retro_notes.user`): Ask the user: "Anything to add to the retro for this ticket?" Wait for their response. If they decline or have nothing to add, leave `retro_notes.user` unset. Otherwise append their response verbatim as a string to the `retro_notes.user` array in `tickets/current-sprint.json`.
 
 ## Step 5: Human sign-off
 

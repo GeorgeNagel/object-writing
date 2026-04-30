@@ -1,2 +1,6 @@
 # Python cache files
-*/__pycache__
+**/__pycache__
+
+# Django
+backend/venv/
+backend/db.sqlite3
