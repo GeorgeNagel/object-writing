@@ -60,13 +60,9 @@ Iterate — adding, removing, or rewording items — until the user confirms the
 
 ## Step 4: Five why's
 
-For each problem in the confirmed list, run a five why's discussion:
+For each problem in the confirmed list, explore the problem and ask questions until the user confirms a root cause is reached.
 
-1. State the problem clearly. If it is recurring, note that it has been carried forward for K sprints.
-2. Ask "Why did this happen?"
-3. After each answer, ask "Why?" again, digging deeper.
-4. Continue until a root cause is reached — typically 3–5 levels deep, but stop earlier if the user signals the root cause is found or later if more depth is needed.
-5. Summarize the root cause before moving to the next problem.
+Summarize the root cause before moving to the next problem.
 
 ## Step 5: Propose tickets
 
