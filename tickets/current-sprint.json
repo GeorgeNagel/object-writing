@@ -155,7 +155,7 @@
   {
     "id": "054",
     "title": "Postgres Docker container and Django DB connection",
-    "status": "todo",
+    "status": "closed",
     "story": "As a developer, I want a Dockerized Postgres instance with Django connected to it so that I can persist data without installing Postgres locally.",
     "acceptance_criteria": [
       "docker-compose.yml at repo root defines a Postgres service",
@@ -177,6 +177,7 @@
       ".env is gitignored (credentials not committed)",
       "Docker Compose v2 syntax is used (not legacy v1)"
     ],
-    "groomed_at": "2026-05-01T00:00:00Z"
+    "groomed_at": "2026-05-01T00:00:00Z",
+    "closed_at": "2026-05-01T21:23:47.501731"
   }
 ]
