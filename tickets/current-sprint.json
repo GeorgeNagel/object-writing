@@ -155,7 +155,7 @@
   {
     "id": "054",
     "title": "Postgres Docker container and Django DB connection",
-    "status": "closed",
+    "status": "done",
     "story": "As a developer, I want a Dockerized Postgres instance with Django connected to it so that I can persist data without installing Postgres locally.",
     "acceptance_criteria": [
       "docker-compose.yml at repo root defines a Postgres service",
@@ -178,6 +178,35 @@
       "Docker Compose v2 syntax is used (not legacy v1)"
     ],
     "groomed_at": "2026-05-01T00:00:00Z",
-    "closed_at": "2026-05-01T21:23:47.501731"
+    "completed_at": "2026-05-01T21:23:47.501731"
+  },
+  {
+    "id": "063",
+    "title": "Containerize Django",
+    "status": "done",
+    "story": "As a developer, I want a reproducible, isolated development environment, so that dependencies and configuration are consistent across machines.",
+    "acceptance_criteria": [
+      "A Dockerfile (or docker-compose.yml) exists that builds and runs the Django app",
+      "Environment variables are sourced from a .env file (not hardcoded)",
+      "Running a single command starts the development server in a container",
+      "The app runs correctly inside the container (e.g., migrations apply, server responds)",
+      "Dependencies are installed from requirements.txt inside the container (no manual steps)"
+    ],
+    "dependencies": [],
+    "non_goals": [
+      "Production-ready container configuration (multi-stage builds, non-root user, etc.)",
+      "CI/CD pipeline integration",
+      "Container orchestration (Kubernetes, ECS, etc.)",
+      "Containerizing any other services beyond Django (e.g., Celery workers)",
+      "Database containerization"
+    ],
+    "assumptions": [
+      "Docker and Docker Compose are installed on the developer's machine",
+      "The existing requirements.txt is complete and accurate",
+      "The .env.example file serves as the template for local env config",
+      "Postgres is not being containerized as part of this ticket"
+    ],
+    "groomed_at": "2026-05-01T00:00:00Z",
+    "completed_at": "2026-05-01T21:34:00.800532"
   }
 ]

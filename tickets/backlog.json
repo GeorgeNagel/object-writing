@@ -222,16 +222,5 @@
     "non_goals": [],
     "assumptions": [],
     "groomed_at": null
-  },
-  {
-    "id": "063",
-    "title": "Containerize Django",
-    "status": "todo",
-    "story": "As a developer, I want a containerized Django, so that I can handle environment variables and dependencies more programatically",
-    "acceptance_criteria": [],
-    "dependencies": [],
-    "non_goals": [],
-    "assumptions": [],
-    "groomed_at": null
   }
 ]

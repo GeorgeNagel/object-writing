@@ -28,3 +28,11 @@ From within a Claude session, run:
 # Create a stub ticket (title only)
 ! python3 scripts/new-story.py --stub "Your ticket title"
 ```
+
+# Running the backend
+
+```
+docker-compose up --bild
+```
+
+Visit http://localhost:8000/ for the Django server
