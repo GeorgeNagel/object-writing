@@ -126,5 +126,30 @@
     ],
     "groomed_at": "2026-04-28T20:30:00Z",
     "completed_at": "2026-04-29T07:57:28.817162"
+  },
+  {
+    "id": "059",
+    "title": "Add ability to add tickets to an in-progress sprint",
+    "status": "done",
+    "story": "As a developer, I want to be able to move groomed tickets into the current sprint so that I can start work on them before closing the sprint.",
+    "acceptance_criteria": [
+      "Given a ticket ID, the skill moves the ticket from backlog.json into current-sprint.json",
+      "If the specified ticket has not been groomed (groomed_at is null), the skill exits with an error and does not move the ticket",
+      "If the specified ticket is not found in the backlog, the skill exits with an error"
+    ],
+    "dependencies": [],
+    "non_goals": [
+      "Grooming the ticket",
+      "Moving multiple tickets at once",
+      "Reordering or prioritizing tickets within the sprint",
+      "Moving tickets out of the sprint back to the backlog"
+    ],
+    "assumptions": [
+      "current-sprint.json and backlog.json exist and follow the established schema",
+      "Tickets have a groomed_at field that is non-null when groomed (the schema is stable)",
+      "The skill is invoked with a single ticket ID argument"
+    ],
+    "groomed_at": "2026-04-29T00:00:00Z",
+    "completed_at": "2026-05-01T20:57:29.508544"
   }
 ]
