@@ -96,27 +96,6 @@
     "groomed_at": null
   },
   {
-    "id": "054",
-    "title": "Postgres Docker container and Django DB connection",
-    "status": "todo",
-    "story": "As a developer, I want a Dockerized Postgres instance with Django connected to it so that I can persist data without installing Postgres locally.",
-    "acceptance_criteria": [
-      "docker-compose.yml at repo root defines a Postgres service",
-      "Django DATABASES setting connects to the containerized Postgres via env vars",
-      "python manage.py migrate runs successfully against the containerized DB",
-      "DB credentials are configured via a .env file (not hardcoded)",
-      ".env.example documents all required variables"
-    ],
-    "dependencies": [
-      "051"
-    ],
-    "non_goals": [],
-    "assumptions": [
-      "Docker and Docker Compose are installed locally"
-    ],
-    "groomed_at": null
-  },
-  {
     "id": "055",
     "title": "User registration and JWT auth endpoints",
     "status": "todo",
@@ -216,6 +195,17 @@
     "title": "Don't store django secret key in codebase, regenerate key",
     "status": "todo",
     "story": "As a developer, I want the Django secret key to not be stored in the codebase so that if the codebase (e.g. github) becomes compromised, my web application will not be instantly hackable",
+    "acceptance_criteria": [],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
+  },
+  {
+    "id": "061",
+    "title": "Add script to return single ticket. Also, maybe all tickets should live in a single file, never be archived, and never be interfaced with directly by the llm. instead, maybe the current sprint or backlog can be materialized views into the flat data set. but maybe that makes it harder to view in vscode",
+    "status": "todo",
+    "story": "",
     "acceptance_criteria": [],
     "dependencies": [],
     "non_goals": [],

@@ -151,5 +151,32 @@
     ],
     "groomed_at": "2026-04-29T00:00:00Z",
     "completed_at": "2026-05-01T20:57:29.508544"
+  },
+  {
+    "id": "054",
+    "title": "Postgres Docker container and Django DB connection",
+    "status": "todo",
+    "story": "As a developer, I want a Dockerized Postgres instance with Django connected to it so that I can persist data without installing Postgres locally.",
+    "acceptance_criteria": [
+      "docker-compose.yml at repo root defines a Postgres service",
+      "Django DATABASES setting connects to the containerized Postgres via env vars",
+      "python manage.py migrate runs successfully against the containerized DB",
+      "DB credentials are configured via a .env file (not hardcoded)",
+      ".env.example documents all required variables"
+    ],
+    "dependencies": [
+      "051"
+    ],
+    "non_goals": [
+      "Staging/production database configuration",
+      "Database backup or volume persistence configuration",
+      "Multi-service orchestration beyond the single Postgres container"
+    ],
+    "assumptions": [
+      "Docker and Docker Compose are installed locally",
+      ".env is gitignored (credentials not committed)",
+      "Docker Compose v2 syntax is used (not legacy v1)"
+    ],
+    "groomed_at": "2026-05-01T00:00:00Z"
   }
 ]
