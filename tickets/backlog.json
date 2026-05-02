@@ -222,5 +222,31 @@
     "non_goals": [],
     "assumptions": [],
     "groomed_at": null
+  },
+  {
+    "id": "064",
+    "title": "Add README check step to groom workflow",
+    "status": "todo",
+    "story": "As a developer, I want the groom skill to prompt me to consider README updates, so that any needed documentation changes are captured in the acceptance criteria before work begins.",
+    "acceptance_criteria": [
+      "groom includes a step that asks whether the ticket's implementation would require any README additions or updates",
+      "If yes, the relevant README changes are added to the acceptance criteria",
+      "The check is skippable if no README changes are needed"
+    ],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
+  },
+  {
+    "id": "065",
+    "title": "add support for --json flag in new story so that agents can create stories during retro",
+    "status": "todo",
+    "story": "",
+    "acceptance_criteria": [],
+    "dependencies": [],
+    "non_goals": [],
+    "assumptions": [],
+    "groomed_at": null
   }
 ]
